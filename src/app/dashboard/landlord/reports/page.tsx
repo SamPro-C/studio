@@ -38,7 +38,7 @@ const reportCategories: ReportCategory[] = [
     categoryIcon: Users,
     reports: [
       { title: "Vacancy Overview", description: "Track vacant units and overall occupancy rates.", icon: Home, actionText: "View Overview", href: "/dashboard/landlord/reports/vacancy-overview" },
-      { title: "Lease Expiry Tracker", description: "Monitor upcoming lease expirations and renewals.", icon: CalendarDays, actionText: "View Tracker", onClickAction: () => alert("Lease Expiry Tracker: To be implemented.") },
+      { title: "Lease Expiry Tracker", description: "Monitor upcoming lease expirations and renewals.", icon: CalendarDays, actionText: "View Tracker", href: "/dashboard/landlord/reports/lease-expiry-tracker" },
     ]
   },
   {

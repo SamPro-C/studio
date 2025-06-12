@@ -3,6 +3,7 @@ import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { Toaster } from "@/components/ui/toaster";
+import FloatingWhatsAppButton from '@/components/shared/FloatingWhatsAppButton';
 
 export const metadata: Metadata = {
   title: 'Sampro Media Portfolio',
@@ -29,6 +30,7 @@ export default function RootLayout({
         </main>
         <Footer />
         <Toaster />
+        <FloatingWhatsAppButton />
       </body>
     </html>
   );

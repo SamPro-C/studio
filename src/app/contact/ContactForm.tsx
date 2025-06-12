@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,6 +19,12 @@ import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
+// Firestore imports
+import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore';
+// Firebase app import (usually for client-side initialization, but getFirestore() might need it if not auto-init by env)
+// import { getApp, getApps, initializeApp } from 'firebase/app';
+
+
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -26,16 +33,31 @@ const contactFormSchema = z.object({
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
 
-// Server action (simulated)
-async function submitContactForm(data: ContactFormValues) {
-  // In a real app, you'd send this data to your backend or an email service
-  console.log('Contact form submitted:', data);
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  // Simulate a successful submission
-  return { success: true, message: 'Your message has been sent successfully!' };
-  // Simulate an error:
-  // return { success: false, message: 'There was an error sending your message.' };
+// Server Action to save the contact message to Firestore
+async function saveContactMessage(data: ContactFormValues) {
+  'use server';
+  try {
+    // In a Firebase App Hosting environment, Firebase SDK should be configured.
+    // getFirestore() should ideally work if the default Firebase app is initialized.
+    const db = getFirestore();
+    await addDoc(collection(db, 'contactSubmissions'), {
+      name: data.name,
+      email: data.email,
+      message: data.message,
+      submittedAt: Timestamp.now(),
+    });
+    return { success: true, message: 'Your message has been sent successfully and stored!' };
+  } catch (error: any) {
+    console.error('Error writing to Firestore:', error);
+    let userMessage = 'There was an error saving your message. Please try again.';
+    // More specific error messages can be helpful for debugging or user feedback
+    if (error.code === 'unavailable') {
+        userMessage = 'The service is temporarily unavailable. Please try again later.';
+    } else if (error.code === 'permission-denied') {
+        userMessage = 'Could not save message. Please check service permissions.';
+    }
+    return { success: false, message: userMessage };
+  }
 }
 
 
@@ -55,7 +77,7 @@ export default function ContactForm() {
   async function onSubmit(data: ContactFormValues) {
     setIsSubmitting(true);
     try {
-      const result = await submitContactForm(data);
+      const result = await saveContactMessage(data); // Call the server action
       if (result.success) {
         toast({
           title: 'Message Sent!',
@@ -65,14 +87,17 @@ export default function ContactForm() {
       } else {
         toast({
           title: 'Error',
-          description: result.message || 'Failed to send message. Please try again.',
+          description: result.message,
           variant: 'destructive',
         });
       }
     } catch (error) {
+      // This catch block handles errors if the server action itself throws an unhandled exception
+      // or if there's an issue calling it (network, etc.)
+      console.error("Client-side error submitting form:", error);
       toast({
         title: 'Error',
-        description: 'An unexpected error occurred. Please try again.',
+        description: 'An unexpected error occurred while sending your message. Please try again.',
         variant: 'destructive',
       });
     } finally {

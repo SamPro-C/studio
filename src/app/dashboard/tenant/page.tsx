@@ -16,6 +16,7 @@ const tenantData = {
   unitName: "A-101",
   roomNumber: "Master Bedroom",
   profilePicUrl: "https://placehold.co/100x100.png",
+  aiProfileHint: "profile woman",
   rent: {
     amountDue: 1200,
     amountPaid: 500,
@@ -52,11 +53,11 @@ export default function TenantDashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <Avatar>
-              <AvatarImage src={tenantData.profilePicUrl} alt={tenantData.name} data-ai-hint="profile woman" />
+              <AvatarImage src={tenantData.profilePicUrl} alt={tenantData.name} data-ai-hint={tenantData.aiProfileHint} />
               <AvatarFallback>{tenantData.name.substring(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/dashboard/tenant/profile"> {/* Placeholder link */}
+              <Link href="/dashboard/tenant/profile">
                 <Settings className="mr-2 h-4 w-4" /> My Profile
               </Link>
             </Button>
@@ -193,9 +194,5 @@ export default function TenantDashboardPage() {
     </div>
   );
 }
-
-// Placeholder for profile page, to be created later
-// src/app/dashboard/tenant/profile/page.tsx
-// src/app/shopping/page.tsx (if it's part of this app, or remove link if fully external)
 
     

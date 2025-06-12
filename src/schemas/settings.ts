@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const LandlordProfileSchema = z.object({
@@ -16,3 +17,9 @@ export const ChangePasswordSchema = z.object({
   path: ["confirmNewPassword"],
 });
 export type ChangePasswordFormData = z.infer<typeof ChangePasswordSchema>;
+
+// Schema for Tenant changing their password (can be the same as landlord's for now)
+export const TenantChangePasswordSchema = ChangePasswordSchema;
+export type TenantChangePasswordFormData = z.infer<typeof TenantChangePasswordSchema>;
+
+    

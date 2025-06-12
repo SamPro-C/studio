@@ -1,5 +1,6 @@
+
 import type { LucideIcon } from 'lucide-react';
-import { Film, Clapperboard, CodeXml, Smartphone, Briefcase, LineChart, Users, Target, Lightbulb, Search } from 'lucide-react';
+import { Palette, LayoutGrid, CodeXml, Camera, LineChart, Users, Target, Lightbulb, Search } from 'lucide-react';
 
 export interface MediaProject {
   id: string;
@@ -122,39 +123,69 @@ export const softwareProjects: SoftwareProject[] = [
 
 export const services: Service[] = [
   {
-    id: 'media1',
-    title: 'Video Production',
-    icon: Film,
-    description: 'Comprehensive video production services from concept to final cut.',
-    details: ['Corporate Videos', 'Commercials', 'Documentaries', 'Event Coverage', 'Drone Videography'],
+    id: 'graphic_design',
+    title: 'Graphic Design',
+    icon: Palette,
+    description: "Creative and impactful graphic design services to elevate your brand's visual identity.",
+    details: [
+      'Logo Design',
+      'Brand Identity Design',
+      'Business Cards',
+      'Flyers and Brochures',
+      'Social Media Graphics',
+      'Website Graphics',
+      'Packaging Design',
+      'Infographics',
+      'Posters and Banners',
+      'Magazine and Book Layouts',
+      'Stationery Design',
+      'Presentation Design',
+    ],
   },
   {
-    id: 'media2',
-    title: 'Animation & Motion Graphics',
-    icon: Clapperboard,
-    description: 'Creative 2D/3D animation and motion graphics to bring your ideas to life.',
-    details: ['Explainer Videos', 'Product Animations', 'Logo Animations', 'Visual Effects'],
+    id: 'web_design',
+    title: 'Web Design',
+    icon: LayoutGrid,
+    description: 'Building responsive, user-friendly websites and e-commerce solutions that perform.',
+    details: [
+      'Custom Website Design',
+      'E-commerce Development',
+      'Website Management and Updates',
+      'SEO Optimization',
+      'Web Hosting and Domain Registration',
+      'UI/UX Design',
+      'Responsive Design for All Devices',
+    ],
   },
   {
-    id: 'software1',
-    title: 'Web Development',
+    id: 'programming',
+    title: 'Programming',
     icon: CodeXml,
-    description: 'Custom web application development tailored to your business needs.',
-    details: ['Frontend Development (React, Vue, Angular)', 'Backend Development (Node.js, Python, Java)', 'Full-Stack Solutions', 'E-commerce Platforms', 'CMS Development'],
+    description: 'Custom software, mobile apps, and backend solutions to power your business.',
+    details: [
+      'Custom Software Development',
+      'Mobile App Development',
+      'API Development and Integration',
+      'Database Design and Management',
+      'Website Backend Development',
+      'Automation Scripts',
+      'Maintenance and Debugging',
+    ],
   },
   {
-    id: 'software2',
-    title: 'Mobile App Development',
-    icon: Smartphone,
-    description: 'Native and cross-platform mobile app development for iOS and Android.',
-    details: ['iOS App Development (Swift, Objective-C)', 'Android App Development (Kotlin, Java)', 'React Native', 'Flutter'],
-  },
-  {
-    id: 'programming1',
-    title: 'Custom Software Solutions',
-    icon: Briefcase,
-    description: 'Bespoke software solutions to optimize your operations and drive growth.',
-    details: ['Enterprise Software', 'SaaS Product Development', 'API Design & Integration', 'Database Design & Management'],
+    id: 'video_photography',
+    title: 'Video & Photography',
+    icon: Camera,
+    description: 'Professional video and photography services to capture your vision and tell your story.',
+    details: [
+      'Event Coverage (Weddings, Corporate, Parties)',
+      'Product Photography',
+      'Portrait and Headshot Photography',
+      'Real Estate Photography and Videography',
+      'Promotional and Marketing Videos',
+      'Drone Photography and Videography',
+      'Video Editing and Post-Production',
+    ],
   },
 ];
 
@@ -175,7 +206,7 @@ export const caseStudies: CaseStudy[] = [
     title: 'Streamlining Operations with a Custom ERP',
     client: 'Global Logistics Co.',
     problem: 'Inefficient manual processes and disparate systems were hindering growth and causing operational bottlenecks.',
-    solution: 'Designed and implemented a custom ERP system that integrated all core business functions, from inventory management to NnNancereporting.',
+    solution: 'Designed and implemented a custom ERP system that integrated all core business functions, from inventory management to finance reporting.',
     results: 'Reduced operational costs by 20%, improved data accuracy by 98%, and provided real-time visibility into business performance, enabling faster decision-making.',
     imageUrl: 'https://placehold.co/600x400.png',
     dataAiHint: 'erp system',

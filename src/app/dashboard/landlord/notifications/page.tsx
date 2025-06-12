@@ -64,7 +64,7 @@ export default function NotificationsHubPage() {
                 <CardTitle className="flex items-center">
                     <Bell className="mr-2 h-6 w-6 text-primary" />
                     Notification History
-                </CardTitle>
+                </Title>
                 <CardDescription>
                     View past notifications sent to tenants and workers.
                 </CardDescription>
@@ -89,3 +89,4 @@ export default function NotificationsHubPage() {
     </div>
   );
 }
+

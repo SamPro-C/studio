@@ -13,7 +13,7 @@ export default function PrivacyPage() {
 
           <p className="text-muted-foreground">Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
 
-          <p>Propero ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Propero application and services (collectively, the "Service"). Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the service.</p>
+          <p>Rentizzi ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Rentizzi application and services (collectively, the "Service"). Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the service.</p>
 
           <h2 className="font-headline text-2xl font-semibold text-primary mt-8 mb-4">1. Information We Collect</h2>
           <p>We may collect information about you in a variety of ways. The information we may collect via the Service depends on the content and materials you use, and includes:</p>
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
           <p>We may update this Privacy Policy from time to time in order to reflect, for example, changes to our practices or for other operational, legal, or regulatory reasons. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.</p>
 
           <h2 className="font-headline text-2xl font-semibold text-primary mt-8 mb-4">8. Contact Us</h2>
-          <p>If you have questions or comments about this Privacy Policy, please contact us at: <a href="mailto:privacy@propero.app" className="text-primary hover:underline">privacy@propero.app</a>.</p>
+          <p>If you have questions or comments about this Privacy Policy, please contact us at: <a href="mailto:privacy@rentizzi.app" className="text-primary hover:underline">privacy@rentizzi.app</a>.</p>
         </article>
       </main>
       <Footer />

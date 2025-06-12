@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Propero - Smart Property Management',
+  title: 'Rentizzi - Smart Property Management',
   description: 'Effortless Property Management, Elevated Living.',
 };
 

@@ -18,23 +18,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from '@/components/shared/Logo';
 import { useToast } from "@/hooks/use-toast";
+import { requestPasswordReset } from '@/actions/auth-actions';
 
 const ForgotPasswordSchema = z.object({
   emailOrPhone: z.string().min(1, { message: "Email or Phone Number is required" }),
 });
 
 type ForgotPasswordFormData = z.infer<typeof ForgotPasswordSchema>;
-
-// Placeholder server action
-async function requestPasswordReset(data: ForgotPasswordFormData) {
-  "use server";
-  console.log("Password reset request for:", data.emailOrPhone);
-  // In a real app, you would:
-  // 1. Verify if the email/phone exists.
-  // 2. Generate a unique, time-sensitive reset token/code.
-  // 3. Send an email/SMS with the reset link/code.
-  return { success: true, message: "If an account exists for this email/phone, a password reset link has been sent." };
-}
 
 export default function ForgotPasswordPage() {
   const { toast } = useToast();
@@ -46,10 +36,7 @@ export default function ForgotPasswordPage() {
   });
 
   async function onSubmit(data: ForgotPasswordFormData) {
-    // This would ideally be a server action imported and called
     const result = await requestPasswordReset(data); 
-    // For client-side display/testing:
-    // const result = { success: true, message: "If an account exists for this email/phone, a password reset link has been sent." };
 
     if (result.success) {
       toast({

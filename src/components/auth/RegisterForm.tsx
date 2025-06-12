@@ -22,19 +22,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { PasswordStrength, calculatePasswordScore } from '@/components/auth/PasswordStrength';
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from 'lucide-react';
-
-
-// Placeholder for server action
-async function registerLandlord(data: RegisterLandlordFormData) {
-  "use server";
-  console.log("Registering landlord with:", data);
-  // In a real app, call your registration API and handle admin approval flow.
-  // For now, simulate success or failure.
-  if (data.email === "exists@example.com") {
-    return { success: false, message: "Email already exists." };
-  }
-  return { success: true, message: "Registration submitted! Awaiting admin approval." };
-}
+import { registerLandlord } from '@/actions/auth-actions';
 
 
 export function RegisterForm() {
@@ -61,13 +49,8 @@ export function RegisterForm() {
   }, [password]);
 
   async function onSubmit(data: RegisterLandlordFormData) {
-    // This would ideally be a server action imported and called
     console.log("Submitting registration form with data:", data);
-     // This is a client-side simulation. In a real app, use a server action.
-    const result = data.email === "exists@example.com"
-      ? { success: false, message: "Email already exists." }
-      : { success: true, message: "Registration submitted! Awaiting admin approval." };
-
+    const result = await registerLandlord(data);
 
     if (result.success) {
       toast({
@@ -89,7 +72,7 @@ export function RegisterForm() {
   return (
     <Card className="w-full max-w-lg">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">Become a Propero Landlord</CardTitle>
+        <CardTitle className="font-headline text-2xl">Become a Rentizzi Landlord</CardTitle>
         <CardDescription>Fill in your details to start managing your properties smarter.</CardDescription>
       </CardHeader>
       <CardContent>

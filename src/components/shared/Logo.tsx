@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import type { SVGProps } from 'react';
 
-// Simple geometric logo (example: a stylized P or building icon)
-const ProperoIcon = (props: SVGProps<SVGSVGElement>) => (
+// Simple geometric icon (example: a stylized R or building icon)
+const RentizziIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
     viewBox="0 0 24 24" 
@@ -14,6 +14,7 @@ const ProperoIcon = (props: SVGProps<SVGSVGElement>) => (
     className="h-8 w-8 mr-2 text-primary" // Use primary color from theme
     {...props}
   >
+    {/* Generic icon, can be kept or updated if a specific Rentizzi logo is designed */}
     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
   </svg>
 );
@@ -22,8 +23,8 @@ const ProperoIcon = (props: SVGProps<SVGSVGElement>) => (
 export function Logo({ className }: { className?: string }) {
   return (
     <Link href="/" className={`flex items-center text-2xl font-bold font-headline text-primary hover:opacity-90 transition-opacity ${className}`}>
-      <ProperoIcon />
-      Propero
+      <RentizziIcon />
+      Rentizzi
     </Link>
   );
 }

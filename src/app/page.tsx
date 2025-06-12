@@ -18,7 +18,7 @@ export default function HomePage() {
         <section className="bg-gradient-to-br from-primary/10 via-background to-background py-20 md:py-32">
           <div className="container text-center">
             <h1 className="font-headline text-4xl font-bold tracking-tight text-primary sm:text-5xl md:text-6xl">
-              Propero: Effortless Property Management, Elevated Living.
+              Rentizzi: Effortless Property Management, Elevated Living.
             </h1>
             <p className="mt-6 text-lg leading-8 text-foreground/80 md:text-xl">
               A comprehensive solution for landlords, tenants, and workers, simplifying property operations and enhancing community experience.
@@ -34,7 +34,7 @@ export default function HomePage() {
             <div className="mt-16">
               <Image
                 src="https://placehold.co/1200x600.png"
-                alt="Propero Dashboard Mockup"
+                alt="Rentizzi Dashboard Mockup"
                 width={1200}
                 height={600}
                 className="rounded-lg shadow-2xl"
@@ -116,10 +116,10 @@ export default function HomePage() {
           <div className="container">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="font-headline text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-                Key Features of Propero
+                Key Features of Rentizzi
               </h2>
               <p className="mt-4 text-lg text-foreground/80">
-                Discover how Propero revolutionizes property management for everyone involved.
+                Discover how Rentizzi revolutionizes property management for everyone involved.
               </p>
             </div>
             <div className="mt-16 grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">

@@ -51,7 +51,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-border/40 pt-8 text-center text-sm text-muted-foreground">
-          &copy; {currentYear} Propero. All rights reserved. Nairobi, Kenya.
+          &copy; {currentYear} Rentizzi. All rights reserved. Nairobi, Kenya.
         </div>
       </div>
     </footer>

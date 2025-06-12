@@ -19,18 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-
-// Placeholder for server action
-async function loginUser(data: LoginFormData) {
-  "use server";
-  console.log("Login attempt with:", data);
-  // In a real app, you would call your authentication API here
-  // For now, simulate success or failure
-  if (data.emailOrPhone === "error@example.com") {
-    return { success: false, message: "Invalid credentials provided." };
-  }
-  return { success: true, message: "Login successful! Redirecting..." };
-}
+import { loginUser } from '@/actions/auth-actions';
 
 
 export function LoginForm() {
@@ -45,13 +34,8 @@ export function LoginForm() {
   });
 
   async function onSubmit(data: LoginFormData) {
-    // This would ideally be a server action imported and called
-    // For now, simulating the call to the placeholder server action
     console.log("Submitting login form with data:", data);
-    // This is a client-side simulation. In a real app, use a server action.
-    const result = data.emailOrPhone === "error@example.com" 
-      ? { success: false, message: "Invalid credentials provided." }
-      : { success: true, message: "Login successful! Redirecting..." };
+    const result = await loginUser(data);
 
     if (result.success) {
       toast({
@@ -72,7 +56,7 @@ export function LoginForm() {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">Welcome Back!</CardTitle>
-        <CardDescription>Enter your credentials to access your Propero account.</CardDescription>
+        <CardDescription>Enter your credentials to access your Rentizzi account.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

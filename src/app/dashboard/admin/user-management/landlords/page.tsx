@@ -3,7 +3,6 @@
 "use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -108,8 +107,10 @@ export default function ManageLandlordsPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleAction("View Profile", landlord.name)}>
-                                <Eye className="mr-2 h-4 w-4" /> View Profile
+                              <DropdownMenuItem asChild>
+                                <Link href={`/dashboard/admin/user-management/landlords/${landlord.id}`}>
+                                  <Eye className="mr-2 h-4 w-4" /> View Profile
+                                </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleAction("Edit Details", landlord.name)}>
                                 <Edit className="mr-2 h-4 w-4" /> Edit Details

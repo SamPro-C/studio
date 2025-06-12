@@ -10,6 +10,24 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Users, Filter, FileDown, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+
+const userGrowthData = [
+  { month: "Jan", Landlords: 2, Tenants: 10, Workers: 1 },
+  { month: "Feb", Landlords: 3, Tenants: 15, Workers: 2 },
+  { month: "Mar", Landlords: 1, Tenants: 20, Workers: 0 },
+  { month: "Apr", Landlords: 4, Tenants: 25, Workers: 3 },
+  { month: "May", Landlords: 2, Tenants: 18, Workers: 1 },
+  { month: "Jun", Landlords: 5, Tenants: 30, Workers: 2 },
+];
+
+const chartConfig = {
+  Landlords: { label: "Landlords", color: "hsl(var(--chart-1))" },
+  Tenants: { label: "Tenants", color: "hsl(var(--chart-2))" },
+  Workers: { label: "Workers", color: "hsl(var(--chart-3))" },
+} satisfies ChartConfig;
+
 
 export default function UserStatisticsReportPage() {
   const { toast } = useToast();
@@ -85,10 +103,29 @@ export default function UserStatisticsReportPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center"><BarChart3 className="mr-2 h-5 w-5 text-primary/80"/> User Growth Trends</CardTitle>
-            <CardDescription>Chart displaying user registration trends over time.</CardDescription>
+            <CardDescription>Monthly new user registrations by role.</CardDescription>
           </CardHeader>
-          <CardContent className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-            <p className="text-muted-foreground">User Growth Chart Placeholder</p>
+          <CardContent>
+            {userGrowthData.length > 0 ? (
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={userGrowthData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8}/>
+                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} tickMargin={8} width={30}/>
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="Landlords" fill="var(--color-Landlords)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Tenants" fill="var(--color-Tenants)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Workers" fill="var(--color-Workers)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+            ) : (
+               <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
+                    <p className="text-muted-foreground">No user growth data to display.</p>
+                </div>
+            )}
           </CardContent>
         </Card>
         

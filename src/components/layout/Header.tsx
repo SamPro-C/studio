@@ -1,7 +1,7 @@
 
 'use client';
 import Link from 'next/link';
-import { Menu, X, Aperture, Code, Briefcase, BookOpen, Lightbulb, Mail, Tv, Info } from 'lucide-react';
+import { Menu, X, Aperture, Code, Briefcase, BookOpen, Lightbulb, Mail, Tv, Info, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
@@ -15,7 +15,8 @@ const navItems = [
   { href: '/services', label: 'Services', icon: Briefcase },
   { href: '/case-studies', label: 'Case Studies', icon: BookOpen },
   { href: '/about', label: 'About Us', icon: Info },
-  { href: '/ai-description-generator', label: 'AI Tool', icon: Lightbulb },
+  { href: '/ai-description-generator', label: 'AI Desc', icon: Lightbulb },
+  { href: '/ai-social-media-snippet-generator', label: 'AI Snippets', icon: MessageSquare },
   { href: '/contact', label: 'Contact', icon: Mail },
 ];
 
@@ -51,7 +52,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-2">
+        <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
           {navItems.map((item) => (
             <NavLink key={item.href} {...item} />
           ))}

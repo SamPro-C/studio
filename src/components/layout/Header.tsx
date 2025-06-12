@@ -1,6 +1,7 @@
+
 'use client';
 import Link from 'next/link';
-import { Menu, X, Aperture, Code, Briefcase, BookOpen, Lightbulb, Mail, Tv } from 'lucide-react';
+import { Menu, X, Aperture, Code, Briefcase, BookOpen, Lightbulb, Mail, Tv, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
@@ -8,11 +9,12 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/', label: 'Home', icon: Aperture }, // Changed from Tv to Aperture
+  { href: '/', label: 'Home', icon: Aperture },
   { href: '/media-portfolio', label: 'Media', icon: Tv },
   { href: '/software-portfolio', label: 'Software', icon: Code },
   { href: '/services', label: 'Services', icon: Briefcase },
   { href: '/case-studies', label: 'Case Studies', icon: BookOpen },
+  { href: '/about', label: 'About Us', icon: Info },
   { href: '/ai-description-generator', label: 'AI Tool', icon: Lightbulb },
   { href: '/contact', label: 'Contact', icon: Mail },
 ];
@@ -43,7 +45,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" passHref>
           <div className="flex items-center space-x-2 cursor-pointer">
-            <Aperture className="h-7 w-7 text-primary" /> {/* Changed from Tv to Aperture */}
+            <Aperture className="h-7 w-7 text-primary" />
             <span className="font-headline text-xl font-bold text-primary">Sampro Media</span>
           </div>
         </Link>
@@ -69,7 +71,7 @@ export default function Header() {
                 <div className="flex justify-between items-center mb-4">
                  <Link href="/" passHref>
                     <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setMobileMenuOpen(false)}>
-                        <Aperture className="h-7 w-7 text-primary" /> {/* Changed from Tv to Aperture */}
+                        <Aperture className="h-7 w-7 text-primary" />
                         <span className="font-headline text-xl font-bold text-primary">Sampro Media</span>
                     </div>
                   </Link>

@@ -1,11 +1,10 @@
-
 // src/app/dashboard/worker/profile/page.tsx
 "use client";
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, UserCircle, Lock, Mail, Phone, Briefcase, CalendarDays, IdCard, Edit, Eye, EyeOff, Save } from 'lucide-react';
+import { ArrowLeft, UserCircle, Lock, Mail, Phone, Briefcase, CalendarDays, BadgeInfo, Edit, Eye, EyeOff, Save } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -110,7 +109,7 @@ export default function WorkerProfilePage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-                <CardTitle className="flex items-center"><IdCard className="mr-2 h-5 w-5 text-primary/80"/> My Information</CardTitle>
+                <CardTitle className="flex items-center"><BadgeInfo className="mr-2 h-5 w-5 text-primary/80"/> My Information</CardTitle>
                 <CardDescription>Your details as registered by the landlord.</CardDescription>
             </div>
             <Dialog open={isRequestUpdateModalOpen} onOpenChange={setIsRequestUpdateModalOpen}>
@@ -141,7 +140,7 @@ export default function WorkerProfilePage() {
             <InfoDisplayItem label="Full Name" value={workerProfile.fullName} icon={UserCircle} />
             <InfoDisplayItem label="Email" value={workerProfile.email} icon={Mail}/>
             <InfoDisplayItem label="Phone Number" value={workerProfile.phoneNumber} icon={Phone}/>
-            <InfoDisplayItem label="National ID" value={workerProfile.nationalId} icon={IdCard}/>
+            <InfoDisplayItem label="National ID" value={workerProfile.nationalId} icon={BadgeInfo}/>
             <InfoDisplayItem label="Role" value={workerProfile.role} icon={Briefcase}/>
             <InfoDisplayItem label="Assigned Apartments" value={workerProfile.assignedApartments} icon={Briefcase}/>
             <InfoDisplayItem label="Working Hours" value={workerProfile.workingHours} icon={CalendarDays}/>

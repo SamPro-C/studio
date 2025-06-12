@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { ArrowLeft, Save, UserCircle, Lock, Bell, Eye, EyeOff, Settings2Icon } from 'lucide-react';
+import { ArrowLeft, Save, UserCircle, Lock, Bell, Eye, EyeOff, Settings2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { PasswordStrength, calculatePasswordScore } from '@/components/auth/PasswordStrength';
 import { LandlordProfileSchema, ChangePasswordSchema, type LandlordProfileFormData, type ChangePasswordFormData } from '@/schemas/settings';
@@ -85,7 +85,7 @@ export default function LandlordSettingsPage() {
               Back to Dashboard
             </Link>
             <h1 className="font-headline text-2xl sm:text-3xl font-bold text-primary flex items-center">
-              <Settings2Icon className="mr-3 h-7 w-7" /> Account Settings
+              <Settings2 className="mr-3 h-7 w-7" /> Account Settings
             </h1>
           </div>
         </div>

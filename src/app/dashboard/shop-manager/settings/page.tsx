@@ -1,11 +1,10 @@
-
 // src/app/dashboard/shop-manager/settings/page.tsx
 "use client";
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, Store, Truck, CreditCardIcon, Settings2, Users, Save, ExternalLink, Bell } from 'lucide-react';
+import { ArrowLeft, Store, Truck, CreditCard, Settings2, Users, Save, ExternalLink, Bell } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -54,7 +53,7 @@ export default function ShopSettingsPage() {
 
         {/* Payment Gateway Configuration */}
         <Card>
-          <CardHeader><CardTitle className="flex items-center"><CreditCardIcon className="mr-2"/>Payment Gateway</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="flex items-center"><CreditCard className="mr-2"/>Payment Gateway</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div><Label htmlFor="mpesaApiKey">M-Pesa API Key (Placeholder)</Label><Input id="mpesaApiKey" type="password" /></div>
             <div><Label htmlFor="cardApiKeyShop">Card Processor API Key (Placeholder)</Label><Input id="cardApiKeyShop" type="password" /></div>

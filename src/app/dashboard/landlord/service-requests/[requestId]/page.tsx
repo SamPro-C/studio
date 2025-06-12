@@ -5,9 +5,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { 
     ArrowLeft, 
     Wrench, 
@@ -25,17 +30,77 @@ import {
 } from 'lucide-react';
 import { dummyServiceRequests, ServiceRequest } from '../page'; // Import from parent
 
+type RequestStatus = ServiceRequest['status'];
+
+// Define dummyWorkers and requestStatuses locally for this page
+const dummyWorkers = [
+    { id: "worker001", name: "Mike Ross (Plumber)"},
+    { id: "worker002", name: "Sarah Connor (Electrician)"},
+    { id: "workerExternal001", name: "Tech Services Inc."},
+    { id: "none", name: "Unassign / No Worker"}
+];
+const requestStatuses: RequestStatus[] = ["Pending", "In Progress", "On Hold", "Completed", "Canceled"];
+
+
 export default function ServiceRequestDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const requestId = params.requestId as string;
 
-  const request = dummyServiceRequests.find(req => req.requestId === requestId);
+  const [request, setRequest] = useState<ServiceRequest | null>(null);
+  const [isAssignWorkerModalOpen, setIsAssignWorkerModalOpen] = useState(false);
+  const [isUpdateStatusModalOpen, setIsUpdateStatusModalOpen] = useState(false);
+  const [selectedWorkerId, setSelectedWorkerId] = useState<string | undefined>(undefined);
+  const [selectedStatus, setSelectedStatus] = useState<RequestStatus | undefined>(undefined);
+  const [statusUpdateComments, setStatusUpdateComments] = useState("");
 
-  const handleAssignWorker = () => alert(`Assign worker to SR: ${request?.requestId}. To be implemented via modal/form.`);
-  const handleUpdateStatus = () => alert(`Update status for SR: ${request?.requestId}. To be implemented via modal/form.`);
+  useEffect(() => {
+    const foundRequest = dummyServiceRequests.find(req => req.requestId === requestId);
+    setRequest(foundRequest || null);
+    if (foundRequest) {
+        setSelectedWorkerId(foundRequest.workerId || "none");
+        setSelectedStatus(foundRequest.status);
+    }
+  }, [requestId]);
+
+  const openAssignWorkerModal = () => {
+    if (!request) return;
+    setSelectedWorkerId(request.workerId || request.workerAssigned || "none");
+    setIsAssignWorkerModalOpen(true);
+  };
+  
+  const openUpdateStatusModal = () => {
+    if (!request) return;
+    setSelectedStatus(request.status);
+    setStatusUpdateComments(""); // Reset comments
+    setIsUpdateStatusModalOpen(true);
+  };
+
+  const handleConfirmAssignWorker = () => {
+    if (!request || selectedWorkerId === undefined) return;
+    const workerName = dummyWorkers.find(w => (w.id === selectedWorkerId || w.name === selectedWorkerId))?.name || "Unassigned";
+    console.log(`Assigning worker "${workerName}" (ID: ${selectedWorkerId}) to request ${request.requestId}`);
+    alert(`Worker "${workerName}" assigned to SR-${request.requestId}. (Simulated)`);
+    // Update request state or refetch if this were a real API call
+    if(request) { // Update local state for immediate feedback
+        setRequest(prev => prev ? {...prev, workerAssigned: workerName === "Unassign / No Worker" ? null : workerName, workerId: selectedWorkerId === "none" ? undefined : selectedWorkerId} : null);
+    }
+    setIsAssignWorkerModalOpen(false);
+  };
+
+  const handleConfirmUpdateStatus = () => {
+    if (!request || selectedStatus === undefined) return;
+    console.log(`Updating status of request ${request.requestId} to "${selectedStatus}" with comments: "${statusUpdateComments}"`);
+    alert(`Status of SR-${request.requestId} updated to "${selectedStatus}". (Simulated)`);
+     if(request) { // Update local state for immediate feedback
+        setRequest(prev => prev ? {...prev, status: selectedStatus} : null);
+    }
+    setIsUpdateStatusModalOpen(false);
+  };
+
   const handleAddNote = () => alert(`Add note to SR: ${request?.requestId}. To be implemented.`);
   const handleUploadMedia = () => alert(`Upload media for SR: ${request?.requestId}. To be implemented.`);
+  
   const handleViewTenantProfile = () => {
     if(request?.tenantId) {
         router.push(`/dashboard/landlord/tenants/${request.tenantId}`);
@@ -44,10 +109,12 @@ export default function ServiceRequestDetailsPage() {
     }
   };
    const handleViewWorkerProfile = () => {
-    if(request?.workerId) {
+    if(request?.workerId && request.workerId !== "workerExternal001" && request.workerId !== "none") { // Assuming external workers don't have profiles
         router.push(`/dashboard/landlord/workers/${request.workerId}`);
+    } else if (request?.workerAssigned && request.workerAssigned !== "Unassign / No Worker"){
+        alert(`Cannot view profile for external or unassigned worker: ${request.workerAssigned}.`);
     } else {
-        alert("Worker ID not available for this request or worker is external.");
+        alert("Worker not assigned or no profile available.");
     }
   };
 
@@ -119,8 +186,8 @@ export default function ServiceRequestDetailsPage() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={() => router.push(`/dashboard/landlord/service-requests/${request.requestId}/edit`)}><Edit className="mr-2 h-4 w-4" /> Edit Request</Button>
-            <Button variant="outline" size="sm" onClick={handleAssignWorker}><UserCircle className="mr-2 h-4 w-4" /> Assign Worker</Button>
-            <Button variant="outline" size="sm" onClick={handleUpdateStatus}><ListChecks className="mr-2 h-4 w-4" /> Update Status</Button>
+            <Button variant="outline" size="sm" onClick={openAssignWorkerModal}><UserCircle className="mr-2 h-4 w-4" /> Assign Worker</Button>
+            <Button variant="outline" size="sm" onClick={openUpdateStatusModal}><ListChecks className="mr-2 h-4 w-4" /> Update Status</Button>
           </div>
         </div>
 
@@ -167,12 +234,12 @@ export default function ServiceRequestDetailsPage() {
               {request.workerAssigned ? (
                 <>
                   <div className="flex items-center"><Briefcase className="mr-2 h-4 w-4 text-primary/70" /><strong>Worker:</strong><span className="ml-1">{request.workerAssigned}</span></div>
-                  {request.workerId && <Button variant="link" size="sm" className="p-0 h-auto text-xs" onClick={handleViewWorkerProfile}>View Worker Profile</Button>}
+                  {request.workerId && request.workerId !== "none" && request.workerAssigned !== "Unassign / No Worker" && <Button variant="link" size="sm" className="p-0 h-auto text-xs" onClick={handleViewWorkerProfile}>View Worker Profile</Button>}
                 </>
               ) : (
                 <p className="text-muted-foreground">No worker assigned yet.</p>
               )}
-              <Button variant="outline" size="sm" className="w-full mt-2" onClick={handleAssignWorker}>
+              <Button variant="outline" size="sm" className="w-full mt-2" onClick={openAssignWorkerModal}>
                 {request.workerAssigned ? 'Reassign Worker' : 'Assign Worker'}
               </Button>
             </CardContent>
@@ -257,7 +324,89 @@ export default function ServiceRequestDetailsPage() {
           </CardContent>
         </Card>
 
+        {/* Assign Worker Modal */}
+        <Dialog open={isAssignWorkerModalOpen} onOpenChange={setIsAssignWorkerModalOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Assign Worker to SR: {request.requestId}</DialogTitle>
+              <DialogDescription>
+                Select a worker to assign to this service request. Current: {request.workerAssigned || 'None'}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="workerSelectModal" className="text-right">Worker</Label>
+                <Select 
+                    defaultValue={selectedWorkerId}
+                    onValueChange={(value) => setSelectedWorkerId(value === "none" ? "" : value)}
+                >
+                    <SelectTrigger id="workerSelectModal" className="col-span-3">
+                        <SelectValue placeholder="Select worker" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {dummyWorkers.map(worker => (
+                        <SelectItem key={worker.id} value={worker.id === "none" ? "none" : worker.name}>
+                            {worker.name}
+                        </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
+              <Button type="button" onClick={handleConfirmAssignWorker}>Assign Worker</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Update Status Modal */}
+        <Dialog open={isUpdateStatusModalOpen} onOpenChange={setIsUpdateStatusModalOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Update Status for SR: {request.requestId}</DialogTitle>
+              <DialogDescription>
+                Current status: {request.status}. Select new status and add comments if any.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="statusSelectModal" className="text-right">Status</Label>
+                    <Select 
+                        defaultValue={selectedStatus}
+                        onValueChange={(value) => setSelectedStatus(value as RequestStatus)}
+                    >
+                        <SelectTrigger id="statusSelectModal" className="col-span-3">
+                            <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {requestStatuses.map(status => (
+                            <SelectItem key={status} value={status}>{status}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="grid grid-cols-4 items-start gap-4">
+                    <Label htmlFor="commentsModal" className="text-right pt-1">Comments</Label>
+                    <Textarea 
+                        id="commentsModal" 
+                        className="col-span-3" 
+                        placeholder="Add comments about status change (optional)"
+                        value={statusUpdateComments}
+                        onChange={(e) => setStatusUpdateComments(e.target.value)}
+                    />
+                </div>
+            </div>
+            <DialogFooter>
+                <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
+                <Button type="button" onClick={handleConfirmUpdateStatus}>Update Status</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
       </main>
     </div>
   );
 }
+
+    

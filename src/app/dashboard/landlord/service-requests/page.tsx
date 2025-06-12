@@ -4,12 +4,17 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState, FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Search, Filter, Wrench, MoreHorizontal, UserPlus, CheckCircle, Eye, Edit } from 'lucide-react';
 
 type RequestStatus = 'Pending' | 'In Progress' | 'Completed' | 'Canceled' | 'On Hold';
@@ -105,7 +110,7 @@ export const dummyServiceRequests: ServiceRequest[] = [
     priority: "Medium", 
     status: "Completed", 
     workerAssigned: "Tech Services Inc.", 
-    workerId: "workerExternal001", // Example of external worker
+    workerId: "workerExternal001", 
     dateCompleted: "2024-07-24",
     mediaUploads: [
        { id: "media003", type: 'image', url: 'https://placehold.co/300x200.png', caption: 'AC Unit Model', aiHint: 'air conditioner' }
@@ -143,8 +148,23 @@ export const dummyServiceRequests: ServiceRequest[] = [
   },
 ];
 
+const dummyWorkers = [
+    { id: "worker001", name: "Mike Ross (Plumber)"},
+    { id: "worker002", name: "Sarah Connor (Electrician)"},
+    { id: "workerExternal001", name: "Tech Services Inc."},
+    { id: "none", name: "Unassign / No Worker"}
+];
+const requestStatuses: RequestStatus[] = ["Pending", "In Progress", "On Hold", "Completed", "Canceled"];
+
 export default function ManageServiceRequestsPage() {
   const router = useRouter();
+  const [isAssignWorkerModalOpen, setIsAssignWorkerModalOpen] = useState(false);
+  const [isUpdateStatusModalOpen, setIsUpdateStatusModalOpen] = useState(false);
+  const [selectedRequestForModal, setSelectedRequestForModal] = useState<ServiceRequest | null>(null);
+  const [selectedWorkerId, setSelectedWorkerId] = useState<string | undefined>(undefined);
+  const [selectedStatus, setSelectedStatus] = useState<RequestStatus | undefined>(undefined);
+  const [statusUpdateComments, setStatusUpdateComments] = useState("");
+
 
   const handleViewDetails = (requestId: string) => {
     router.push(`/dashboard/landlord/service-requests/${requestId}`);
@@ -154,21 +174,45 @@ export default function ManageServiceRequestsPage() {
     router.push(`/dashboard/landlord/service-requests/${requestId}/edit`);
   };
 
-  const handleAssignWorker = (id: string) => {
-    alert(`Assign worker to Service Request ID: ${id}. Functionality to be implemented via modal/form.`);
-    // Show modal or navigate to assignment page
+  const openAssignWorkerModal = (request: ServiceRequest) => {
+    setSelectedRequestForModal(request);
+    setSelectedWorkerId(request.workerId || "none");
+    setIsAssignWorkerModalOpen(true);
   };
 
-  const handleChangeStatus = (id: string, currentStatus: RequestStatus) => {
-    alert(`Change status for Service Request ID: ${id} (Current: ${currentStatus}). Functionality to be implemented via modal/form.`);
-    // Show dropdown or modal for status change
+  const openUpdateStatusModal = (request: ServiceRequest) => {
+    setSelectedRequestForModal(request);
+    setSelectedStatus(request.status);
+    setStatusUpdateComments("");
+    setIsUpdateStatusModalOpen(true);
   };
+  
+  const handleConfirmAssignWorker = () => {
+    if (!selectedRequestForModal || selectedWorkerId === undefined) return;
+    const workerName = dummyWorkers.find(w => (w.id === selectedWorkerId || w.name === selectedWorkerId))?.name || "Unassigned";
+    console.log(`Assigning worker "${workerName}" (ID: ${selectedWorkerId}) to request ${selectedRequestForModal.requestId}`);
+    alert(`Worker "${workerName}" assigned to SR-${selectedRequestForModal.requestId}. (Simulated)`);
+    // Here you would typically call an action to update the service request in your backend/state
+    // For dummy data, you might update the dummyServiceRequests array if you want to see immediate effect (not done here)
+    setIsAssignWorkerModalOpen(false);
+    setSelectedRequestForModal(null);
+  };
+
+  const handleConfirmUpdateStatus = () => {
+    if (!selectedRequestForModal || selectedStatus === undefined) return;
+    console.log(`Updating status of request ${selectedRequestForModal.requestId} to "${selectedStatus}" with comments: "${statusUpdateComments}"`);
+    alert(`Status of SR-${selectedRequestForModal.requestId} updated to "${selectedStatus}". (Simulated)`);
+    // Update dummy data or call action
+    setIsUpdateStatusModalOpen(false);
+    setSelectedRequestForModal(null);
+  };
+
 
   const getStatusBadgeVariant = (status: RequestStatus): "default" | "secondary" | "destructive" | "outline" => {
     switch (status) {
       case 'Pending': return 'secondary';
       case 'In Progress': return 'default'; 
-      case 'Completed': return 'default'; // Should be success-like, 'default' works
+      case 'Completed': return 'default';
       case 'Canceled': return 'destructive';
       case 'On Hold': return 'outline';
       default: return 'outline';
@@ -200,7 +244,6 @@ export default function ManageServiceRequestsPage() {
               <Wrench className="mr-3 h-7 w-7" /> Manage Service Requests
             </h1>
           </div>
-          {/* Placeholder for "Create New Service Request" if landlords can also create them */}
         </div>
 
         <Card>
@@ -286,10 +329,10 @@ export default function ManageServiceRequestsPage() {
                               <DropdownMenuItem onClick={() => handleEditRequest(req.requestId)} disabled={req.status === 'Completed' || req.status === 'Canceled'}>
                                 <Edit className="mr-2 h-4 w-4" /> Edit Request
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleAssignWorker(req.id)} disabled={req.status === 'Completed' || req.status === 'Canceled'}>
+                              <DropdownMenuItem onClick={() => openAssignWorkerModal(req)} disabled={req.status === 'Completed' || req.status === 'Canceled'}>
                                 <UserPlus className="mr-2 h-4 w-4" /> Assign Worker
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleChangeStatus(req.id, req.status)}>
+                              <DropdownMenuItem onClick={() => openUpdateStatusModal(req)}>
                                 <CheckCircle className="mr-2 h-4 w-4" /> Change Status
                               </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -305,7 +348,94 @@ export default function ManageServiceRequestsPage() {
             )}
           </CardContent>
         </Card>
+
+        {/* Assign Worker Modal */}
+        {selectedRequestForModal && (
+            <Dialog open={isAssignWorkerModalOpen} onOpenChange={setIsAssignWorkerModalOpen}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                <DialogTitle>Assign Worker to SR: {selectedRequestForModal.requestId}</DialogTitle>
+                <DialogDescription>
+                    Select a worker to assign to this service request. Current: {selectedRequestForModal.workerAssigned || 'None'}
+                </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="worker" className="text-right">Worker</Label>
+                    <Select 
+                        defaultValue={selectedRequestForModal.workerId || selectedRequestForModal.workerAssigned || "none"}
+                        onValueChange={(value) => setSelectedWorkerId(value === "none" ? "" : value)}
+                    >
+                        <SelectTrigger id="worker" className="col-span-3">
+                            <SelectValue placeholder="Select worker" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {dummyWorkers.map(worker => (
+                            <SelectItem key={worker.id} value={worker.id === "none" ? "none" : worker.name}>
+                                {worker.name}
+                            </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                </div>
+                <DialogFooter>
+                <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
+                <Button type="button" onClick={handleConfirmAssignWorker}>Assign Worker</Button>
+                </DialogFooter>
+            </DialogContent>
+            </Dialog>
+        )}
+
+        {/* Update Status Modal */}
+        {selectedRequestForModal && (
+            <Dialog open={isUpdateStatusModalOpen} onOpenChange={setIsUpdateStatusModalOpen}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                <DialogTitle>Update Status for SR: {selectedRequestForModal.requestId}</DialogTitle>
+                <DialogDescription>
+                    Current status: {selectedRequestForModal.status}. Select new status and add comments if any.
+                </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="status" className="text-right">Status</Label>
+                        <Select 
+                            defaultValue={selectedRequestForModal.status}
+                            onValueChange={(value) => setSelectedStatus(value as RequestStatus)}
+                        >
+                            <SelectTrigger id="status" className="col-span-3">
+                                <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {requestStatuses.map(status => (
+                                <SelectItem key={status} value={status}>{status}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="grid grid-cols-4 items-start gap-4">
+                        <Label htmlFor="comments" className="text-right pt-1">Comments</Label>
+                        <Textarea 
+                            id="comments" 
+                            className="col-span-3" 
+                            placeholder="Add comments about status change (optional)"
+                            value={statusUpdateComments}
+                            onChange={(e) => setStatusUpdateComments(e.target.value)}
+                        />
+                    </div>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
+                    <Button type="button" onClick={handleConfirmUpdateStatus}>Update Status</Button>
+                </DialogFooter>
+            </DialogContent>
+            </Dialog>
+        )}
+
       </main>
     </div>
   );
 }
+
+    

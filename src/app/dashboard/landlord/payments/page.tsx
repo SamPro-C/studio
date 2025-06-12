@@ -3,6 +3,7 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -19,14 +20,15 @@ const paidRentData = [
 ];
 
 const unpaidRentData = [
-  { id: "unpaid1", tenantName: "Bob The Builder", apartment: "Greenwood Heights", unit: "B-201", room: "Studio Main Room", amountDue: 1500, dueDate: "2024-07-05" },
-  { id: "unpaid2", tenantName: "Edward Nygma", apartment: "Mountain Ridge Villas", unit: "Villa B", room: "Cozy Villa Retreat", amountDue: 2900, dueDate: "2024-07-10" },
+  { id: "unpaid1", tenantName: "Bob The Builder", apartment: "Greenwood Heights", unit: "B-201", room: "Studio Main Room", amountDue: 1500, dueDate: "2024-07-05", tenantId: "tenant002" },
+  { id: "unpaid2", tenantName: "Edward Nygma", apartment: "Mountain Ridge Villas", unit: "Villa B", room: "Cozy Villa Retreat", amountDue: 2900, dueDate: "2024-07-10", tenantId: "tenant005" }, // Assume tenant005 exists
 ];
 
 export default function RentPaymentOverviewPage() {
+  const router = useRouter();
+
   const handleAddManualPayment = () => {
-    alert("Navigate to Add Manual Payment page/modal. To be implemented.");
-    // router.push('/dashboard/landlord/payments/new');
+    router.push('/dashboard/landlord/payments/new');
   };
 
   const handleSendReminders = () => {
@@ -185,7 +187,7 @@ export default function RentPaymentOverviewPage() {
                         <TableCell>{payment.dueDate}</TableCell>
                         <TableCell className="text-right">
                           <Button variant="ghost" size="sm" asChild>
-                            <Link href={`/dashboard/landlord/tenants/${payment.id}`}>View Tenant</Link>
+                            <Link href={`/dashboard/landlord/tenants/${payment.tenantId}`}>View Tenant</Link>
                           </Button>
                         </TableCell>
                       </TableRow>

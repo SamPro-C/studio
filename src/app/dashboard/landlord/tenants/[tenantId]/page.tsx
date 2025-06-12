@@ -153,7 +153,10 @@ export default function TenantProfilePage() {
       // router.push('/dashboard/landlord/tenants');
     }
   };
-  const handleAddManualPayment = () => alert(`Add manual payment for ${tenant?.fullName}. To be implemented.`);
+  const handleAddManualPayment = () => {
+    // Navigate to the Add Manual Payment page, potentially pre-filling tenantId
+    router.push(`/dashboard/landlord/payments/new?tenantId=${tenantId}`);
+  };
   const handleSendNotification = () => alert(`Send notification to ${tenant?.fullName}. To be implemented.`);
   const handleMarkPayment = (status: string) => alert(`Mark current month's rent as ${status} for ${tenant?.fullName}. To be implemented.`);
   const handleViewLease = () => {
@@ -270,12 +273,12 @@ export default function TenantProfilePage() {
 
         {/* Payment History */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
             <div>
                 <CardTitle>Payment History</CardTitle>
                 <CardDescription>Record of rent payments and statuses.</CardDescription>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                 <Button variant="outline" size="sm" onClick={() => handleMarkPayment('Unpaid')}>Mark Unpaid</Button>
                 <Button variant="outline" size="sm" onClick={() => handleMarkPayment('Paid')}>Mark Paid</Button>
                 <Button size="sm" onClick={handleAddManualPayment}><DollarSign className="mr-2 h-4 w-4" />Add Manual Payment</Button>
@@ -283,40 +286,42 @@ export default function TenantProfilePage() {
           </CardHeader>
           <CardContent>
             {tenant.paymentHistory.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Month/Year</TableHead>
-                    <TableHead>Amount Due</TableHead>
-                    <TableHead>Amount Paid</TableHead>
-                    <TableHead>Payment Date</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead>Transaction ID</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {tenant.paymentHistory.map((payment) => (
-                    <TableRow key={payment.id}>
-                      <TableCell>{payment.monthYear}</TableCell>
-                      <TableCell>${payment.amountDue.toLocaleString()}</TableCell>
-                      <TableCell>${payment.amountPaid.toLocaleString()}</TableCell>
-                      <TableCell>{payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString() : 'N/A'}</TableCell>
-                      <TableCell>{payment.paymentMethod || 'N/A'}</TableCell>
-                      <TableCell>{payment.transactionId || 'N/A'}</TableCell>
-                      <TableCell>
-                        <Badge variant={
-                            payment.status === 'Paid' ? 'default' 
-                            : payment.status === 'Unpaid' ? 'destructive' 
-                            : 'secondary' // For Partial
-                        }>
-                          {payment.status}
-                        </Badge>
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Month/Year</TableHead>
+                      <TableHead>Amount Due</TableHead>
+                      <TableHead>Amount Paid</TableHead>
+                      <TableHead>Payment Date</TableHead>
+                      <TableHead>Method</TableHead>
+                      <TableHead>Transaction ID</TableHead>
+                      <TableHead>Status</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {tenant.paymentHistory.map((payment) => (
+                      <TableRow key={payment.id}>
+                        <TableCell>{payment.monthYear}</TableCell>
+                        <TableCell>${payment.amountDue.toLocaleString()}</TableCell>
+                        <TableCell>${payment.amountPaid.toLocaleString()}</TableCell>
+                        <TableCell>{payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString() : 'N/A'}</TableCell>
+                        <TableCell>{payment.paymentMethod || 'N/A'}</TableCell>
+                        <TableCell>{payment.transactionId || 'N/A'}</TableCell>
+                        <TableCell>
+                          <Badge variant={
+                              payment.status === 'Paid' ? 'default' 
+                              : payment.status === 'Unpaid' ? 'destructive' 
+                              : 'secondary' // For Partial
+                          }>
+                            {payment.status}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             ) : (
               <p className="text-muted-foreground text-center py-4">No payment history found.</p>
             )}
@@ -331,45 +336,47 @@ export default function TenantProfilePage() {
           </CardHeader>
           <CardContent>
             {tenant.serviceRequestHistory.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Request ID</TableHead>
-                    <TableHead>Date Submitted</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Worker Assigned</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {tenant.serviceRequestHistory.map((request) => (
-                    <TableRow key={request.id}>
-                      <TableCell>{request.requestId}</TableCell>
-                      <TableCell>{new Date(request.dateSubmitted).toLocaleDateString()}</TableCell>
-                      <TableCell className="max-w-xs truncate">{request.description}</TableCell>
-                      <TableCell>{request.workerAssigned || 'N/A'}</TableCell>
-                      <TableCell>
-                        <Badge 
-                            variant={
-                                request.status === 'Completed' || request.status === 'Resolved' ? 'default'
-                                : request.status === 'Pending' ? 'secondary'
-                                : request.status === 'Canceled' ? 'destructive'
-                                : 'outline' // For In Progress or other
-                            }
-                        >
-                            {request.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="ghost" size="sm" onClick={() => handleViewServiceRequestDetails(request.requestId)}>
-                            View Details
-                        </Button>
-                      </TableCell>
+               <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Request ID</TableHead>
+                      <TableHead>Date Submitted</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Worker Assigned</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {tenant.serviceRequestHistory.map((request) => (
+                      <TableRow key={request.id}>
+                        <TableCell>{request.requestId}</TableCell>
+                        <TableCell>{new Date(request.dateSubmitted).toLocaleDateString()}</TableCell>
+                        <TableCell className="max-w-xs truncate">{request.description}</TableCell>
+                        <TableCell>{request.workerAssigned || 'N/A'}</TableCell>
+                        <TableCell>
+                          <Badge 
+                              variant={
+                                  request.status === 'Completed' || request.status === 'Resolved' ? 'default'
+                                  : request.status === 'Pending' ? 'secondary'
+                                  : request.status === 'Canceled' ? 'destructive'
+                                  : 'outline' // For In Progress or other
+                              }
+                          >
+                              {request.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm" onClick={() => handleViewServiceRequestDetails(request.requestId)}>
+                              View Details
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             ) : (
               <p className="text-muted-foreground text-center py-4">No service request history found.</p>
             )}

@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Users, Search, MoreHorizontal, Eye, Edit, UserX, UserCheck, KeyRound, Trash2, Filter } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Label } from '@/components/ui/label';
 
 interface Tenant {
   id: string;
@@ -24,13 +25,14 @@ interface Tenant {
   unit: string;
   room: string;
   landlordName: string;
-  status: 'Active' | 'Inactive' | 'Evicted';
+  status: 'Active' | 'Inactive' | 'Evicted' | 'PendingApproval';
 }
 
 const dummyTenants: Tenant[] = [
   { id: "tenantA", name: "Tenant Alpha", nationalId: "12345670", email: "alpha@tenant.com", phone: "0712345020", apartment: "Greenwood Heights", unit: "A-101", room: "Main", landlordName: "John Landlord", status: "Active" },
   { id: "tenantB", name: "Tenant Beta", nationalId: "12345671", email: "beta@tenant.com", phone: "0712345021", apartment: "Oceanview Towers", unit: "C-505", room: "Penthouse", landlordName: "Jane Proprietor", status: "Active" },
   { id: "tenantC", name: "Tenant Gamma", nationalId: "12345672", email: "gamma@tenant.com", phone: "0712345022", apartment: "Greenwood Heights", unit: "B-201", room: "Studio", landlordName: "John Landlord", status: "Inactive" },
+  { id: "tenantD", name: "Tenant Delta", nationalId: "12345673", email: "delta@tenant.com", phone: "0712345023", apartment: "Mountain Ridge", unit: "Villa X", room: "Any", landlordName: "Peter Estates", status: "PendingApproval" },
 ];
 
 export default function ManageTenantsPage() {
@@ -44,6 +46,7 @@ export default function ManageTenantsPage() {
     if (status === 'Active') return 'default';
     if (status === 'Inactive') return 'secondary';
     if (status === 'Evicted') return 'destructive';
+    if (status === 'PendingApproval') return 'outline';
     return 'outline';
   };
 
@@ -132,15 +135,17 @@ export default function ManageTenantsPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleAction("View Profile", tenant.name)}>
-                                <Eye className="mr-2 h-4 w-4" /> View Profile
+                              <DropdownMenuItem asChild>
+                                <Link href={`/dashboard/admin/user-management/tenants/${tenant.id}`}>
+                                  <Eye className="mr-2 h-4 w-4" /> View Profile
+                                </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleAction("Edit Details", tenant.name)}>
                                 <Edit className="mr-2 h-4 w-4" /> Edit Details
                               </DropdownMenuItem>
-                               <DropdownMenuItem onClick={() => handleAction(tenant.status === 'Active' ? "Deactivate Account" : "Activate Account", tenant.name)}>
+                               <DropdownMenuItem onClick={() => handleAction(tenant.status === 'Active' ? "Deactivate Account" : (tenant.status === 'PendingApproval' ? "Approve Registration" : "Activate Account"), tenant.name)}>
                                 {tenant.status === 'Active' ? <UserX className="mr-2 h-4 w-4" /> : <UserCheck className="mr-2 h-4 w-4" />}
-                                {tenant.status === 'Active' ? "Deactivate" : "Activate"}
+                                {tenant.status === 'Active' ? "Deactivate" : (tenant.status === 'PendingApproval' ? "Approve" : "Activate")}
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleAction("Reset Password", tenant.name)}>
                                 <KeyRound className="mr-2 h-4 w-4" /> Reset Password
@@ -169,3 +174,4 @@ export default function ManageTenantsPage() {
     </div>
   );
 }
+

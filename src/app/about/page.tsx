@@ -1,100 +1,111 @@
 
 import PageHeader from '@/components/shared/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Target, Eye, Zap, ShieldCheck, Handshake, Lightbulb } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import Image from 'next/image';
+import { Lightbulb, Users, Film, Cpu, TrendingUp, ArrowRight, Sparkles } from 'lucide-react';
 
 export default function AboutUsPage() {
+  const whatWeDoItems = [
+    {
+      icon: Film,
+      title: 'Storytelling That Sticks',
+      description: "We don't just create content; we forge connections. Videos that captivate, graphics that pop, and words that resonate – we make sure your brand's voice is unforgettable.",
+    },
+    {
+      icon: Cpu,
+      title: 'Tech That Transforms',
+      description: 'From sleek, high-performing websites and e-commerce platforms to custom software solutions that streamline your world, we build the digital backbone your business deserves.',
+    },
+    {
+      icon: TrendingUp,
+      title: "Growth That's Guaranteed",
+      description: "We cut through the noise, putting your brand directly in front of the right audience. Our digital marketing strategies aren't just effective; they're designed for measurable, scalable growth.",
+    },
+  ];
+
   return (
-    <div className="space-y-12">
+    <div className="space-y-16">
       <PageHeader
         title="About Sampro Media"
-        subtitle="Your Partner in Digital Excellence"
-        icon={Users}
+        subtitle="Your Vision. Our Digital Power."
+        icon={Lightbulb}
       />
 
-      <section className="grid md:grid-cols-2 gap-8 items-center">
+      <section className="text-center">
+        <p className="text-xl text-foreground/80 max-w-3xl mx-auto">
+          Forget the digital maze. At Sampro Media, we're not just navigating the future; we're building it, right alongside you. We're a powerhouse of creativity and tech innovation, fiercely passionate about transforming businesses like yours into digital success stories.
+        </p>
+      </section>
+
+      <section className="grid md:grid-cols-2 gap-12 items-center">
         <div>
-          <h2 className="font-headline text-3xl font-bold mb-4 text-primary">Who We Are</h2>
-          <p className="text-lg text-foreground/80 mb-4">
-            Sampro Media is a dynamic and innovative company specializing in a comprehensive suite of media and software solutions. We are passionate about helping businesses thrive in the digital landscape by crafting compelling narratives, building robust technology, and delivering measurable results.
-          </p>
+          <h2 className="font-headline text-3xl font-bold mb-4 text-primary flex items-center">
+            <Users className="h-8 w-8 mr-3 text-primary/80" />
+            Who We Are
+          </h2>
           <p className="text-lg text-foreground/80">
-            Our team of creative professionals and technical experts works collaboratively to understand your unique challenges and goals, transforming your vision into reality.
+            We're the vibrant minds and skilled hands behind your next big breakthrough. Our team is a unique fusion of artistic visionaries and technical wizards, all united by a singular mission: to catapult your brand forward. We don't just offer services; we craft complete digital ecosystems, where every narrative is compelling and every piece of technology is robust.
           </p>
         </div>
-        <div className="rounded-lg overflow-hidden shadow-lg">
+        <div className="rounded-lg overflow-hidden shadow-xl">
           <Image
             src="https://placehold.co/600x400.png"
-            alt="Sampro Media Team or Office"
+            alt="Sampro Media Team Collaboration"
             width={600}
             height={400}
             className="object-cover w-full h-auto"
-            data-ai-hint="team office"
+            data-ai-hint="team collaboration"
           />
         </div>
       </section>
 
-      <section>
-        <h2 className="font-headline text-3xl font-bold text-center mb-8 text-primary">Our Core Principles</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardHeader className="items-center text-center">
-              <Target className="h-12 w-12 text-primary mb-3" />
-              <CardTitle className="font-headline text-xl">Our Mission</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-center text-foreground/80">
-                To empower businesses with cutting-edge media and software solutions that drive growth, enhance brand presence, and create lasting impact.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardHeader className="items-center text-center">
-              <Eye className="h-12 w-12 text-primary mb-3" />
-              <CardTitle className="font-headline text-xl">Our Vision</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-center text-foreground/80">
-                To be a leading force in digital innovation, recognized for our creativity, technical excellence, and unwavering commitment to client success.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardHeader className="items-center text-center">
-              <Zap className="h-12 w-12 text-primary mb-3" />
-              <CardTitle className="font-headline text-xl">Our Approach</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-center text-foreground/80">
-                We combine strategic thinking with creative execution and technical expertise, ensuring every project is tailored to meet specific objectives and deliver outstanding results.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+      <section className="text-center">
+        <h2 className="font-headline text-3xl font-bold mb-4 text-primary flex items-center justify-center">
+          <Sparkles className="h-8 w-8 mr-3 text-primary/80" />
+          Our Secret Sauce
+        </h2>
+        <p className="text-lg text-foreground/80 max-w-3xl mx-auto">
+          What makes us different? It's our relentless focus on your success. We dive deep into your challenges, uncover your hidden potential, and then—together—we unleash it. We don't just build; we strategize, innovate, and execute with precision. From igniting compelling narratives that grab attention to engineering custom software that drives efficiency, we're obsessed with delivering tangible, game-changing results.
+        </p>
       </section>
 
       <section>
-        <h2 className="font-headline text-3xl font-bold text-center mb-8 text-primary">Why Partner With Us?</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            { icon: Lightbulb, title: 'Innovative Solutions', description: 'We stay ahead of the curve, leveraging the latest technologies and trends to deliver forward-thinking solutions.' },
-            { icon: ShieldCheck, title: 'Quality & Reliability', description: 'Our commitment to excellence ensures high-quality deliverables and dependable service you can trust.' },
-            { icon: Handshake, title: 'Client-Centric Approach', description: 'We prioritize your needs, fostering collaborative partnerships and ensuring your vision is at the heart of everything we do.' },
-            { icon: Users, title: 'Experienced Team', description: 'Our diverse team of experts brings a wealth of knowledge and experience to every project.' },
-            { icon: Target, title: 'Results-Driven', description: 'We focus on delivering measurable outcomes that contribute to your business success and growth.' },
-            { icon: Zap, title: 'Comprehensive Services', description: 'From concept to completion, we offer a full spectrum of media and software services under one roof.' },
-          ].map((item, index) => (
-            <Card key={index} className="bg-card border-border/70 shadow-md">
-              <CardContent className="pt-6">
-                <div className="flex items-center mb-3">
-                  <item.icon className="h-7 w-7 text-primary mr-3" />
-                  <h3 className="font-headline text-lg font-semibold">{item.title}</h3>
-                </div>
-                <p className="text-sm text-foreground/80">{item.description}</p>
+        <h2 className="font-headline text-3xl font-bold text-center mb-6 text-primary">What We Do</h2>
+        <p className="text-lg text-foreground/80 max-w-3xl mx-auto text-center mb-10">
+          Think of us as your comprehensive digital arsenal. We've got the tools and the talent to conquer any digital frontier:
+        </p>
+        <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
+          {whatWeDoItems.map((item, index) => (
+            <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+              <CardHeader className="items-center text-center">
+                <item.icon className="h-12 w-12 text-primary mb-3" />
+                <CardTitle className="font-headline text-xl">{item.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <p className="text-sm text-center text-foreground/80">
+                  {item.description}
+                </p>
               </CardContent>
             </Card>
           ))}
+        </div>
+      </section>
+
+      <section className="text-center py-12 bg-card rounded-lg shadow-2xl my-16">
+        <div className="container mx-auto px-4">
+          <h2 className="font-headline text-3xl md:text-4xl font-bold mb-6 text-primary">
+            Ready to Stop Dreaming and Start Dominating?
+          </h2>
+          <p className="text-xl text-foreground/80 max-w-2xl mx-auto mb-10">
+            Let's connect. Your remarkable digital journey starts now.
+          </p>
+          <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8 py-6">
+            <Link href="/contact">
+              Connect With Us <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+          </Button>
         </div>
       </section>
     </div>

@@ -5,74 +5,74 @@
 
 @layer base {
   :root {
-    --background: 220 30% 96%; /* Light Cool Gray */
-    --foreground: 220 25% 25%; /* Deep Dark Blue-Gray */
+    --background: 220 40% 97%; /* Very Light Cool Gray */
+    --foreground: 215 30% 25%; /* Dark Grayish Blue */
     --card: 0 0% 100%; /* White */
-    --card-foreground: 220 25% 25%; /* Deep Dark Blue-Gray */
+    --card-foreground: 215 30% 25%; /* Dark Grayish Blue */
     --popover: 0 0% 100%; /* White */
-    --popover-foreground: 220 25% 25%; /* Deep Dark Blue-Gray */
-    --primary: 175 70% 40%; /* Vibrant Teal */
+    --popover-foreground: 215 30% 25%; /* Dark Grayish Blue */
+    --primary: 205 70% 45%; /* Strong Vibrant Blue */
     --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 220 20% 90%; /* Medium Cool Gray */
-    --secondary-foreground: 220 25% 25%; /* Deep Dark Blue-Gray */
-    --muted: 220 20% 85%; /* Soft Cool Gray */
-    --muted-foreground: 220 20% 55%; /* Medium-Dark Cool Gray */
-    --accent: 20 90% 60%; /* Energetic Coral/Orange */
-    --accent-foreground: 20 90% 10%; /* Very Dark (for contrast on accent) */
+    --secondary: 220 30% 92%; /* Light Cool Gray */
+    --secondary-foreground: 215 30% 25%; /* Dark Grayish Blue */
+    --muted: 220 30% 88%; /* Muted Cool Gray */
+    --muted-foreground: 215 25% 55%; /* Medium-Dark Cool Gray */
+    --accent: 210 60% 75%; /* Light, Slightly Desaturated Blue */
+    --accent-foreground: 210 30% 20%; /* Dark Blue for contrast on accent */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 20% 88%; /* Light Cool Gray Border */
-    --input: 220 20% 88%; /* Light Cool Gray Input Border */
-    --ring: 175 70% 40%; /* Vibrant Teal for rings */
-    --chart-1: 175 70% 40%; /* Teal (Primary) */
-    --chart-2: 20 90% 60%; /* Coral (Accent) */
-    --chart-3: 200 70% 50%; /* Modern Blue */
-    --chart-4: 280 60% 65%; /* Modern Purple */
-    --chart-5: 50 80% 60%; /* Modern Yellow/Gold */
+    --border: 220 25% 85%; /* Light Cool Gray Border */
+    --input: 220 25% 85%; /* Light Cool Gray Input Border */
+    --ring: 205 70% 45%; /* Primary Blue for rings */
+    --chart-1: 205 70% 45%; /* Primary Blue */
+    --chart-2: 210 60% 75%; /* Accent Light Blue */
+    --chart-3: 190 60% 50%; /* Complementary Teal/Blue */
+    --chart-4: 220 10% 60%; /* Silver/Gray */
+    --chart-5: 230 50% 60%; /* Another Shade of Blue */
     --radius: 0.5rem;
-    --sidebar-background: 220 30% 98%; /* Very Light Cool Gray */
-    --sidebar-foreground: 220 25% 30%; /* Dark Blue-Gray for sidebar text */
-    --sidebar-primary: 175 70% 40%; /* Vibrant Teal */
+    --sidebar-background: 220 35% 98%; /* Lighter Cool Gray for Sidebar */
+    --sidebar-foreground: 215 30% 30%; /* Darker Grayish Blue for sidebar text */
+    --sidebar-primary: 205 70% 45%; /* Primary Blue */
     --sidebar-primary-foreground: 0 0% 100%; /* White */
-    --sidebar-accent: 220 30% 92%; /* Lighter Cool Gray for hover */
-    --sidebar-accent-foreground: 175 70% 35%; /* Darker Teal for accent text */
-    --sidebar-border: 220 20% 88%; /* Light Cool Gray Border */
-    --sidebar-ring: 175 70% 40%; /* Vibrant Teal */
+    --sidebar-accent: 220 30% 94%; /* Very Light Cool Gray for hover */
+    --sidebar-accent-foreground: 205 70% 40%; /* Darker Primary Blue for accent text */
+    --sidebar-border: 220 25% 85%; /* Light Cool Gray Border */
+    --sidebar-ring: 205 70% 45%; /* Primary Blue */
   }
 
   .dark {
-    --background: 220 15% 10%; /* Dark Blue-Gray */
-    --foreground: 220 20% 90%; /* Light Cool Gray text */
-    --card: 220 15% 15%; /* Slightly Lighter Dark Blue-Gray */
-    --card-foreground: 220 20% 90%; /* Light Cool Gray text */
-    --popover: 220 15% 15%; /* Slightly Lighter Dark Blue-Gray */
-    --popover-foreground: 220 20% 90%; /* Light Cool Gray text */
-    --primary: 175 60% 50%; /* Brighter Teal for Dark Mode */
+    --background: 220 20% 12%; /* Very Dark Blue-Gray */
+    --foreground: 210 30% 90%; /* Light Grayish Blue text */
+    --card: 220 20% 16%; /* Slightly Lighter Dark Blue-Gray */
+    --card-foreground: 210 30% 90%; /* Light Grayish Blue text */
+    --popover: 220 20% 16%; /* Slightly Lighter Dark Blue-Gray */
+    --popover-foreground: 210 30% 90%; /* Light Grayish Blue text */
+    --primary: 205 65% 55%; /* Brighter Blue for Dark Mode */
     --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 220 15% 20%; /* Darker Blue-Gray */
-    --secondary-foreground: 220 20% 90%; /* Light Cool Gray text */
-    --muted: 220 15% 25%; /* Muted Dark Blue-Gray */
-    --muted-foreground: 220 20% 65%; /* Medium Light Cool Gray */
-    --accent: 20 80% 65%; /* Brighter Coral for Dark Mode */
-    --accent-foreground: 20 90% 10%; /* Very Dark (for contrast on accent) */
+    --secondary: 220 20% 20%; /* Darker Blue-Gray */
+    --secondary-foreground: 210 30% 90%; /* Light Grayish Blue text */
+    --muted: 220 20% 25%; /* Muted Dark Blue-Gray */
+    --muted-foreground: 210 25% 70%; /* Medium Light Cool Gray */
+    --accent: 210 50% 65%; /* Brighter Light Blue for Dark Mode */
+    --accent-foreground: 210 30% 15%; /* Very Dark Blue for contrast on accent */
     --destructive: 0 70% 50%; /* Adjusted destructive for dark */
     --destructive-foreground: 0 0% 98%;
-    --border: 220 15% 25%; /* Muted Dark Blue-Gray Border */
-    --input: 220 15% 25%; /* Muted Dark Blue-Gray Input Border */
-    --ring: 175 60% 50%; /* Brighter Teal for rings */
-    --chart-1: 175 60% 50%; /* Brighter Teal */
-    --chart-2: 20 80% 65%; /* Brighter Coral */
-    --chart-3: 200 60% 60%; /* Lighter Modern Blue */
-    --chart-4: 280 50% 70%; /* Lighter Modern Purple */
-    --chart-5: 50 70% 70%; /* Lighter Modern Yellow/Gold */
-    --sidebar-background: 220 15% 12%; /* Darker Blue-Gray for Sidebar */
-    --sidebar-foreground: 220 20% 85%; /* Lighter Cool Gray for sidebar text */
-    --sidebar-primary: 175 60% 50%; /* Brighter Teal */
+    --border: 220 20% 30%; /* Muted Dark Blue-Gray Border */
+    --input: 220 20% 30%; /* Muted Dark Blue-Gray Input Border */
+    --ring: 205 65% 55%; /* Brighter Blue for rings */
+    --chart-1: 205 65% 55%; /* Brighter Primary Blue */
+    --chart-2: 210 50% 65%; /* Brighter Accent Light Blue */
+    --chart-3: 190 50% 60%; /* Lighter Complementary Teal/Blue */
+    --chart-4: 220 10% 70%; /* Lighter Silver/Gray */
+    --chart-5: 230 40% 70%; /* Lighter Shade of Blue */
+    --sidebar-background: 220 18% 10%; /* Darker Blue-Gray for Sidebar */
+    --sidebar-foreground: 210 30% 85%; /* Lighter Grayish Blue for sidebar text */
+    --sidebar-primary: 205 65% 55%; /* Brighter Primary Blue */
     --sidebar-primary-foreground: 0 0% 100%; /* White */
-    --sidebar-accent: 220 15% 18%; /* Slightly Lighter Dark Blue-Gray for hover */
-    --sidebar-accent-foreground: 175 60% 55%; /* Lighter Teal for accent text */
-    --sidebar-border: 220 15% 25%; /* Muted Dark Blue-Gray Border */
-    --sidebar-ring: 175 60% 50%; /* Brighter Teal */
+    --sidebar-accent: 220 18% 15%; /* Slightly Lighter Dark Blue-Gray for hover */
+    --sidebar-accent-foreground: 205 65% 60%; /* Lighter Primary Blue for accent text */
+    --sidebar-border: 220 20% 30%; /* Muted Dark Blue-Gray Border */
+    --sidebar-ring: 205 65% 55%; /* Brighter Primary Blue */
   }
 }
 

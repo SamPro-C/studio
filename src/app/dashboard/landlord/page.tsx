@@ -74,6 +74,7 @@ const quickActions: QuickAction[] = [
   { label: "Register New Tenant", href: "/dashboard/landlord/tenants/new", icon: UserPlus },
   { label: "Register New Worker", href: "/dashboard/landlord/workers/new", icon: Briefcase }, 
   { label: "View Service Requests", href: "/dashboard/landlord/service-requests", icon: ListChecks },
+  { label: "View Payments & Financials", href: "/dashboard/landlord/payments", icon: DollarSign },
   { label: "Generate Report", href: "/dashboard/landlord/reports", icon: FileText },
 ];
 
@@ -211,4 +212,3 @@ export default function LandlordDashboardPage() {
     
 
     
-

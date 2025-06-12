@@ -1,4 +1,3 @@
-
 // src/app/dashboard/landlord/notifications/page.tsx
 "use client";
 
@@ -64,7 +63,7 @@ export default function NotificationsHubPage() {
                 <CardTitle className="flex items-center">
                     <Bell className="mr-2 h-6 w-6 text-primary" />
                     Notification History
-                </Title>
+                </CardTitle>
                 <CardDescription>
                     View past notifications sent to tenants and workers.
                 </CardDescription>
@@ -89,4 +88,3 @@ export default function NotificationsHubPage() {
     </div>
   );
 }
-

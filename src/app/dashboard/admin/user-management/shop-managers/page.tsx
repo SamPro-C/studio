@@ -25,8 +25,8 @@ interface ShopManager {
 }
 
 const dummyShopManagers: ShopManager[] = [
-  { id: "shopmgr1", name: "Manager Alpha", email: "alpha.mgr@shop.com", phone: "0712345040", shopName: "Alpha Goods", status: "Active" },
-  { id: "shopmgr2", name: "Manager Beta", email: "beta.mgr@shop.com", phone: "0712345041", shopName: "Beta Services", status: "PendingApproval" },
+  { id: "shopmgr1", name: "Manager Alpha", email: "alpha.mgr@shop.com", phone: "0712345040", shopName: "Alpha Goods & Services", status: "Active" },
+  { id: "shopmgr2", name: "Manager Beta", email: "beta.mgr@shop.com", phone: "0712345041", shopName: "Beta Fresh Produce", status: "PendingApproval" },
   { id: "shopmgr3", name: "Manager Gamma", email: "gamma.mgr@shop.com", phone: "0712345042", status: "Inactive" },
 ];
 
@@ -124,15 +124,17 @@ export default function ManageShopManagersPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleAction("View Profile", manager.name)}>
-                                <Eye className="mr-2 h-4 w-4" /> View Profile
+                              <DropdownMenuItem asChild>
+                                <Link href={`/dashboard/admin/user-management/shop-managers/${manager.id}`}>
+                                    <Eye className="mr-2 h-4 w-4" /> View Profile
+                                </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleAction("Edit Details", manager.name)}>
                                 <Edit className="mr-2 h-4 w-4" /> Edit Details
                               </DropdownMenuItem>
-                               <DropdownMenuItem onClick={() => handleAction(manager.status === 'Active' ? "Deactivate Account" : "Activate Account", manager.name)}>
+                               <DropdownMenuItem onClick={() => handleAction(manager.status === 'Active' ? "Deactivate Account" : (manager.status === 'PendingApproval' ? "Approve Registration" : "Activate Account"), manager.name)}>
                                 {manager.status === 'Active' ? <UserX className="mr-2 h-4 w-4" /> : <UserCheck className="mr-2 h-4 w-4" />}
-                                {manager.status === 'Active' ? "Deactivate" : "Activate"}
+                                {manager.status === 'Active' ? "Deactivate" : (manager.status === 'PendingApproval' ? "Approve" : "Activate")}
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleAction("Reset Password", manager.name)}>
                                 <KeyRound className="mr-2 h-4 w-4" /> Reset Password

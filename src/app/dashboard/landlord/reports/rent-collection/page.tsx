@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, DollarSign, PieChart, Filter, CalendarRange, FileDown } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 
 interface RentCollectionEntry {
   id: string;
@@ -35,6 +37,26 @@ const dummyRentCollectionData: RentCollectionEntry[] = [
 const totalDue = dummyRentCollectionData.reduce((sum, item) => sum + item.amountDue, 0);
 const totalCollected = dummyRentCollectionData.reduce((sum, item) => sum + item.amountPaid, 0);
 const totalOutstanding = totalDue - totalCollected;
+
+const monthlyChartData = [
+  { month: "Jan", collected: 6000, outstanding: 1000 },
+  { month: "Feb", collected: 5500, outstanding: 1500 },
+  { month: "Mar", collected: 7000, outstanding: 500 },
+  { month: "Apr", collected: 6200, outstanding: 800 },
+  { month: "May", collected: 6800, outstanding: 1200 },
+  { month: "Jun", collected: 7500, outstanding: 300 },
+];
+
+const chartConfig = {
+  collected: {
+    label: "Collected (KES)",
+    color: "hsl(var(--chart-2))",
+  },
+  outstanding: {
+    label: "Outstanding (KES)",
+    color: "hsl(var(--chart-5))",
+  },
+} satisfies ChartConfig;
 
 export default function RentCollectionSummaryPage() {
   
@@ -128,18 +150,35 @@ export default function RentCollectionSummaryPage() {
           </Card>
         </div>
 
-        {/* Chart Placeholder */}
+        {/* Chart Section */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center"><PieChart className="mr-2 h-5 w-5 text-primary/80"/> Collection Trends</CardTitle>
-            <CardDescription>Visual representation of rent collection over time (e.g., by month).</CardDescription>
+            <CardTitle className="flex items-center"><PieChart className="mr-2 h-5 w-5 text-primary/80"/> Monthly Collection Trends</CardTitle>
+            <CardDescription>Visual representation of collected vs. outstanding rent over recent months.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-              <p className="text-muted-foreground text-center p-4">
-                A chart (e.g., Bar chart showing Paid vs. Unpaid vs. Partial amounts per month/property) will be displayed here.
-              </p>
-            </div>
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyChartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+                  <YAxis 
+                    tickFormatter={(value) => `KES ${value/1000}k`} 
+                    tickLine={false} 
+                    axisLine={false} 
+                    tickMargin={8}
+                    width={80}
+                  />
+                  <ChartTooltip 
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="dot" />} 
+                  />
+                  <RechartsLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="collected" fill="var(--color-collected)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="outstanding" fill="var(--color-outstanding)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
 

@@ -1,7 +1,9 @@
+
 import { mediaProjects, type MediaProject } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import PageHeader from '@/components/shared/PageHeader';
 import { Tv, Film } from 'lucide-react';
 
@@ -26,8 +28,10 @@ function MediaProjectCard({ project }: { project: MediaProject }) {
         <p className="text-sm text-foreground/80">{project.description}</p>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" size="sm">
-          View Details
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/media-portfolio/${project.id}`}>
+            View Details
+          </Link>
         </Button>
       </CardFooter>
     </Card>
@@ -50,3 +54,4 @@ export default function MediaPortfolioPage() {
     </div>
   );
 }
+

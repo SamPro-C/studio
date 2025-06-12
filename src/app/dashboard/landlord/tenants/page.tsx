@@ -3,6 +3,7 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -20,10 +21,10 @@ const tenants = [
 ];
 
 export default function ManageTenantsPage() {
+  const router = useRouter(); // Initialize useRouter
 
-  const handleViewProfile = (tenantId: string, tenantName: string) => {
-    alert(`View profile for: ${tenantName} (ID: ${tenantId}). Functionality to be implemented.`);
-    // router.push(`/dashboard/landlord/tenants/${tenantId}`); // Future: navigate to tenant profile
+  const handleViewProfile = (tenantId: string) => {
+    router.push(`/dashboard/landlord/tenants/${tenantId}`);
   };
 
   const handleEditTenant = (tenantId: string, tenantName: string) => {
@@ -143,7 +144,7 @@ export default function ManageTenantsPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleViewProfile(tenant.id, tenant.name)}>
+                              <DropdownMenuItem onClick={() => handleViewProfile(tenant.id)}>
                                 <Eye className="mr-2 h-4 w-4" /> View Profile
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleEditTenant(tenant.id, tenant.name)}>
@@ -186,6 +187,5 @@ export default function ManageTenantsPage() {
     </div>
   );
 }
-
     
     

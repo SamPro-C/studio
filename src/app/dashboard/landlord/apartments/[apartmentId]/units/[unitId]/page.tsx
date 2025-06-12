@@ -3,7 +3,7 @@
 "use client";
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ArrowLeft, Home, UserCircle, Edit, PlusCircle, Trash2, DollarSign, UserPlus, BedDouble, Tv, Utensils, DoorOpen } from 'lucide-react';
@@ -96,7 +96,7 @@ const getRoomIcon = (type: string) => {
         case 'living': return <Tv className="mr-2 h-4 w-4 text-primary/70" />;
         case 'kitchen': return <Utensils className="mr-2 h-4 w-4 text-primary/70" />;
         case 'studio': return <Home className="mr-2 h-4 w-4 text-primary/70" />;
-        case 'penthouse': return <Home className="mr-2 h-4 w-4 text-primary/70" />; // Could be more specific
+        case 'penthouse': return <Home className="mr-2 h-4 w-4 text-primary/70" />; 
         case 'villa': return <Home className="mr-2 h-4 w-4 text-primary/70" />;
         default: return <DoorOpen className="mr-2 h-4 w-4 text-primary/70" />;
     }
@@ -104,12 +104,64 @@ const getRoomIcon = (type: string) => {
 
 export default function UnitDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const apartmentId = params.apartmentId as string;
   const unitId = params.unitId as string;
 
   const apartmentUnits = dummyApartmentsUnitsData[apartmentId as keyof typeof dummyApartmentsUnitsData];
   const unit = apartmentUnits?.units.find(u => u.id === unitId);
   const apartmentName = apartmentUnits?.name || "Apartment";
+
+  const handleEditUnit = () => {
+    alert(`Edit unit: Unit ${unit?.name} in ${apartmentName}. Functionality to be implemented.`);
+    console.log(`Attempting to edit unit: ${unitId} in apartment: ${apartmentId}`);
+  };
+
+  const handleAssignTenant = () => {
+    alert(`Assign tenant to Unit ${unit?.name}. Functionality to be implemented.`);
+    console.log(`Attempting to assign tenant to unit: ${unitId}`);
+    // router.push(`/dashboard/landlord/tenants/new?unitId=${unitId}&apartmentId=${apartmentId}`); // Future: Navigate to tenant registration/assignment page
+  };
+  
+  const handleRemoveTenant = () => {
+    if (confirm(`Are you sure you want to remove tenant ${unit?.tenant?.name} from Unit ${unit?.name}? This will mark the unit as vacant.`)) {
+      alert(`Remove tenant ${unit?.tenant?.name} from Unit ${unit?.name}. Functionality to be implemented.`);
+      console.log(`Attempting to remove tenant from unit: ${unitId}`);
+      // Here, you would call an action to update the tenant and unit status
+    }
+  };
+
+  const handleViewTenantProfile = () => {
+    alert(`View profile for tenant: ${unit?.tenant?.name}. Functionality to be implemented.`);
+    console.log(`Attempting to view tenant profile for: ${unit?.tenant?.id}`);
+    // router.push(`/dashboard/landlord/tenants/${unit?.tenant?.id}`); // Future: Navigate to tenant profile page
+  };
+
+  const handleRecordPayment = () => {
+    alert(`Record payment for Unit ${unit?.name}. Functionality to be implemented.`);
+    console.log(`Attempting to record payment for unit: ${unitId}`);
+     // router.push(`/dashboard/landlord/payments/new?unitId=${unitId}`); // Future: Navigate to manual payment page
+  };
+  
+  const handleAddRoom = () => {
+    alert(`Add room to Unit ${unit?.name}. Functionality to be implemented.`);
+    console.log(`Attempting to add room to unit: ${unitId}`);
+    // router.push(`/dashboard/landlord/apartments/${apartmentId}/units/${unitId}/rooms/new`); // Future: Navigate to add room page
+  };
+
+  const handleEditRoom = (roomId: string, roomName: string) => {
+    alert(`Edit room: ${roomName} (ID: ${roomId}) in Unit ${unit?.name}. Functionality to be implemented.`);
+    console.log(`Attempting to edit room: ${roomId} in unit: ${unitId}`);
+  };
+
+  const handleDeleteRoom = (roomId: string, roomName: string) => {
+    if (confirm(`Are you sure you want to delete room ${roomName} from Unit ${unit?.name}?`)) {
+      alert(`Delete room: ${roomName} (ID: ${roomId}) in Unit ${unit?.name}. Functionality to be implemented.`);
+      console.log(`Attempting to delete room: ${roomId} from unit: ${unitId}`);
+      // Here, you would call an action to delete the room
+    }
+  };
+
 
   if (!unit) {
      return (
@@ -153,7 +205,7 @@ export default function UnitDetailsPage() {
                 </h1>
             </div>
           </div>
-          <Button variant="outline">
+          <Button variant="outline" onClick={handleEditUnit}>
             <Edit className="mr-2 h-4 w-4" /> Edit Unit Details
           </Button>
         </div>
@@ -173,15 +225,15 @@ export default function UnitDetailsPage() {
                   <p><strong>National ID:</strong> {unit.tenant.id}</p>
                   <p><strong>Lease Ends:</strong> {unit.tenant.leaseEnds ? new Date(unit.tenant.leaseEnds).toLocaleDateString() : 'N/A'}</p>
                   <div className="flex gap-2 mt-4 pt-4 border-t">
-                      <Button variant="outline" size="sm">View Tenant Profile</Button>
-                      <Button variant="destructive" size="sm" >Remove Tenant</Button>
+                      <Button variant="outline" size="sm" onClick={handleViewTenantProfile}>View Tenant Profile</Button>
+                      <Button variant="destructive" size="sm" onClick={handleRemoveTenant}>Remove Tenant</Button>
                   </div>
                 </div>
               ) : (
                 <div className="text-center py-8">
                   <UserPlus className="mx-auto h-12 w-12 text-muted-foreground mb-3" />
                   <p className="text-muted-foreground mb-4">This unit is currently vacant.</p>
-                  <Button>
+                  <Button onClick={handleAssignTenant}>
                       <UserPlus className="mr-2 h-4 w-4"/> Assign Tenant
                   </Button>
                 </div>
@@ -205,7 +257,7 @@ export default function UnitDetailsPage() {
                 {unit.tenant && unit.lastPaymentDate && <p><strong>Last Payment:</strong> {new Date(unit.lastPaymentDate).toLocaleDateString()}</p>}
                  {unit.tenant && (
                     <div className="pt-4 border-t mt-4">
-                        <Button size="sm" className="w-full">Record Payment</Button>
+                        <Button size="sm" className="w-full" onClick={handleRecordPayment}>Record Payment</Button>
                     </div>
                  )}
             </CardContent>
@@ -220,7 +272,7 @@ export default function UnitDetailsPage() {
                 <CardTitle>Rooms in Unit {unit.name}</CardTitle>
                 <CardDescription>Manage individual rooms within this unit.</CardDescription>
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleAddRoom}>
                 <PlusCircle className="mr-2 h-4 w-4" /> Add Room
             </Button>
           </CardHeader>
@@ -239,10 +291,10 @@ export default function UnitDetailsPage() {
                         </div>
                     </div>
                     <div className="flex gap-1 sm:gap-2">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={`Edit ${room.name}`}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={`Edit ${room.name}`} onClick={() => handleEditRoom(room.id, room.name)}>
                             <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" aria-label={`Delete ${room.name}`}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" aria-label={`Delete ${room.name}`} onClick={() => handleDeleteRoom(room.id, room.name)}>
                             <Trash2 className="h-4 w-4" />
                         </Button>
                     </div>
@@ -264,4 +316,3 @@ export default function UnitDetailsPage() {
     </div>
   );
 }
-

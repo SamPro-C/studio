@@ -150,13 +150,17 @@ export default function ManageServiceRequestsPage() {
     router.push(`/dashboard/landlord/service-requests/${requestId}`);
   };
 
+  const handleEditRequest = (requestId: string) => {
+    router.push(`/dashboard/landlord/service-requests/${requestId}/edit`);
+  };
+
   const handleAssignWorker = (id: string) => {
-    alert(`Assign worker to Service Request ID: ${id}. Functionality to be implemented.`);
+    alert(`Assign worker to Service Request ID: ${id}. Functionality to be implemented via modal/form.`);
     // Show modal or navigate to assignment page
   };
 
   const handleChangeStatus = (id: string, currentStatus: RequestStatus) => {
-    alert(`Change status for Service Request ID: ${id} (Current: ${currentStatus}). Functionality to be implemented.`);
+    alert(`Change status for Service Request ID: ${id} (Current: ${currentStatus}). Functionality to be implemented via modal/form.`);
     // Show dropdown or modal for status change
   };
 
@@ -279,7 +283,7 @@ export default function ManageServiceRequestsPage() {
                               <DropdownMenuItem onClick={() => handleViewDetails(req.requestId)}>
                                 <Eye className="mr-2 h-4 w-4" /> View Details
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => router.push(`/dashboard/landlord/service-requests/${req.requestId}/edit`)} disabled={req.status === 'Completed' || req.status === 'Canceled'}>
+                              <DropdownMenuItem onClick={() => handleEditRequest(req.requestId)} disabled={req.status === 'Completed' || req.status === 'Canceled'}>
                                 <Edit className="mr-2 h-4 w-4" /> Edit Request
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleAssignWorker(req.id)} disabled={req.status === 'Completed' || req.status === 'Canceled'}>
@@ -305,4 +309,3 @@ export default function ManageServiceRequestsPage() {
     </div>
   );
 }
-

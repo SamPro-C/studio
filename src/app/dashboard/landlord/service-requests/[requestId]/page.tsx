@@ -32,8 +32,8 @@ export default function ServiceRequestDetailsPage() {
 
   const request = dummyServiceRequests.find(req => req.requestId === requestId);
 
-  const handleAssignWorker = () => alert(`Assign worker to SR: ${request?.requestId}. To be implemented.`);
-  const handleUpdateStatus = () => alert(`Update status for SR: ${request?.requestId}. To be implemented.`);
+  const handleAssignWorker = () => alert(`Assign worker to SR: ${request?.requestId}. To be implemented via modal/form.`);
+  const handleUpdateStatus = () => alert(`Update status for SR: ${request?.requestId}. To be implemented via modal/form.`);
   const handleAddNote = () => alert(`Add note to SR: ${request?.requestId}. To be implemented.`);
   const handleUploadMedia = () => alert(`Upload media for SR: ${request?.requestId}. To be implemented.`);
   const handleViewTenantProfile = () => {

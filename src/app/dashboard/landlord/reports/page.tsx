@@ -4,7 +4,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ArrowLeft, BarChart3, FileText, PieChart, DollarSign, Users, Wrench } from 'lucide-react';
 import { Home, CalendarDays, ListChecks, Briefcase } from 'lucide-react';
 
@@ -13,7 +13,8 @@ interface ReportLink {
   description: string;
   icon: React.ElementType;
   actionText: string;
-  onClickAction: () => void; // For now, just alerts
+  href?: string; // Make href optional
+  onClickAction?: () => void; // Keep onClickAction optional
 }
 
 interface ReportCategory {
@@ -27,7 +28,7 @@ const reportCategories: ReportCategory[] = [
     categoryTitle: "Financial Reports",
     categoryIcon: DollarSign,
     reports: [
-      { title: "Rent Collection Summary", description: "Overview of paid, unpaid, and partially paid rents.", icon: PieChart, actionText: "View Summary", onClickAction: () => alert("Rent Collection Summary: To be implemented.") },
+      { title: "Rent Collection Summary", description: "Overview of paid, unpaid, and partially paid rents.", icon: PieChart, actionText: "View Summary", href: "/dashboard/landlord/reports/rent-collection" },
       { title: "Expense Breakdown", description: "Detailed analysis of all recorded expenses by category and property.", icon: FileText, actionText: "View Breakdown", onClickAction: () => alert("Expense Breakdown: To be implemented.") },
       { title: "Profit & Loss Statement", description: "Generate a P&L statement for a selected period.", icon: BarChart3, actionText: "Generate Statement", onClickAction: () => alert("Profit & Loss Statement: To be implemented.") },
     ]
@@ -100,9 +101,15 @@ export default function ReportsAnalyticsPage() {
                     <CardDescription className="text-xs flex-grow">{report.description}</CardDescription>
                   </CardHeader>
                   <CardFooter className="mt-auto pt-0">
-                    <Button variant="outline" size="sm" className="w-full" onClick={report.onClickAction}>
-                      {report.actionText}
-                    </Button>
+                    {report.href ? (
+                         <Button variant="outline" size="sm" className="w-full" asChild>
+                            <Link href={report.href}>{report.actionText}</Link>
+                         </Button>
+                    ) : (
+                        <Button variant="outline" size="sm" className="w-full" onClick={report.onClickAction}>
+                            {report.actionText}
+                        </Button>
+                    )}
                   </CardFooter>
                 </Card>
               ))}

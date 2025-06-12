@@ -4,10 +4,11 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Search, ShoppingCart, Tag, List } from 'lucide-react';
 import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
 
 // Dummy data for placeholders
 const dummyCategories = [
@@ -24,9 +25,17 @@ const dummyFeaturedProducts = [
 ];
 
 export default function ShoppingPlatformPage() {
+  const { toast } = useToast();
   const handleViewCart = () => {
-    alert("View Shopping Cart - To be implemented");
+    toast({ title: "Shopping Cart", description: "Viewing cart - To be implemented." });
     // router.push('/shopping/cart');
+  };
+
+  const handleAddToCart = (productName: string) => {
+    toast({
+      title: "Added to Cart!",
+      description: `${productName} has been added to your shopping cart.`,
+    });
   };
 
   return (
@@ -81,8 +90,9 @@ export default function ShoppingPlatformPage() {
                     <Image 
                         src={category.image} 
                         alt={category.name} 
-                        layout="fill" 
-                        objectFit="cover"
+                        fill
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                        className="object-cover"
                         data-ai-hint={category.aiHint}
                     />
                 </div>
@@ -102,24 +112,27 @@ export default function ShoppingPlatformPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {dummyFeaturedProducts.map(product => (
               <Card key={product.id} className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow">
-                 <div className="relative h-40 sm:h-48">
-                    <Image 
-                        src={product.image} 
-                        alt={product.name} 
-                        layout="fill" 
-                        objectFit="cover"
-                        data-ai-hint={product.aiHint}
-                    />
-                </div>
-                <CardHeader className="p-4">
-                  <CardTitle className="text-md font-medium leading-tight">{product.name}</CardTitle>
-                  <CardDescription className="text-xs">{product.category}</CardDescription>
-                </CardHeader>
-                <CardContent className="p-4 pt-0 flex-grow">
-                  <p className="text-lg font-semibold text-primary">KES {product.price.toLocaleString()}</p>
-                </CardContent>
+                <Link href={`/shopping/products/${product.id}`} className="block">
+                    <div className="relative h-40 sm:h-48">
+                        <Image 
+                            src={product.image} 
+                            alt={product.name} 
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className="object-cover"
+                            data-ai-hint={product.aiHint}
+                        />
+                    </div>
+                    <CardHeader className="p-4">
+                    <CardTitle className="text-md font-medium leading-tight">{product.name}</CardTitle>
+                    <CardDescription className="text-xs">{product.category}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0 flex-grow">
+                    <p className="text-lg font-semibold text-primary">KES {product.price.toLocaleString()}</p>
+                    </CardContent>
+                </Link>
                 <CardFooter className="p-4 pt-0 border-t mt-auto">
-                  <Button className="w-full">Add to Cart</Button>
+                  <Button className="w-full" onClick={() => handleAddToCart(product.name)}>Add to Cart</Button>
                 </CardFooter>
               </Card>
             ))}

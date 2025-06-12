@@ -1,18 +1,53 @@
 
-// src/app/dashboard/shop-manager/reports/inventory/page.tsx
+// /src/app/dashboard/shop-manager/reports/inventory/page.tsx
 "use client";
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, FileText, Filter, FileDown } from 'lucide-react';
+import { ArrowLeft, FileText, Filter, FileDown, PackageSearch, ShoppingBag, BarChart3 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip as ShadTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+
+interface InventoryItem {
+  id: string;
+  name: string;
+  sku: string;
+  category: string;
+  price: number;
+  stock: number;
+  lowStockThreshold: number;
+  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
+}
+
+const dummyInventory: InventoryItem[] = [
+  { id: "prod1", name: "Fresh Milk (1L)", sku: "FM001", category: "Groceries", price: 120, stock: 50, lowStockThreshold: 10, status: "In Stock" },
+  { id: "prod2", name: "Laundry Soap (2kg)", sku: "LS002", category: "Cleaning Supplies", price: 350, stock: 5, lowStockThreshold: 5, status: "Low Stock" },
+  { id: "prod3", name: "20L Water Refill", sku: "WD001", category: "Water Delivery", price: 200, stock: 100, lowStockThreshold: 20, status: "In Stock" },
+  { id: "prod4", name: "Imported Coffee Beans", sku: "CB005", category: "Groceries", price: 800, stock: 0, lowStockThreshold: 3, status: "Out of Stock" },
+];
+
+const lowStockItems = dummyInventory.filter(item => item.status === "Low Stock" || item.status === "Out of Stock");
+
+const stockByCategoryData = [
+    { category: "Groceries", stock: dummyInventory.filter(i => i.category === "Groceries").reduce((sum, item) => sum + item.stock, 0) },
+    { category: "Cleaning", stock: dummyInventory.filter(i => i.category === "Cleaning Supplies").reduce((sum, item) => sum + item.stock, 0) },
+    { category: "Water", stock: dummyInventory.filter(i => i.category === "Water Delivery").reduce((sum, item) => sum + item.stock, 0) },
+];
+
+const chartConfig = {
+  stock: { label: "Total Stock", color: "hsl(var(--chart-1))" },
+} satisfies ChartConfig;
+
 
 export default function ShopInventoryReportsPage() {
   const { toast } = useToast();
-  const handleExport = () => toast({ title: "Exporting Report", description: "Inventory report export initiated (Placeholder)." });
+  const handleExport = (reportType: 'low_stock' | 'full_inventory') => toast({ title: "Exporting Report", description: `${reportType.replace('_', ' ')} report export initiated (Placeholder).` });
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -24,7 +59,7 @@ export default function ShopInventoryReportsPage() {
             </Link>
           </Button>
           <h1 className="font-headline text-2xl sm:text-3xl font-bold text-primary flex items-center">
-            <FileText className="mr-3 h-7 w-7" /> Inventory Reports
+            <PackageSearch className="mr-3 h-7 w-7" /> Inventory Reports
           </h1>
         </div>
         <Card>
@@ -33,25 +68,89 @@ export default function ShopInventoryReportsPage() {
             <CardDescription>Filter inventory data by category, stock level, etc.</CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end">
-            {/* Add filters like category, stock status (low, out) */}
+            <div>
+              <Label htmlFor="categoryFilter">Category</Label>
+              <Select><SelectTrigger id="categoryFilter"><SelectValue placeholder="All Categories"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="groceries">Groceries</SelectItem></SelectContent></Select>
+            </div>
+            <div>
+              <Label htmlFor="stockStatusFilter">Stock Status</Label>
+              <Select><SelectTrigger id="stockStatusFilter"><SelectValue placeholder="All Statuses"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="in_stock">In Stock</SelectItem><SelectItem value="low_stock">Low Stock</SelectItem><SelectItem value="out_of_stock">Out of Stock</SelectItem></SelectContent></Select>
+            </div>
             <Button className="w-full sm:w-auto self-end"><Filter className="mr-2 h-4 w-4"/>Apply Filters</Button>
           </CardContent>
         </Card>
         
         <Card>
-          <CardHeader><CardTitle>Low Stock Items</CardTitle></CardHeader>
-          <CardContent className="h-60 bg-muted rounded-md flex items-center justify-center border border-dashed">
-            <p className="text-muted-foreground">Low Stock Items Table Placeholder</p>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Low Stock / Out of Stock Items</CardTitle>
+             <Button variant="outline" size="sm" onClick={() => handleExport('low_stock')}><FileDown className="mr-2 h-4 w-4" /> Export Low Stock</Button>
+          </CardHeader>
+          <CardContent>
+            {lowStockItems.length > 0 ? (
+              <Table>
+                <TableHeader><TableRow><TableHead>Product Name</TableHead><TableHead>SKU</TableHead><TableHead className="text-right">Current Stock</TableHead><TableHead className="text-right">Threshold</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {lowStockItems.map(item => (
+                    <TableRow key={item.id} className={item.status === 'Out of Stock' ? 'bg-destructive/10' : item.status === 'Low Stock' ? 'bg-amber-500/10' : ''}>
+                      <TableCell>{item.name}</TableCell><TableCell>{item.sku}</TableCell><TableCell className="text-right">{item.stock}</TableCell><TableCell className="text-right">{item.lowStockThreshold}</TableCell><TableCell><Badge variant={item.status === 'Out of Stock' ? 'destructive' : 'secondary'}>{item.status}</Badge></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <p className="text-muted-foreground text-center py-6">No items are currently low on stock or out of stock.</p>
+            )}
           </CardContent>
         </Card>
+        
         <Card>
-          <CardHeader><CardTitle>Full Inventory List</CardTitle></CardHeader>
-          <CardContent className="h-96 bg-muted rounded-md flex items-center justify-center border border-dashed">
-            <p className="text-muted-foreground">Full Inventory Table Placeholder</p>
+          <CardHeader>
+            <CardTitle className="flex items-center"><BarChart3 className="mr-2 h-5 w-5 text-primary/80"/> Stock Levels by Category</CardTitle>
+            <CardDescription>Total stock quantity for major product categories.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {stockByCategoryData.length > 0 ? (
+                <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={stockByCategoryData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis dataKey="category" tickLine={false} axisLine={false} tickMargin={8} className="text-xs"/>
+                      <YAxis allowDecimals={false} tickLine={false} axisLine={false} tickMargin={8} width={30} className="text-xs"/>
+                      <ShadTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                      <ChartLegend content={<ChartLegendContent />} />
+                      <Bar dataKey="stock" fill="var(--color-stock)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+            ) : (
+                 <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
+                    <p className="text-muted-foreground">No stock data for chart.</p>
+                </div>
+            )}
           </CardContent>
-          <CardFooter className="border-t pt-4">
-            <Button variant="outline" onClick={handleExport}><FileDown className="mr-2 h-4 w-4" /> Export Full Report</Button>
-          </CardFooter>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Full Inventory List</CardTitle>
+            <Button variant="outline" size="sm" onClick={() => handleExport('full_inventory')}><FileDown className="mr-2 h-4 w-4" /> Export Full Inventory</Button>
+          </CardHeader>
+          <CardContent>
+             {dummyInventory.length > 0 ? (
+              <Table>
+                <TableHeader><TableRow><TableHead>Product Name</TableHead><TableHead>SKU</TableHead><TableHead>Category</TableHead><TableHead className="text-right">Price</TableHead><TableHead className="text-right">Stock</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {dummyInventory.map(item => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.name}</TableCell><TableCell>{item.sku}</TableCell><TableCell>{item.category}</TableCell><TableCell className="text-right">{item.price.toLocaleString()}</TableCell><TableCell className="text-right">{item.stock}</TableCell><TableCell><Badge variant={item.status === 'Out of Stock' ? 'destructive' : item.status === 'Low Stock' ? 'secondary' : 'default'}>{item.status}</Badge></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <p className="text-muted-foreground text-center py-6">No inventory items found.</p>
+            )}
+          </CardContent>
         </Card>
       </main>
     </div>

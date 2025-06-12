@@ -1,8 +1,9 @@
 
-// src/app/dashboard/shop-manager/orders/page.tsx
+// /src/app/dashboard/shop-manager/orders/page.tsx
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft, Package, Filter, Search, MoreHorizontal, Eye, Edit, Printer } from 'lucide-react';
@@ -36,8 +37,8 @@ const dummyOrders: Order[] = [
 
 export default function ShopOrderManagementPage() {
   const { toast } = useToast();
+  const router = useRouter();
 
-  const handleViewOrder = (orderId: string) => toast({ title: "View Order", description: `Viewing details for order ${orderId}. (Placeholder)` });
   const handleUpdateStatus = (orderId: string, newStatus: OrderStatus) => toast({ title: "Update Status", description: `Order ${orderId} status updated to ${newStatus}. (Placeholder)` });
   const handlePrintPackingSlip = (orderId: string) => toast({ title: "Print Slip", description: `Printing packing slip for ${orderId}. (Placeholder)` });
   
@@ -115,7 +116,11 @@ export default function ShopOrderManagementPage() {
                             <DropdownMenuTrigger asChild><Button variant="ghost" className="h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleViewOrder(order.orderId)}><Eye className="mr-2 h-4 w-4" /> View Details</DropdownMenuItem>
+                              <DropdownMenuItem asChild>
+                                <Link href={`/dashboard/shop-manager/orders/${order.orderId}`}>
+                                  <Eye className="mr-2 h-4 w-4" /> View Details
+                                </Link>
+                              </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleUpdateStatus(order.orderId, 'Processing')}><Edit className="mr-2 h-4 w-4" /> Update Status</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handlePrintPackingSlip(order.orderId)}><Printer className="mr-2 h-4 w-4" /> Print Slip</DropdownMenuItem>
                             </DropdownMenuContent>

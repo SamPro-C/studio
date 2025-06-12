@@ -3,6 +3,7 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -24,6 +25,7 @@ interface Unit {
 }
 
 export default function AddNewApartmentPage() {
+  const router = useRouter(); // Initialize useRouter
   const [apartmentName, setApartmentName] = useState('');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
@@ -77,15 +79,17 @@ export default function AddNewApartmentPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Basic validation (can be expanded with Zod)
     if (!apartmentName || !location || units.length === 0) {
       alert("Please fill in apartment name, location, and add at least one unit.");
       return;
     }
-    // In a real app, you would send this data to your backend
-    console.log({ apartmentName, location, description, units, amenities });
-    alert("Apartment data submitted (see console).");
-    // Reset form or redirect
+    const selectedAmenities = Object.entries(amenities)
+      .filter(([, checked]) => checked)
+      .map(([key]) => key);
+
+    console.log({ apartmentName, location, description, units, amenities: selectedAmenities });
+    alert("Apartment data submitted (see console). Redirecting to apartments list...");
+    router.push('/dashboard/landlord/apartments'); // Redirect after submission
   };
 
 
@@ -125,11 +129,12 @@ export default function AddNewApartmentPage() {
 
               <div className="space-y-4">
                 <Label className="text-lg font-semibold">Units</Label>
+                {units.length === 0 && <p className="text-sm text-muted-foreground">No units added yet. Click "Add Unit" to start.</p>}
                 {units.map((unit, unitIndex) => (
-                  <Card key={unit.id} className="p-4 space-y-3">
+                  <Card key={unit.id} className="p-4 space-y-3 bg-muted/50">
                     <div className="flex items-center justify-between">
-                       <Label htmlFor={`unitName-${unit.id}`} className="font-medium">Unit {unitIndex + 1}</Label>
-                       <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveUnit(unit.id)}>
+                       <Label htmlFor={`unitName-${unit.id}`} className="font-medium text-base">Unit {unitIndex + 1}</Label>
+                       <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveUnit(unit.id)} aria-label="Remove Unit">
                          <Trash2 className="h-4 w-4 text-destructive" />
                        </Button>
                     </div>
@@ -141,8 +146,9 @@ export default function AddNewApartmentPage() {
                       required 
                     />
                     
-                    <div className="ml-4 space-y-2">
-                      <Label className="text-base font-semibold">Rooms in Unit {unitIndex + 1}</Label>
+                    <div className="ml-4 space-y-2 border-l-2 border-primary/20 pl-4">
+                      <Label className="text-sm font-semibold">Rooms in Unit {unit.unitName || unitIndex + 1}</Label>
+                      {unit.rooms.length === 0 && <p className="text-xs text-muted-foreground">No rooms added to this unit yet.</p>}
                       {unit.rooms.map((room, roomIndex) => (
                         <div key={room.id} className="flex items-center gap-2">
                            <Input 
@@ -151,15 +157,15 @@ export default function AddNewApartmentPage() {
                             onChange={(e) => handleRoomChange(unit.id, room.id, e.target.value)} 
                             placeholder={`Room ${roomIndex + 1} Name/Number`} 
                             required
-                            className="flex-grow"
+                            className="flex-grow h-9"
                           />
-                          <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveRoom(unit.id, room.id)}>
+                          <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveRoom(unit.id, room.id)} aria-label="Remove Room" className="h-9 w-9">
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
                         </div>
                       ))}
                        <Button type="button" variant="outline" size="sm" onClick={() => handleAddRoom(unit.id)}>
-                        <PlusCircle className="mr-2 h-4 w-4" /> Add Room to Unit {unitIndex + 1}
+                        <PlusCircle className="mr-2 h-4 w-4" /> Add Room to Unit {unit.unitName || unitIndex + 1}
                       </Button>
                     </div>
                   </Card>
@@ -179,13 +185,13 @@ export default function AddNewApartmentPage() {
                         checked={amenities[key]} 
                         onCheckedChange={() => handleAmenityChange(key)}
                       />
-                      <Label htmlFor={`amenity-${key}`} className="capitalize">{key}</Label>
+                      <Label htmlFor={`amenity-${key}`} className="capitalize font-normal">{key}</Label>
                     </div>
                   ))}
                 </div>
               </div>
               
-              <div className="flex justify-end space-x-3">
+              <div className="flex justify-end space-x-3 pt-4 border-t">
                 <Button variant="outline" asChild type="button">
                   <Link href="/dashboard/landlord/apartments">Cancel</Link>
                 </Button>
@@ -198,3 +204,4 @@ export default function AddNewApartmentPage() {
     </div>
   );
 }
+

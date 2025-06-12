@@ -16,15 +16,14 @@ import { Badge } from '@/components/ui/badge';
 const workers = [
   { id: "worker001", name: "Mike Ross", nationalId: "30123456", role: "Plumber", phone: "555-7890", email: "mike@example.com", assignedApartments: ["Greenwood Heights", "Oceanview Towers"], workingHours: "Mon-Fri, 9am-5pm", status: "Active" },
   { id: "worker002", name: "Sarah Connor", nationalId: "30654321", role: "Electrician", phone: "555-1122", email: "sarah@example.com", assignedApartments: ["Oceanview Towers"], workingHours: "Tue-Sat, 8am-4pm", status: "Active" },
-  { id: "worker003", name: "John Doe", nationalId: "30987654", role: "Cleaner", phone: "555-3344", email: "john.c@example.com", assignedApartments: ["Greenwood Heights"], workingHours: "Mon, Wed, Fri, 10am-2pm", status: "Inactive" },
+  { id: "worker003", name: "John Cleese", nationalId: "30987654", role: "Cleaner", phone: "555-3344", email: "john.c@example.com", assignedApartments: ["Greenwood Heights"], workingHours: "Mon, Wed, Fri, 10am-2pm", status: "Inactive" },
 ];
 
 export default function ManageWorkersPage() {
   const router = useRouter();
 
   const handleViewProfile = (workerId: string) => {
-    // router.push(`/dashboard/landlord/workers/${workerId}`);
-    alert(`View profile for worker ID: ${workerId}. To be implemented.`);
+    router.push(`/dashboard/landlord/workers/${workerId}`);
   };
 
   const handleEditWorker = (workerId: string, workerName: string) => {

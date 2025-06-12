@@ -3,10 +3,10 @@
 "use client";
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, Home, Edit, PlusCircle, Building2, Users, MapPin } from 'lucide-react';
+import { ArrowLeft, Home, Edit, PlusCircle, Building2, Users, MapPin, CheckCircle } from 'lucide-react';
 import Image from 'next/image';
 
 // Expanded dummy data for apartments
@@ -65,9 +65,20 @@ const dummyApartmentsData = [
 
 export default function ApartmentDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const apartmentId = params.apartmentId as string;
 
   const apartment = dummyApartmentsData.find(apt => apt.id === apartmentId);
+
+  const handleEditApartment = () => {
+    alert(`Edit apartment: ${apartment?.name}. Functionality to be implemented.`);
+    console.log(`Attempting to edit apartment with ID: ${apartmentId}`);
+    // router.push(`/dashboard/landlord/apartments/${apartmentId}/edit`); // Future: navigate to edit page
+  };
+
+  const handleAddUnit = () => {
+     router.push(`/dashboard/landlord/apartments/${apartmentId}/units/new`);
+  };
 
   if (!apartment) {
     return (
@@ -109,10 +120,10 @@ export default function ApartmentDetailsPage() {
                 </h1>
             </div>
           <div className="flex gap-2">
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleEditApartment}>
               <Edit className="mr-2 h-4 w-4" /> Edit Apartment
             </Button>
-            <Button>
+            <Button onClick={handleAddUnit}>
               <PlusCircle className="mr-2 h-4 w-4" /> Add Unit
             </Button>
           </div>
@@ -193,7 +204,7 @@ export default function ApartmentDetailsPage() {
               <p className="text-center py-6 text-muted-foreground">No units have been added to this apartment yet.</p>
             )}
              <div className="mt-6 border-t pt-6">
-                <Button>
+                <Button onClick={handleAddUnit}>
                     <PlusCircle className="mr-2 h-4 w-4" /> Add New Unit to {apartment.name}
                 </Button>
              </div>
@@ -216,23 +227,3 @@ export default function ApartmentDetailsPage() {
     </div>
   );
 }
-
-// Helper to add CheckCircle if not available - assuming lucide-react is properly set up.
-const CheckCircle = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-  </svg>
-);
-

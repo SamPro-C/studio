@@ -16,6 +16,20 @@ const apartments = [
 ];
 
 export default function ManageApartmentsPage() {
+  const handleEditApartment = (id: string, name: string) => {
+    alert(`Edit apartment: ${name} (ID: ${id}). Functionality to be implemented.`);
+    console.log(`Attempting to edit apartment with ID: ${id}`);
+  };
+
+  const handleDeleteApartment = (id: string, name: string) => {
+    if (confirm(`Are you sure you want to delete ${name}? This action cannot be undone and may affect associated units and tenants.`)) {
+      alert(`Delete apartment: ${name} (ID: ${id}). Functionality to be implemented.`);
+      console.log(`Attempting to delete apartment with ID: ${id}`);
+      // Here you would typically call an action to delete the apartment
+      // and then refresh the list or remove it from the client-side state.
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 bg-background p-4 sm:p-6 md:p-8 space-y-8">
@@ -74,8 +88,20 @@ export default function ManageApartmentsPage() {
                        <Button variant="outline" className="w-full sm:w-auto" asChild>
                          <Link href={`/dashboard/landlord/apartments/${apt.id}`}>View Details</Link>
                        </Button>
-                       <Button variant="secondary" className="w-full sm:w-auto">Edit</Button>
-                       <Button variant="destructive" className="w-full sm:w-auto">Delete</Button>
+                       <Button 
+                          variant="secondary" 
+                          className="w-full sm:w-auto"
+                          onClick={() => handleEditApartment(apt.id, apt.name)}
+                        >
+                          Edit
+                        </Button>
+                       <Button 
+                          variant="destructive" 
+                          className="w-full sm:w-auto"
+                          onClick={() => handleDeleteApartment(apt.id, apt.name)}
+                        >
+                          Delete
+                        </Button>
                     </div>
                   </Card>
                 ))}

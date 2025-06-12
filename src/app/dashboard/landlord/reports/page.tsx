@@ -29,7 +29,7 @@ const reportCategories: ReportCategory[] = [
     categoryIcon: DollarSign,
     reports: [
       { title: "Rent Collection Summary", description: "Overview of paid, unpaid, and partially paid rents.", icon: PieChart, actionText: "View Summary", href: "/dashboard/landlord/reports/rent-collection" },
-      { title: "Expense Breakdown", description: "Detailed analysis of all recorded expenses by category and property.", icon: FileText, actionText: "View Breakdown", onClickAction: () => alert("Expense Breakdown: To be implemented.") },
+      { title: "Expense Breakdown", description: "Detailed analysis of all recorded expenses by category and property.", icon: FileText, actionText: "View Breakdown", href: "/dashboard/landlord/reports/expense-breakdown" },
       { title: "Profit & Loss Statement", description: "Generate a P&L statement for a selected period.", icon: BarChart3, actionText: "Generate Statement", onClickAction: () => alert("Profit & Loss Statement: To be implemented.") },
     ]
   },

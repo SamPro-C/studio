@@ -21,7 +21,7 @@ import {
     UserCheck, 
     Trash2,
     ShieldAlert,
-    IdCard,
+    Fingerprint,
     CalendarCheck,
     AlertTriangle
 } from 'lucide-react';
@@ -65,6 +65,7 @@ interface TenantProfileAdminView {
   serviceRequestSummary: ServiceRequestSummary;
 }
 
+// Dummy data for tenant profiles - Admin View
 const dummyAdminTenantProfiles: { [key: string]: TenantProfileAdminView } = {
   "tenantA": {
     id: "tenantA",
@@ -124,6 +125,35 @@ const dummyAdminTenantProfiles: { [key: string]: TenantProfileAdminView } = {
       totalRequests: 2,
     },
   },
+  "tenantC": { // Example for Pending Approval
+    id: "tenantC",
+    fullName: "Tenant Gamma (Pending)",
+    email: "gamma.pending@tenant.com",
+    phoneNumber: "0712345680",
+    nationalId: "12345672",
+    status: "PendingApproval",
+    registrationDate: "2024-07-28",
+    residence: {
+      apartmentName: "City Center Plaza",
+      unitName: "Apt 10",
+      roomNumber: "Room 1",
+      landlordName: "Peter Estates",
+    },
+    leaseInfo: {
+      moveInDate: "2024-08-01",
+      leaseEndDate: "2025-07-31",
+      monthlyRent: 18000,
+    },
+    paymentSummary: {
+      lastPaymentDate: null,
+      lastPaymentAmount: null,
+      outstandingBalance: 0,
+    },
+    serviceRequestSummary: {
+      openRequests: 0,
+      totalRequests: 0,
+    },
+  },
 };
 
 export default function AdminTenantProfilePage() {
@@ -153,7 +183,7 @@ export default function AdminTenantProfilePage() {
     if (status === 'Active') return 'default';
     if (status === 'Inactive') return 'secondary';
     if (status === 'Evicted') return 'destructive';
-    if (status === 'PendingApproval') return 'outline';
+    if (status === 'PendingApproval') return 'outline'; // Using 'outline' as it often implies pending
     return 'outline';
   };
 
@@ -176,9 +206,16 @@ export default function AdminTenantProfilePage() {
             </div>
             <div className="flex flex-wrap gap-2">
                 <Button variant="outline" size="sm" onClick={() => handleAction("Edit Details", tenant.fullName)}><Edit className="mr-2 h-4 w-4"/>Edit Details</Button>
-                <Button variant={tenant.status === 'Active' ? 'destructive' : 'default'} size="sm" onClick={() => handleAction(tenant.status === 'Active' ? "Deactivate Account" : "Activate Account", tenant.fullName)}>
+                <Button 
+                    variant={tenant.status === 'Active' ? 'destructive' : (tenant.status === 'PendingApproval' ? 'default' : 'default')} 
+                    size="sm" 
+                    onClick={() => handleAction(
+                        tenant.status === 'Active' ? "Deactivate Account" : (tenant.status === 'PendingApproval' ? "Approve Registration" : "Activate Account"), 
+                        tenant.fullName
+                    )}
+                >
                     {tenant.status === 'Active' ? <UserX className="mr-2 h-4 w-4" /> : <UserCheck className="mr-2 h-4 w-4" />}
-                    {tenant.status === 'Active' ? "Deactivate" : "Activate"}
+                    {tenant.status === 'Active' ? "Deactivate" : (tenant.status === 'PendingApproval' ? "Approve" : "Activate")}
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => handleAction("Reset Password", tenant.fullName)}><KeyRound className="mr-2 h-4 w-4"/>Reset Password</Button>
                  <Button variant="destructive" size="sm" onClick={() => handleAction("Force Remove Tenant", tenant.fullName)}><Trash2 className="mr-2 h-4 w-4"/>Force Remove</Button>
@@ -193,7 +230,7 @@ export default function AdminTenantProfilePage() {
                 <CardContent className="space-y-2 text-sm">
                     <p className="flex items-center"><Mail className="mr-2 h-4 w-4 text-muted-foreground"/> {tenant.email}</p>
                     <p className="flex items-center"><Phone className="mr-2 h-4 w-4 text-muted-foreground"/> {tenant.phoneNumber}</p>
-                    <p className="flex items-center"><IdCard className="mr-2 h-4 w-4 text-muted-foreground"/> National ID: {tenant.nationalId}</p>
+                    <p className="flex items-center"><Fingerprint className="mr-2 h-4 w-4 text-muted-foreground"/> National ID: {tenant.nationalId}</p>
                     <p className="flex items-center"><CalendarCheck className="mr-2 h-4 w-4 text-muted-foreground"/> Registered: {new Date(tenant.registrationDate).toLocaleDateString()}</p>
                     <p className="flex items-center">Status: <Badge variant={getStatusVariant(tenant.status)} className="ml-2">{tenant.status}</Badge></p>
                 </CardContent>

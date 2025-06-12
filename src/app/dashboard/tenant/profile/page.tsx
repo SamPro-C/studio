@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { ArrowLeft, Save, UserCircle, Lock, Mail, Phone, Home, CalendarDays, Id, Users as GenderIcon, MessageSquare, Edit, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Save, UserCircle, Lock, Mail, Phone, Home, CalendarDays, Fingerprint, Users as GenderIcon, MessageSquare, Edit, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { PasswordStrength, calculatePasswordScore } from '@/components/auth/PasswordStrength';
 import { ChangePasswordSchema, type ChangePasswordFormData } from '@/schemas/settings'; // Re-use landlord's schema if suitable
@@ -110,7 +110,7 @@ export default function TenantProfilePage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-                <CardTitle className="flex items-center"><Id className="mr-2 h-5 w-5 text-primary/80"/> My Information</CardTitle>
+                <CardTitle className="flex items-center"><UserCircle className="mr-2 h-5 w-5 text-primary/80"/> My Information</CardTitle>
                 <CardDescription>This information is managed by your landlord.</CardDescription>
             </div>
             <Button variant="outline" onClick={handleRequestInfoUpdate}>
@@ -122,7 +122,7 @@ export default function TenantProfilePage() {
                 <InfoDisplayItem label="Full Name" value={tenantProfileData.fullName} icon={UserCircle} />
                 <InfoDisplayItem label="Email" value={tenantProfileData.email} icon={Mail}/>
                 <InfoDisplayItem label="Phone Number" value={tenantProfileData.phoneNumber} icon={Phone}/>
-                <InfoDisplayItem label="National ID" value={tenantProfileData.nationalId} icon={Id}/>
+                <InfoDisplayItem label="National ID" value={tenantProfileData.nationalId} icon={Fingerprint}/>
                 <InfoDisplayItem label="Date of Birth" value={new Date(tenantProfileData.dateOfBirth).toLocaleDateString()} icon={CalendarDays}/>
                 <InfoDisplayItem label="Gender" value={tenantProfileData.gender} icon={GenderIcon}/>
             </div>
@@ -146,8 +146,8 @@ export default function TenantProfilePage() {
                 <InfoDisplayItem label="Unit" value={tenantProfileData.residence.unitName} icon={Home}/>
                 <InfoDisplayItem label="Room" value={tenantProfileData.residence.roomNumber} icon={Home}/>
                 <InfoDisplayItem label="Move-in Date" value={new Date(tenantProfileData.leaseInfo.moveInDate).toLocaleDateString()} icon={CalendarDays}/>
-                <InfoDisplayItem label="Monthly Rent" value={`KES ${tenantProfileData.leaseInfo.monthlyRent.toLocaleString()}`} icon={Id}/>
-                <InfoDisplayItem label="Security Deposit" value={`KES ${tenantProfileData.leaseInfo.securityDeposit.toLocaleString()}`} icon={Id}/>
+                <InfoDisplayItem label="Monthly Rent" value={`KES ${tenantProfileData.leaseInfo.monthlyRent.toLocaleString()}`} icon={DollarSign}/>
+                <InfoDisplayItem label="Security Deposit" value={`KES ${tenantProfileData.leaseInfo.securityDeposit.toLocaleString()}`} icon={DollarSign}/>
                 <InfoDisplayItem label="Lease Start" value={new Date(tenantProfileData.leaseInfo.leaseStartDate).toLocaleDateString()} icon={CalendarDays}/>
                 <InfoDisplayItem label="Lease End" value={tenantProfileData.leaseInfo.leaseEndDate ? new Date(tenantProfileData.leaseInfo.leaseEndDate).toLocaleDateString() : 'Ongoing'} icon={CalendarDays}/>
             </div>

@@ -98,11 +98,11 @@ export default function SystemServiceRequestsPage() {
                 </div>
                 <div>
                     <Label htmlFor="filterStatus">Filter by Status</Label>
-                    <Select><SelectTrigger id="filterStatus" className="mt-1"><SelectValue placeholder="All Statuses"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="pending">Pending</SelectItem></SelectContent></Select>
+                    <Select><SelectTrigger id="filterStatus" className="mt-1"><SelectValue placeholder="All Statuses"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="pending">Pending</SelectItem><SelectItem value="in_progress">In Progress</SelectItem><SelectItem value="completed">Completed</SelectItem></SelectContent></Select>
                 </div>
                 <div>
                     <Label htmlFor="filterLandlord">Filter by Landlord</Label>
-                    <Select><SelectTrigger id="filterLandlord" className="mt-1"><SelectValue placeholder="All Landlords"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="l1">John L.</SelectItem></SelectContent></Select>
+                    <Select><SelectTrigger id="filterLandlord" className="mt-1"><SelectValue placeholder="All Landlords"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="l1">John L.</SelectItem><SelectItem value="l2">Jane P.</SelectItem></SelectContent></Select>
                 </div>
                 <Button className="w-full sm:w-auto self-end"><Filter className="mr-2 h-4 w-4"/>Apply Filters</Button>
             </div>
@@ -162,3 +162,5 @@ export default function SystemServiceRequestsPage() {
     </div>
   );
 }
+
+    

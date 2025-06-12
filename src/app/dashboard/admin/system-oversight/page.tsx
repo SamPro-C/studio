@@ -49,7 +49,7 @@ export default function SystemOversightHubPage() {
             </Link>
           </Button>
           <h1 className="font-headline text-2xl sm:text-3xl font-bold text-primary flex items-center">
-            <Eye className="mr-3 h-7 w-7" /> Property & System Oversight
+            <Eye className="mr-3 h-7 w-7" /> Property &amp; System Oversight
           </h1>
         </div>
 
@@ -90,3 +90,5 @@ export default function SystemOversightHubPage() {
     </div>
   );
 }
+
+    

@@ -1,5 +1,5 @@
 
-// src/app/shopping/products/[productId]/page.tsx
+// /src/app/shopping/products/[productId]/page.tsx
 "use client";
 
 import Link from 'next/link';
@@ -107,8 +107,10 @@ export default function ProductDetailPage() {
               {product.name}
             </h1>
           </div>
-          <Button variant="outline" onClick={() => toast({title: "Cart", description: "View Cart - To be implemented."})}>
-            <ShoppingCart className="mr-2 h-4 w-4" /> View Cart (0)
+          <Button variant="outline" asChild>
+            <Link href="/shopping/cart">
+             <ShoppingCart className="mr-2 h-4 w-4" /> View Cart (0)
+            </Link>
           </Button>
         </div>
       </header>

@@ -26,10 +26,6 @@ const dummyFeaturedProducts = [
 
 export default function ShoppingPlatformPage() {
   const { toast } = useToast();
-  const handleViewCart = () => {
-    toast({ title: "Shopping Cart", description: "Viewing cart - To be implemented." });
-    // router.push('/shopping/cart');
-  };
 
   const handleAddToCart = (productName: string) => {
     toast({
@@ -53,8 +49,10 @@ export default function ShoppingPlatformPage() {
               Tenant Shop
             </h1>
           </div>
-          <Button variant="outline" onClick={handleViewCart}>
-            <ShoppingCart className="mr-2 h-4 w-4" /> View Cart (0)
+          <Button variant="outline" asChild>
+            <Link href="/shopping/cart">
+              <ShoppingCart className="mr-2 h-4 w-4" /> View Cart (0)
+            </Link>
           </Button>
         </div>
       </header>

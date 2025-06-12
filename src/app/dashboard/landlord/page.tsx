@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -19,8 +20,12 @@ import {
   Receipt, 
   ArrowRight, 
   Settings, 
-  Bell 
+  Bell,
+  BarChart3
 } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+
 
 // Dummy data for landlord name - replace with actual data fetching later
 const landlordName = "Demo Landlord"; 
@@ -77,6 +82,22 @@ const quickActions: QuickAction[] = [
   { label: "Manage Expenses", href: "/dashboard/landlord/expenses", icon: Receipt },
   { label: "Generate Report", href: "/dashboard/landlord/reports", icon: FileText },
 ];
+
+const propertyRevenueData = [
+  { property: "Greenwood H.", revenue: 12500 },
+  { property: "Oceanview T.", revenue: 23000 },
+  { property: "Mountain R.V.", revenue: 9800 },
+  { property: "City Center Plaza", revenue: 15200 },
+  { property: "Riverside Complex", revenue: 18700 },
+];
+
+const chartConfig = {
+  revenue: {
+    label: "Revenue (KES)",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig;
+
 
 function getIconColorClass(variant?: MetricVariant): string {
   switch (variant) {
@@ -187,23 +208,52 @@ export default function LandlordDashboardPage() {
           </section>
         </div>
         
-        {/* Placeholder for future graphs or more detailed summaries */}
-        {/* 
+        {/* Property Overview Charts */}
         <section>
           <h2 className="font-headline text-xl sm:text-2xl font-semibold text-primary mb-4">Property Overview Charts</h2>
           <Card>
             <CardHeader>
-              <CardTitle>Occupancy & Revenue Trends</CardTitle>
-              <CardDescription>Monthly overview of your property performance.</CardDescription>
+              <CardTitle className="flex items-center"><BarChart3 className="mr-2 h-5 w-5 text-primary/80"/> Revenue per Property</CardTitle>
+              <CardDescription>Monthly revenue overview by property (Sample Data).</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[300px] bg-muted rounded-md flex items-center justify-center">
-                <p className="text-muted-foreground">Chart placeholder - coming soon!</p>
-              </div>
+              {propertyRevenueData.length > 0 ? (
+                <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={propertyRevenueData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis 
+                        dataKey="property" 
+                        tickLine={false} 
+                        axisLine={false} 
+                        tickMargin={8} 
+                        className="text-xs"
+                      />
+                      <YAxis 
+                        tickFormatter={(value) => `KES ${value/1000}k`} 
+                        tickLine={false} 
+                        axisLine={false} 
+                        tickMargin={8}
+                        width={80}
+                        className="text-xs"
+                      />
+                      <ChartTooltip 
+                        cursor={false}
+                        content={<ChartTooltipContent indicator="dot" />} 
+                      />
+                      <ChartLegend content={<ChartLegendContent />} />
+                      <Bar dataKey="revenue" fill="var(--color-revenue)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              ) : (
+                <div className="h-[300px] bg-muted rounded-md flex items-center justify-center border border-dashed">
+                  <p className="text-muted-foreground">No revenue data available for chart.</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </section>
-        */}
       </main>
     </div>
   );
@@ -212,3 +262,4 @@ export default function LandlordDashboardPage() {
     
 
     
+

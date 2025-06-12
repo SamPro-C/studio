@@ -30,7 +30,7 @@ const reportCategories: ReportCategory[] = [
     reports: [
       { title: "Rent Collection Summary", description: "Overview of paid, unpaid, and partially paid rents.", icon: PieChart, actionText: "View Summary", href: "/dashboard/landlord/reports/rent-collection" },
       { title: "Expense Breakdown", description: "Detailed analysis of all recorded expenses by category and property.", icon: FileText, actionText: "View Breakdown", href: "/dashboard/landlord/reports/expense-breakdown" },
-      { title: "Profit & Loss Statement", description: "Generate a P&L statement for a selected period.", icon: BarChart3, actionText: "Generate Statement", onClickAction: () => alert("Profit & Loss Statement: To be implemented.") },
+      { title: "Profit & Loss Statement", description: "Generate a P&L statement for a selected period.", icon: BarChart3, actionText: "Generate Statement", href: "/dashboard/landlord/reports/profit-loss" },
     ]
   },
   {
@@ -121,3 +121,4 @@ export default function ReportsAnalyticsPage() {
     </div>
   );
 }
+

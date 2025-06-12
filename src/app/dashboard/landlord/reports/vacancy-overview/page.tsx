@@ -10,6 +10,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ArrowLeft, Home, Users, Filter, FileDown, Search, ExternalLink } from 'lucide-react';
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+
 
 interface VacantUnitEntry {
   id: string;
@@ -33,6 +36,20 @@ const dummyVacantUnits: VacantUnitEntry[] = [
 const totalUnits = 50; // Dummy overall total
 const occupiedUnits = totalUnits - dummyVacantUnits.length;
 const occupancyRate = totalUnits > 0 ? (occupiedUnits / totalUnits) * 100 : 0;
+
+const vacancyByPropertyData = [
+    { property: "Greenwood H.", vacantUnits: dummyVacantUnits.filter(u => u.property === "Greenwood Heights").length },
+    { property: "Oceanview T.", vacantUnits: dummyVacantUnits.filter(u => u.property === "Oceanview Towers").length },
+    { property: "Mountain R.V.", vacantUnits: dummyVacantUnits.filter(u => u.property === "Mountain Ridge Villas").length },
+].filter(p => p.vacantUnits > 0);
+
+
+const chartConfig = {
+  vacantUnits: {
+    label: "Vacant Units",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig;
 
 
 export default function VacancyOverviewReportPage() {
@@ -140,7 +157,7 @@ export default function VacancyOverviewReportPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Occupancy Rate</CardTitle>
-              <PieChart className="h-4 w-4 text-primary" />
+              <RechartsBarChart className="h-4 w-4 text-primary" /> {/* Changed to BarChart icon */}
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{occupancyRate.toFixed(1)}%</div>
@@ -152,15 +169,33 @@ export default function VacancyOverviewReportPage() {
         {/* Chart Placeholder */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center"><BarChart3 className="mr-2 h-5 w-5 text-primary/80"/> Vacancy by Property</CardTitle>
+            <CardTitle className="flex items-center"><RechartsBarChart className="mr-2 h-5 w-5 text-primary/80"/> Vacancy by Property</CardTitle>
             <CardDescription>Visual representation of vacant units across different properties.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-              <p className="text-muted-foreground text-center p-4">
-                A chart (e.g., Bar chart showing number of vacant units per property or unit type) will be displayed here.
-              </p>
-            </div>
+            {vacancyByPropertyData.length > 0 ? (
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsBarChart data={vacancyByPropertyData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+                  <XAxis dataKey="property" tickLine={false} axisLine={false} tickMargin={8} />
+                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} tickMargin={8} width={30}/>
+                  <ChartTooltip 
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="dot" />} 
+                  />
+                  <RechartsLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="vacantUnits" fill="var(--color-vacantUnits)" radius={[4, 4, 0, 0]} />
+                </RechartsBarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+            ) : (
+                <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
+                    <p className="text-muted-foreground text-center p-4">
+                        No vacancy data available to display chart.
+                    </p>
+                </div>
+            )}
           </CardContent>
         </Card>
 

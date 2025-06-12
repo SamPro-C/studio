@@ -10,7 +10,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Briefcase, Filter, FileDown, BarChartHorizontal, PieChart, CheckCircle, ListChecks, Clock } from 'lucide-react';
+import { ArrowLeft, Briefcase, Filter, FileDown, BarChartHorizontal, CheckCircle, ListChecks, Clock } from 'lucide-react';
+import { PieChart as RechartsPieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+
 
 interface WorkerActivityEntry {
   id: string;
@@ -38,8 +41,35 @@ const completedTasks = dummyWorkerActivityData.filter(task => task.status === 'C
 const inProgressTasks = dummyWorkerActivityData.filter(task => task.status === 'In Progress').length;
 const avgCompletionTime = "2.5 days (placeholder)"; // Placeholder
 
-const workers = ["All", "Mike Ross", "Sarah Connor", "John Cleese"]; // Add other workers from dummy data
-const taskStatuses = ["All", "Pending", "In Progress", "Completed", "Canceled"];
+const workersFilter = ["All", "Mike Ross", "Sarah Connor", "John Cleese"];
+const taskStatusesFilter = ["All", "Pending", "In Progress", "Completed", "Canceled"];
+
+const tasksPerWorkerData = workersFilter.slice(1).map((workerName, index) => ({
+  name: workerName.split(" ")[0], // Shorten for chart label
+  tasks: dummyWorkerActivityData.filter(task => task.workerName === workerName).length,
+  fill: `hsl(var(--chart-${index + 1}))`,
+})).filter(item => item.tasks > 0);
+
+const taskStatusDistributionData = taskStatusesFilter.slice(1).map((status, index) => ({
+  name: status,
+  value: dummyWorkerActivityData.filter(task => task.status === status).length,
+  fill: `hsl(var(--chart-${index + 1}))`,
+})).filter(item => item.value > 0);
+
+
+const workerChartConfig = {
+  tasks: { label: "Tasks", color: "hsl(var(--chart-1))" },
+  "Mike": { label: "Mike", color: "hsl(var(--chart-1))" },
+  "Sarah": { label: "Sarah", color: "hsl(var(--chart-2))" },
+} satisfies ChartConfig;
+
+const statusChartConfig = {
+  Pending: { label: "Pending", color: "hsl(var(--chart-1))" },
+  "In Progress": { label: "In Progress", color: "hsl(var(--chart-2))" },
+  Completed: { label: "Completed", color: "hsl(var(--chart-3))" },
+  Canceled: { label: "Canceled", color: "hsl(var(--chart-4))" },
+} satisfies ChartConfig;
+
 
 export default function WorkerActivitySummaryPage() {
   
@@ -90,7 +120,7 @@ export default function WorkerActivitySummaryPage() {
                   <SelectValue placeholder="All Workers" />
                 </SelectTrigger>
                 <SelectContent>
-                  {workers.map(worker => <SelectItem key={worker} value={worker.toLowerCase().replace(' ', '_')}>{worker}</SelectItem>)}
+                  {workersFilter.map(worker => <SelectItem key={worker} value={worker.toLowerCase().replace(' ', '_')}>{worker}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -109,7 +139,7 @@ export default function WorkerActivitySummaryPage() {
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  {taskStatuses.map(status => <SelectItem key={status} value={status.toLowerCase().replace(' ', '_')}>{status}</SelectItem>)}
+                  {taskStatusesFilter.map(status => <SelectItem key={status} value={status.toLowerCase().replace(' ', '_')}>{status}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -169,24 +199,61 @@ export default function WorkerActivitySummaryPage() {
                 <CardDescription>Number of tasks handled by each worker.</CardDescription>
             </CardHeader>
             <CardContent>
+               {tasksPerWorkerData.length > 0 ? (
+                <ChartContainer config={workerChartConfig} className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <RechartsBarChart data={tasksPerWorkerData} layout="vertical" margin={{left: 10, right: 20}}>
+                        <CartesianGrid horizontal={false}/>
+                        <XAxis type="number" hide/>
+                        <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={8} width={60}/>
+                        <ChartTooltip 
+                            cursor={false}
+                            content={<ChartTooltipContent indicator="dot" />} 
+                        />
+                        <RechartsLegend content={<ChartLegendContent />} />
+                        <Bar dataKey="tasks" layout="vertical" radius={4}>
+                            {tasksPerWorkerData.map((entry) => (
+                                <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                            ))}
+                        </Bar>
+                        </RechartsBarChart>
+                    </ResponsiveContainer>
+                </ChartContainer>
+                ) : (
                 <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-                <p className="text-muted-foreground text-center p-4">
-                    Bar chart showing task counts per worker.
-                </p>
+                    <p className="text-muted-foreground text-center p-4">No task data available for worker chart.</p>
                 </div>
+                )}
             </CardContent>
             </Card>
             <Card>
             <CardHeader>
-                <CardTitle className="flex items-center"><PieChart className="mr-2 h-5 w-5 text-primary/80"/> Task Status Distribution</CardTitle>
+                <CardTitle className="flex items-center"><RechartsPieChart className="mr-2 h-5 w-5 text-primary/80"/> Task Status Distribution</CardTitle>
                 <CardDescription>Overall distribution of task statuses (Pending, Completed, etc.).</CardDescription>
             </CardHeader>
             <CardContent>
+               {taskStatusDistributionData.length > 0 ? (
+                <ChartContainer config={statusChartConfig} className="mx-auto aspect-square max-h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsPieChart>
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent hideLabel nameKey="name" />}
+                      />
+                      <Pie data={taskStatusDistributionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                        {taskStatusDistributionData.map((entry) => (
+                          <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <ChartLegend content={<ChartLegendContent nameKey="name"/>} />
+                    </RechartsPieChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              ) : (
                 <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-                <p className="text-muted-foreground text-center p-4">
-                    Pie chart showing task status distribution.
-                </p>
+                  <p className="text-muted-foreground text-center p-4">No task status data for chart.</p>
                 </div>
+              )}
             </CardContent>
             </Card>
         </div>
@@ -249,4 +316,3 @@ export default function WorkerActivitySummaryPage() {
     </div>
   );
 }
-

@@ -9,7 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ArrowLeft, FileText, Filter, FileDown, DollarSign, PieChart, Receipt } from 'lucide-react';
+import { ArrowLeft, FileText, Filter, FileDown, DollarSign, Receipt } from 'lucide-react';
+import { PieChart as RechartsPieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 
 interface ExpenseEntry {
   id: string;
@@ -28,13 +30,33 @@ const dummyExpenseData: ExpenseEntry[] = [
   { id: "exp4", date: "2024-07-18", description: "Monthly gardening service", category: "Maintenance", amount: 3000, property: "Greenwood Heights" },
   { id: "exp5", date: "2024-07-20", description: "Common area electricity bill", category: "Utilities", amount: 4200, property: "General" },
   { id: "exp6", date: "2024-07-22", description: "Pest control service for all units", category: "Pest Control", amount: 2000, property: "Oceanview Towers" },
+  { id: "exp7", date: "2024-07-25", description: "Legal consultation fees", category: "Legal", amount: 5000, property: "General" },
 ];
 
-const expenseCategories = ["All", "Maintenance", "Supplies", "Repairs", "Utilities", "Pest Control", "Salaries", "Marketing", "Legal", "Other"];
+const expenseCategoriesFilter = ["All", "Maintenance", "Supplies", "Repairs", "Utilities", "Pest Control", "Salaries", "Marketing", "Legal", "Other"];
 const totalExpenses = dummyExpenseData.reduce((sum, item) => sum + item.amount, 0);
 const averageExpensePerProperty = dummyExpenseData.length > 0 
     ? totalExpenses / new Set(dummyExpenseData.map(e => e.property)).size 
     : 0;
+
+const expenseDistributionData = expenseCategoriesFilter.slice(1).map(category => {
+    const totalForCategory = dummyExpenseData
+        .filter(expense => expense.category.toLowerCase() === category.toLowerCase())
+        .reduce((sum, expense) => sum + expense.amount, 0);
+    return { name: category, value: totalForCategory, fill: `hsl(var(--chart-${expenseCategoriesFilter.indexOf(category)}))` };
+}).filter(item => item.value > 0);
+
+
+const chartConfig = {
+  Maintenance: { label: "Maintenance", color: "hsl(var(--chart-1))" },
+  Supplies: { label: "Supplies", color: "hsl(var(--chart-2))" },
+  Repairs: { label: "Repairs", color: "hsl(var(--chart-3))" },
+  Utilities: { label: "Utilities", color: "hsl(var(--chart-4))" },
+  "Pest Control": { label: "Pest Control", color: "hsl(var(--chart-5))" },
+  Legal: { label: "Legal", color: "hsl(var(--chart-1))" }, // Re-using colors for simplicity
+  Other: { label: "Other", color: "hsl(var(--chart-2))" },
+} satisfies ChartConfig;
+
 
 export default function ExpenseBreakdownReportPage() {
   
@@ -106,7 +128,7 @@ export default function ExpenseBreakdownReportPage() {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  {expenseCategories.map(cat => <SelectItem key={cat} value={cat.toLowerCase()}>{cat}</SelectItem>)}
+                  {expenseCategoriesFilter.map(cat => <SelectItem key={cat} value={cat.toLowerCase()}>{cat}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -151,15 +173,43 @@ export default function ExpenseBreakdownReportPage() {
         {/* Chart Placeholder */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center"><PieChart className="mr-2 h-5 w-5 text-primary/80"/> Expense Distribution by Category</CardTitle>
+            <CardTitle className="flex items-center"><RechartsPieChart className="mr-2 h-5 w-5 text-primary/80"/> Expense Distribution by Category</CardTitle>
             <CardDescription>Visual representation of expenses across different categories.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-              <p className="text-muted-foreground text-center p-4">
-                A chart (e.g., Pie chart or Bar chart showing expense amounts per category) will be displayed here.
-              </p>
-            </div>
+            {expenseDistributionData.length > 0 ? (
+            <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsPieChart>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel nameKey="name" />}
+                  />
+                  <Pie
+                    data={expenseDistributionData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {expenseDistributionData.map((entry) => (
+                      <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <ChartLegend content={<ChartLegendContent nameKey="name" />} />
+                </RechartsPieChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+            ) : (
+                 <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
+                    <p className="text-muted-foreground text-center p-4">
+                        No data available to display chart.
+                    </p>
+                </div>
+            )}
           </CardContent>
         </Card>
 

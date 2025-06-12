@@ -10,8 +10,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ListChecks, Filter, FileDown, BarChartHorizontal, PieChart, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { ArrowLeft, ListChecks, Filter, FileDown, BarChartHorizontal, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import { ServiceRequest, dummyServiceRequests } from '../../service-requests/page'; // Reuse existing interface and data
+import { PieChart as RechartsPieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+
 
 // Simplified interface for report display if needed, or use ServiceRequest directly
 interface ServiceRequestReportEntry extends ServiceRequest {}
@@ -21,11 +24,39 @@ const serviceRequestReportData: ServiceRequestReportEntry[] = dummyServiceReques
 const totalRequests = serviceRequestReportData.length;
 const pendingRequests = serviceRequestReportData.filter(r => r.status === 'Pending').length;
 const inProgressRequests = serviceRequestReportData.filter(r => r.status === 'In Progress').length;
-// Avg resolution time would require more complex calculation based on actual completion dates
 const avgResolutionTime = "3.5 Days (placeholder)"; 
 
-const serviceCategories = ["All", "Plumbing", "HVAC", "Electrical", "Fixtures", "General Maintenance", "Pest Control", "Other"];
-const requestStatuses = ["All", "Pending", "In Progress", "Completed", "Canceled", "On Hold"];
+const serviceCategoriesFilter = ["All", "Plumbing", "HVAC", "Electrical", "Fixtures", "General Maintenance", "Pest Control", "Other"];
+const requestStatusesFilter = ["All", "Pending", "In Progress", "Completed", "Canceled", "On Hold"];
+
+const requestsByCategoryData = serviceCategoriesFilter.slice(1).map((category, index) => ({
+  name: category,
+  value: serviceRequestReportData.filter(req => req.category === category).length,
+  fill: `hsl(var(--chart-${index + 1}))`,
+})).filter(item => item.value > 0);
+
+const requestsByStatusData = requestStatusesFilter.slice(1).map((status, index) => ({
+  name: status,
+  count: serviceRequestReportData.filter(req => req.status === status).length,
+  fill: `hsl(var(--chart-${index + 1}))`,
+})).filter(item => item.count > 0);
+
+
+const categoryChartConfig = {
+  Plumbing: { label: "Plumbing", color: "hsl(var(--chart-1))" },
+  HVAC: { label: "HVAC", color: "hsl(var(--chart-2))" },
+  Electrical: { label: "Electrical", color: "hsl(var(--chart-3))" },
+  Fixtures: { label: "Fixtures", color: "hsl(var(--chart-4))" },
+  "General Maintenance": { label: "Maintenance", color: "hsl(var(--chart-5))" },
+} satisfies ChartConfig;
+
+const statusChartConfig = {
+  Pending: { label: "Pending", color: "hsl(var(--chart-1))" },
+  "In Progress": { label: "In Progress", color: "hsl(var(--chart-2))" },
+  Completed: { label: "Completed", color: "hsl(var(--chart-3))" },
+  Canceled: { label: "Canceled", color: "hsl(var(--chart-4))" },
+  "On Hold": { label: "On Hold", color: "hsl(var(--chart-5))" },
+} satisfies ChartConfig;
 
 
 export default function ServiceRequestAnalysisPage() {
@@ -100,7 +131,7 @@ export default function ServiceRequestAnalysisPage() {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                   {serviceCategories.map(cat => <SelectItem key={cat} value={cat.toLowerCase().replace(' ', '_')}>{cat}</SelectItem>)}
+                   {serviceCategoriesFilter.map(cat => <SelectItem key={cat} value={cat.toLowerCase().replace(' ', '_')}>{cat}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -111,7 +142,7 @@ export default function ServiceRequestAnalysisPage() {
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  {requestStatuses.map(stat => <SelectItem key={stat} value={stat.toLowerCase().replace(' ', '_')}>{stat}</SelectItem>)}
+                  {requestStatusesFilter.map(stat => <SelectItem key={stat} value={stat.toLowerCase().replace(' ', '_')}>{stat}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -167,15 +198,32 @@ export default function ServiceRequestAnalysisPage() {
         <div className="grid gap-6 md:grid-cols-2">
             <Card>
             <CardHeader>
-                <CardTitle className="flex items-center"><PieChart className="mr-2 h-5 w-5 text-primary/80"/> Requests by Category</CardTitle>
+                <CardTitle className="flex items-center"><RechartsPieChart className="mr-2 h-5 w-5 text-primary/80"/> Requests by Category</CardTitle>
                 <CardDescription>Distribution of service requests across different categories.</CardDescription>
             </CardHeader>
             <CardContent>
+              {requestsByCategoryData.length > 0 ? (
+                <ChartContainer config={categoryChartConfig} className="mx-auto aspect-square max-h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsPieChart>
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent hideLabel nameKey="name" />}
+                      />
+                      <Pie data={requestsByCategoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                        {requestsByCategoryData.map((entry) => (
+                          <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <ChartLegend content={<ChartLegendContent nameKey="name" />} />
+                    </RechartsPieChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              ) : (
                 <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-                <p className="text-muted-foreground text-center p-4">
-                    Pie chart showing service request counts per category.
-                </p>
+                  <p className="text-muted-foreground text-center p-4">No data for chart.</p>
                 </div>
+              )}
             </CardContent>
             </Card>
             <Card>
@@ -184,11 +232,31 @@ export default function ServiceRequestAnalysisPage() {
                 <CardDescription>Overview of service request statuses (Pending, In Progress, Completed etc.).</CardDescription>
             </CardHeader>
             <CardContent>
+             {requestsByStatusData.length > 0 ? (
+                <ChartContainer config={statusChartConfig} className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <RechartsBarChart data={requestsByStatusData} layout="vertical" margin={{ left: 10, right: 20}}>
+                        <CartesianGrid horizontal={false} />
+                        <XAxis type="number" hide/>
+                        <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={8} width={80} />
+                        <ChartTooltip 
+                            cursor={false}
+                            content={<ChartTooltipContent indicator="dot" />} 
+                        />
+                         <RechartsLegend content={<ChartLegendContent />} />
+                        <Bar dataKey="count" layout="vertical" radius={4}>
+                             {requestsByStatusData.map((entry) => (
+                                <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                            ))}
+                        </Bar>
+                        </RechartsBarChart>
+                    </ResponsiveContainer>
+                </ChartContainer>
+              ) : (
                 <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-                <p className="text-muted-foreground text-center p-4">
-                    Bar chart showing counts of requests per status.
-                </p>
+                  <p className="text-muted-foreground text-center p-4">No data for chart.</p>
                 </div>
+              )}
             </CardContent>
             </Card>
         </div>
@@ -251,4 +319,3 @@ export default function ServiceRequestAnalysisPage() {
     </div>
   );
 }
-

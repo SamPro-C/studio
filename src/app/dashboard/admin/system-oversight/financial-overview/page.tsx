@@ -19,6 +19,8 @@ const dummyFinancialData = {
     { landlord: "John L.", revenue: 500000 },
     { landlord: "Jane P.", revenue: 450000 },
     { landlord: "Alice R.", revenue: 300000 },
+    { landlord: "Peter E.", revenue: 150000 },
+    { landlord: "Sam B.", revenue: 100000 },
   ],
   expenseDistribution: [
     { name: "Maintenance", value: 150000, fill: "hsl(var(--chart-1))" },
@@ -120,10 +122,10 @@ export default function GlobalFinancialOverviewPage() {
                  {dummyFinancialData.topLandlordsByRevenue.length > 0 ? (
                     <ChartContainer config={revenueChartConfig} className="h-[300px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={dummyFinancialData.topLandlordsByRevenue} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                            <BarChart data={dummyFinancialData.topLandlordsByRevenue} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                            <XAxis dataKey="landlord" tickLine={false} axisLine={false} tickMargin={8} />
-                            <YAxis tickFormatter={(value) => `KES ${value/1000}k`} tickLine={false} axisLine={false} tickMargin={8} width={60}/>
+                            <XAxis dataKey="landlord" tickLine={false} axisLine={false} tickMargin={8} className="text-xs"/>
+                            <YAxis tickFormatter={(value) => `KES ${value/1000}k`} tickLine={false} axisLine={false} tickMargin={8} width={80} className="text-xs"/>
                             <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                             <ChartLegend content={<ChartLegendContent />} />
                             <Bar dataKey="revenue" fill="var(--color-revenue)" radius={[4, 4, 0, 0]} />

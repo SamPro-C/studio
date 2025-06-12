@@ -1,7 +1,9 @@
 import PageHeader from '@/components/shared/PageHeader';
 import ContactForm from './ContactForm';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram, Facebook } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function ContactPage() {
   return (
@@ -30,8 +32,8 @@ export default function ContactPage() {
               <Mail className="h-6 w-6 text-primary mr-3 mt-1 shrink-0" />
               <div>
                 <h3 className="font-semibold">Email</h3>
-                <a href="mailto:info@sampro.media" className="text-primary hover:underline">
-                  info@sampro.media
+                <a href="mailto:mediasampro@gmail.com" className="text-primary hover:underline">
+                  mediasampro@gmail.com
                 </a>
               </div>
             </div>
@@ -39,8 +41,8 @@ export default function ContactPage() {
               <Phone className="h-6 w-6 text-primary mr-3 mt-1 shrink-0" />
               <div>
                 <h3 className="font-semibold">Phone</h3>
-                <a href="tel:+1234567890" className="text-primary hover:underline">
-                  +1 (234) 567-890
+                <a href="tel:+254111844321" className="text-primary hover:underline">
+                  +254 111 844 321
                 </a>
               </div>
             </div>
@@ -55,6 +57,31 @@ export default function ContactPage() {
               <h3 className="font-semibold mb-2">Business Hours</h3>
               <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
               <p>Saturday - Sunday: Closed</p>
+            </div>
+            <div className="mt-8">
+              <h3 className="font-semibold mb-3 text-lg">Connect With Us</h3>
+              <div className="flex space-x-4">
+                <Button variant="outline" size="icon" asChild>
+                  <Link href="#" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                    <Facebook className="h-5 w-5 text-primary" />
+                  </Link>
+                </Button>
+                <Button variant="outline" size="icon" asChild>
+                  <Link href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                    <Twitter className="h-5 w-5 text-primary" />
+                  </Link>
+                </Button>
+                <Button variant="outline" size="icon" asChild>
+                  <Link href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                    <Instagram className="h-5 w-5 text-primary" />
+                  </Link>
+                </Button>
+                <Button variant="outline" size="icon" asChild>
+                  <Link href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                    <Linkedin className="h-5 w-5 text-primary" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

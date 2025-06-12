@@ -46,7 +46,7 @@ const reportCategories: ReportCategory[] = [
     categoryIcon: Wrench,
     reports: [
       { title: "Service Request Analysis", description: "Analyze service requests by type, status, and resolution time.", icon: ListChecks, actionText: "View Analysis", href: "/dashboard/landlord/reports/service-request-analysis" },
-      { title: "Worker Activity Summary", description: "Overview of tasks assigned and completed by workers.", icon: Briefcase, actionText: "View Summary", onClickAction: () => alert("Worker Activity Summary: To be implemented.") },
+      { title: "Worker Activity Summary", description: "Overview of tasks assigned and completed by workers.", icon: Briefcase, actionText: "View Summary", href: "/dashboard/landlord/reports/worker-activity-summary" },
     ]
   }
 ];

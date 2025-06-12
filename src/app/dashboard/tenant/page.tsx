@@ -181,10 +181,10 @@ export default function TenantDashboardPage() {
           <CardHeader className="flex-row items-center justify-between">
             <div className="space-y-1">
               <CardTitle className="flex items-center text-accent-foreground"><ShoppingBag className="mr-2 h-5 w-5"/> Exclusive Shopping</CardTitle>
-              <CardDescription className="text-accent-foreground/80">Discover goods and services available for tenants.</CardDescription>
+              <CardDescription className="text-accent-foreground/80">Discover goods and services relevant to your living needs.</CardDescription>
             </div>
             <Button variant="default" className="bg-accent text-accent-foreground hover:bg-accent/80" asChild>
-              <Link href="/shopping"> {/* This will be an external or different part of the site */}
+              <Link href="/shopping">
                 Go to Shopping
               </Link>
             </Button>

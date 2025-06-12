@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { LoginFormData } from "@/schemas/auth";
 import { LoginSchema } from "@/schemas/auth";
+import { useRouter } from 'next/navigation';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,7 @@ import { loginUser } from '@/actions/auth-actions';
 
 export function LoginForm() {
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<LoginFormData>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -42,7 +44,13 @@ export function LoginForm() {
         title: "Login Successful",
         description: result.message,
       });
-      // Add redirection logic here, e.g., router.push('/dashboard');
+      if (result.role) {
+        router.push(`/dashboard/${result.role}`);
+      } else {
+        // Optional: Redirect to a generic page or handle users without a specific role
+        // router.push('/dashboard'); 
+        console.log("User logged in but no specific role for redirection.");
+      }
     } else {
       toast({
         title: "Login Failed",
@@ -115,7 +123,7 @@ export function LoginForm() {
           </form>
         </Form>
         <p className="mt-4 text-center text-sm text-muted-foreground">
-          Placeholder for reCAPTCHA v3.
+          Test with: landlord@example.com, tenant@example.com, worker@example.com, admin@example.com (any password).
         </p>
       </CardContent>
       <CardFooter className="flex-col items-start">

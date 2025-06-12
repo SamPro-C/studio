@@ -10,39 +10,144 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Search, Filter, Wrench, MoreHorizontal, UserPlus, CheckCircle, Eye } from 'lucide-react';
+import { ArrowLeft, Search, Filter, Wrench, MoreHorizontal, UserPlus, CheckCircle, Eye, Edit } from 'lucide-react';
 
-type RequestStatus = 'Pending' | 'In Progress' | 'Completed' | 'Canceled';
-type RequestPriority = 'Low' | 'Medium' | 'High';
+type RequestStatus = 'Pending' | 'In Progress' | 'Completed' | 'Canceled' | 'On Hold';
+type RequestPriority = 'Low' | 'Medium' | 'High' | 'Urgent';
 
-interface ServiceRequest {
-  id: string;
-  requestId: string;
+export interface ServiceRequest {
+  id: string; // unique key for lists
+  requestId: string; // user-facing ID
   dateSubmitted: string;
   tenantName: string;
+  tenantId?: string;
   apartment: string;
   unit: string;
   room: string;
-  description: string;
+  category: string;
+  description: string; // Short description for table
+  fullDescription: string; // Detailed description
+  priority: RequestPriority;
   status: RequestStatus;
   workerAssigned: string | null;
-  priority: RequestPriority;
+  workerId?: string;
+  dateCompleted: string | null;
+  mediaUploads: Array<{ id: string, type: 'image' | 'video'; url: string; caption?: string, aiHint?: string }>;
+  actionLog: Array<{ id: string, timestamp: string; user: string; action: string; details?: string }>;
+  reportedBy?: string;
 }
 
-// Dummy data for service requests - replace with actual data fetching
-const dummyServiceRequests: ServiceRequest[] = [
-  { id: "sr001", requestId: "SR20240725-001", dateSubmitted: "2024-07-25", tenantName: "Alice Wonderland", apartment: "Greenwood Heights", unit: "A-101", room: "Kitchen", description: "Leaky faucet under the sink, constant dripping.", status: "Pending", workerAssigned: null, priority: "High" },
-  { id: "sr002", requestId: "SR20240724-003", dateSubmitted: "2024-07-24", tenantName: "Bob The Builder", apartment: "Greenwood Heights", unit: "B-201", room: "Bathroom", description: "Shower drain clogged, water not draining.", status: "In Progress", workerAssigned: "Mike Ross (Plumber)", priority: "Medium" },
-  { id: "sr003", requestId: "SR20240723-001", dateSubmitted: "2024-07-23", tenantName: "Charlie Brown", apartment: "Oceanview Towers", unit: "C-505", room: "Living Room", description: "Air conditioner not cooling properly.", status: "Completed", workerAssigned: "Tech Services Inc.", priority: "Medium" },
-  { id: "sr004", requestId: "SR20240722-005", dateSubmitted: "2024-07-22", tenantName: "Diana Prince", apartment: "Mountain Ridge Villas", unit: "Villa A", room: "Bedroom", description: "Broken window lock.", status: "Canceled", workerAssigned: null, priority: "Low" },
+// Updated dummy data for service requests
+export const dummyServiceRequests: ServiceRequest[] = [
+  { 
+    id: "sr001", 
+    requestId: "SR20240725-001", 
+    dateSubmitted: "2024-07-25", 
+    tenantName: "Alice Wonderland", 
+    tenantId: "tenant001",
+    apartment: "Greenwood Heights", 
+    unit: "A-101", 
+    room: "Kitchen", 
+    category: "Plumbing",
+    description: "Leaky faucet under the sink, constant dripping.", 
+    fullDescription: "The kitchen faucet has been leaking consistently for the past two days. It's a steady drip under the sink, and a small puddle forms. Needs urgent attention to prevent water damage and high bills.",
+    priority: "High", 
+    status: "Pending", 
+    workerAssigned: null, 
+    workerId: undefined,
+    dateCompleted: null,
+    mediaUploads: [
+      { id: "media001", type: 'image', url: 'https://placehold.co/300x200.png', caption: 'Leaking Faucet View 1', aiHint: 'leaky faucet' },
+      { id: "media002", type: 'image', url: 'https://placehold.co/300x200.png', caption: 'Puddle under sink', aiHint: 'water damage' }
+    ],
+    actionLog: [
+      { id: "log001", timestamp: "2024-07-25 10:00 AM", user: "Alice Wonderland", action: "Request Submitted", details: "Tenant submitted the request via app." }
+    ],
+    reportedBy: "Alice Wonderland",
+  },
+  { 
+    id: "sr002", 
+    requestId: "SR20240724-003", 
+    dateSubmitted: "2024-07-24", 
+    tenantName: "Bob The Builder", 
+    tenantId: "tenant002",
+    apartment: "Greenwood Heights", 
+    unit: "B-201", 
+    room: "Bathroom", 
+    category: "Plumbing",
+    description: "Shower drain clogged, water not draining.", 
+    fullDescription: "The main bathroom shower drain is completely clogged. Water backs up significantly during showers, making it unusable. Tenant tried basic unclogging methods without success.",
+    priority: "Medium", 
+    status: "In Progress", 
+    workerAssigned: "Mike Ross (Plumber)", 
+    workerId: "worker001",
+    dateCompleted: null,
+    mediaUploads: [],
+    actionLog: [
+      { id: "log002a", timestamp: "2024-07-24 02:30 PM", user: "Bob The Builder", action: "Request Submitted" },
+      { id: "log002b", timestamp: "2024-07-24 03:00 PM", user: "Landlord Admin", action: "Worker Assigned", details: "Mike Ross assigned." },
+      { id: "log002c", timestamp: "2024-07-25 09:00 AM", user: "Mike Ross", action: "Status Updated", details: "Changed to In Progress. Site visit scheduled." }
+    ],
+    reportedBy: "Bob The Builder",
+  },
+  { 
+    id: "sr003", 
+    requestId: "SR20240723-001", 
+    dateSubmitted: "2024-07-23", 
+    tenantName: "Charlie Brown", 
+    tenantId: "tenant003",
+    apartment: "Oceanview Towers", 
+    unit: "C-505", 
+    room: "Living Room", 
+    category: "HVAC",
+    description: "Air conditioner not cooling properly.", 
+    fullDescription: "The living room AC unit runs, but it's not blowing cold air. It's been like this for a day. Filters were cleaned recently by the tenant.",
+    priority: "Medium", 
+    status: "Completed", 
+    workerAssigned: "Tech Services Inc.", 
+    workerId: "workerExternal001", // Example of external worker
+    dateCompleted: "2024-07-24",
+    mediaUploads: [
+       { id: "media003", type: 'image', url: 'https://placehold.co/300x200.png', caption: 'AC Unit Model', aiHint: 'air conditioner' }
+    ],
+    actionLog: [
+      { id: "log003a", timestamp: "2024-07-23 11:00 AM", user: "Charlie Brown", action: "Request Submitted" },
+      { id: "log003b", timestamp: "2024-07-23 11:30 AM", user: "Landlord Admin", action: "Worker Assigned", details: "Tech Services Inc. assigned." },
+      { id: "log003c", timestamp: "2024-07-24 04:00 PM", user: "Tech Services Inc.", action: "Status Updated", details: "Work completed. Refrigerant recharged." }
+    ],
+    reportedBy: "Charlie Brown",
+  },
+  { 
+    id: "sr004", 
+    requestId: "SR20240722-005", 
+    dateSubmitted: "2024-07-22", 
+    tenantName: "Diana Prince", 
+    tenantId: "tenant004",
+    apartment: "Mountain Ridge Villas", 
+    unit: "Villa A", 
+    room: "Bedroom", 
+    category: "Fixtures",
+    description: "Broken window lock.", 
+    fullDescription: "The lock on the master bedroom window is broken and cannot be secured. This is a security concern.",
+    priority: "High", 
+    status: "Canceled", 
+    workerAssigned: null, 
+    workerId: undefined,
+    dateCompleted: null,
+    mediaUploads: [],
+    actionLog: [
+      { id: "log004a", timestamp: "2024-07-22 09:15 AM", user: "Diana Prince", action: "Request Submitted" },
+      { id: "log004b", timestamp: "2024-07-22 01:00 PM", user: "Landlord Admin", action: "Status Updated", details: "Canceled by tenant. Tenant fixed it themselves." }
+    ],
+    reportedBy: "Diana Prince",
+  },
 ];
 
 export default function ManageServiceRequestsPage() {
   const router = useRouter();
 
-  const handleViewDetails = (id: string) => {
-    alert(`View details for Service Request ID: ${id}. Functionality to be implemented.`);
-    // router.push(`/dashboard/landlord/service-requests/${id}`);
+  const handleViewDetails = (requestId: string) => {
+    router.push(`/dashboard/landlord/service-requests/${requestId}`);
   };
 
   const handleAssignWorker = (id: string) => {
@@ -55,20 +160,22 @@ export default function ManageServiceRequestsPage() {
     // Show dropdown or modal for status change
   };
 
-  const getStatusBadgeVariant = (status: RequestStatus) => {
+  const getStatusBadgeVariant = (status: RequestStatus): "default" | "secondary" | "destructive" | "outline" => {
     switch (status) {
       case 'Pending': return 'secondary';
-      case 'In Progress': return 'default'; // Or a specific 'warning' variant if you add one
-      case 'Completed': return 'default'; // Or a specific 'success' variant
+      case 'In Progress': return 'default'; 
+      case 'Completed': return 'default'; // Should be success-like, 'default' works
       case 'Canceled': return 'destructive';
+      case 'On Hold': return 'outline';
       default: return 'outline';
     }
   };
   
-  const getPriorityBadgeVariant = (priority: RequestPriority) => {
+  const getPriorityBadgeVariant = (priority: RequestPriority): "default" | "secondary" | "destructive" | "outline" => {
     switch (priority) {
+        case 'Urgent':
         case 'High': return 'destructive';
-        case 'Medium': return 'secondary'; // or 'default' if you prefer
+        case 'Medium': return 'secondary'; 
         case 'Low': return 'outline';
         default: return 'outline';
     }
@@ -132,6 +239,7 @@ export default function ManageServiceRequestsPage() {
                       <TableHead>Date</TableHead>
                       <TableHead>Tenant</TableHead>
                       <TableHead>Property</TableHead>
+                      <TableHead>Category</TableHead>
                       <TableHead>Description</TableHead>
                       <TableHead>Priority</TableHead>
                       <TableHead>Status</TableHead>
@@ -149,6 +257,7 @@ export default function ManageServiceRequestsPage() {
                           {req.apartment} <br />
                           <span className="text-xs text-muted-foreground">{req.unit} / {req.room}</span>
                         </TableCell>
+                        <TableCell>{req.category}</TableCell>
                         <TableCell className="max-w-xs truncate" title={req.description}>{req.description}</TableCell>
                         <TableCell>
                             <Badge variant={getPriorityBadgeVariant(req.priority)}>{req.priority}</Badge>
@@ -167,8 +276,11 @@ export default function ManageServiceRequestsPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleViewDetails(req.id)}>
+                              <DropdownMenuItem onClick={() => handleViewDetails(req.requestId)}>
                                 <Eye className="mr-2 h-4 w-4" /> View Details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => router.push(`/dashboard/landlord/service-requests/${req.requestId}/edit`)} disabled={req.status === 'Completed' || req.status === 'Canceled'}>
+                                <Edit className="mr-2 h-4 w-4" /> Edit Request
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleAssignWorker(req.id)} disabled={req.status === 'Completed' || req.status === 'Canceled'}>
                                 <UserPlus className="mr-2 h-4 w-4" /> Assign Worker
@@ -193,3 +305,4 @@ export default function ManageServiceRequestsPage() {
     </div>
   );
 }
+

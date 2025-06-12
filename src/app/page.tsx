@@ -1,8 +1,11 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Tv, Code, Briefcase } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ArrowRight, Tv, Code, Briefcase, Quote, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
+import { testimonials } from '@/lib/data';
 
 export default function Home() {
   return (
@@ -91,6 +94,38 @@ export default function Home() {
               </Button>
             </CardContent>
           </Card>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="font-headline text-3xl md:text-4xl font-bold text-center mb-2 text-primary">
+          Trusted by Businesses Like Yours
+        </h2>
+        <p className="text-lg text-foreground/80 max-w-xl mx-auto text-center mb-12">
+          Hear what our clients have to say about their experience with Sampro Media.
+        </p>
+        <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
+          {testimonials.map((testimonial) => (
+            <Card key={testimonial.id} className="shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col bg-card">
+              <CardContent className="pt-6 flex-grow flex flex-col">
+                <Quote className="h-8 w-8 text-primary/70 mb-4 transform scale-x-[-1]" />
+                <p className="text-foreground/90 italic mb-6 flex-grow">"{testimonial.quote}"</p>
+                <div className="flex items-center mt-auto">
+                  {testimonial.avatarUrl && (
+                    <Avatar className="h-12 w-12 mr-4">
+                      <AvatarImage src={testimonial.avatarUrl} alt={testimonial.name} data-ai-hint={testimonial.dataAiHint || "client photo"}/>
+                      <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  )}
+                  <div>
+                    <p className="font-semibold text-primary">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.company}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
       

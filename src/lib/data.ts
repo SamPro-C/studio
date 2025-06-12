@@ -43,6 +43,15 @@ export interface CaseStudy {
   dataAiHint?: string;
 }
 
+export interface Testimonial {
+  id: string;
+  name: string;
+  company: string;
+  quote: string;
+  avatarUrl?: string;
+  dataAiHint?: string;
+}
+
 export const mediaProjects: MediaProject[] = [
   {
     id: '1',
@@ -231,4 +240,31 @@ export const aiToolTips = [
   { icon: Search, text: "Incorporate relevant keywords naturally for better SEO." },
   { icon: Lightbulb, text: "Highlight key features and benefits concisely." },
   { icon: LineChart, text: "Focus on the impact and value your project delivers." },
+];
+
+export const testimonials: Testimonial[] = [
+  {
+    id: 't1',
+    name: 'Alice Wonderland',
+    company: 'Tech Solutions Inc.',
+    quote: "Sampro Media transformed our online presence! Their creativity and technical expertise are unmatched. We've seen a significant boost in engagement since partnering with them.",
+    avatarUrl: 'https://placehold.co/100x100.png',
+    dataAiHint: 'professional portrait',
+  },
+  {
+    id: 't2',
+    name: 'Bob The Builder',
+    company: 'Creative Constructions Co.',
+    quote: "The custom software Sampro Media developed for us has streamlined our operations incredibly. It's intuitive, powerful, and has saved us countless hours.",
+    avatarUrl: 'https://placehold.co/100x100.png',
+    dataAiHint: 'happy client',
+  },
+  {
+    id: 't3',
+    name: 'Carol Danvers',
+    company: 'Starlight Innovations',
+    quote: "Their video production quality is top-notch. Sampro Media captured our brand's essence perfectly and delivered a final product that exceeded all expectations.",
+    avatarUrl: 'https://placehold.co/100x100.png',
+    dataAiHint: 'business person',
+  },
 ];

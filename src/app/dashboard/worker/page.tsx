@@ -1,3 +1,4 @@
+
 // src/app/dashboard/worker/page.tsx
 "use client";
 
@@ -14,54 +15,42 @@ import {
     AlertTriangle, 
     CheckCircle, 
     Clock,
-    Tool
+    LogIn, 
+    LogOut,
+    Building
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
-// Dummy worker data
+// Dummy worker data (enhanced based on new spec)
 const workerData = {
   name: "Mike Ross",
   role: "Plumber",
   profilePicUrl: "https://placehold.co/100x100.png",
   aiProfileHint: "profile man worker",
-  stats: {
-    pendingTasks: 3,
-    tasksToday: 2,
-    completedThisWeek: 8,
+  todaySchedule: {
+    shift: "9:00 AM - 5:00 PM",
+    assignedApartments: ["Greenwood Heights (Unit A-101, B-203)", "Oceanview Towers (Common Areas)"],
+    pendingTasksToday: 2,
   },
-  priorityTasks: [
-    { id: "SR001", description: "Fix leaky faucet, Unit A-101", location: "Greenwood Heights", status: "Pending" as const, priority: "High" as const},
-    { id: "SR003", description: "Unclog shower drain, Unit C-505", location: "Oceanview Towers", status: "In Progress" as const, priority: "Medium" as const },
-    { id: "INST005", description: "Install new shelving, Villa A", location: "Mountain Ridge", status: "Pending" as const, priority: "Low" as const },
+  stats: {
+    totalApartmentsAssigned: 3,
+    tasksPending: 5, // Overall pending
+    tasksCompletedThisWeek: 8,
+    currentAvailabilityStatus: "On Shift" as "On Shift" | "Off Shift" | "On Break",
+  },
+  recentNotifications: [
+    { id: "n1", title: "New Task Assigned", message: "SR005: Urgent - Broken pipe in Villa C", date: "2h ago", read: false },
+    { id: "n2", title: "Schedule Change", message: "Your shift tomorrow starts at 10 AM.", date: "1d ago", read: true },
   ],
 };
 
-const quickLinks = [
-    { title: "My Full Task List", href: "/dashboard/worker/tasks", icon: ListChecks, description: "View all assigned tasks." },
-    { title: "My Schedule", href: "/dashboard/worker/schedule", icon: CalendarDays, description: "Check your work calendar." },
-    { title: "Notifications", href: "/dashboard/worker/notifications", icon: Bell, description: "Recent alerts and updates." },
-    { title: "Report Issue/Supply Need", onClick: () => alert("Functionality to report an issue or request supplies."), icon: AlertTriangle, description: "Request assistance or materials." },
-];
-
-const getStatusBadgeVariant = (status: 'Pending' | 'In Progress' | 'Completed') => {
-    switch (status) {
-        case 'Pending': return 'secondary';
-        case 'In Progress': return 'default';
-        case 'Completed': return 'default'; // Consider a 'success' variant if available
-        default: return 'outline';
-    }
-};
-const getPriorityBadgeVariant = (priority: 'Low' | 'Medium' | 'High') => {
-    switch (priority) {
-        case 'Low': return 'outline';
-        case 'Medium': return 'secondary';
-        case 'High': return 'destructive';
-        default: return 'outline';
-    }
-};
-
-
 export default function WorkerDashboardPage() {
+
+  const handleCheckInOut = () => {
+    alert(`Simulating ${workerData.stats.currentAvailabilityStatus === "On Shift" ? "Check-out" : "Check-in"}. Attendance tracking to be implemented.`);
+    // In a real app, update workerData.stats.currentAvailabilityStatus
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1 bg-background p-4 sm:p-6 md:p-8 space-y-8">
@@ -69,15 +58,15 @@ export default function WorkerDashboardPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="font-headline text-2xl sm:text-3xl font-bold text-primary">
-              Welcome back, {workerData.name}!
+              Hello, {workerData.name}!
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base">
-              Your role: {workerData.role}. Here's your task overview for today.
+              Your role: {workerData.role}. Here's your overview.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Avatar>
-              <AvatarImage src={workerData.profilePicUrl} alt={workerData.name} data-ai-hint={workerData.aiProfileHint} />
+              <AvatarImage src={workerData.profilePicUrl} alt={workerData.name} data-ai-hint={workerData.aiProfileHint}/>
               <AvatarFallback>{workerData.name.substring(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <Button variant="ghost" size="sm" asChild>
@@ -88,26 +77,41 @@ export default function WorkerDashboardPage() {
           </div>
         </div>
 
+        {/* Today's Schedule Summary */}
+        <Card className="bg-primary/5">
+            <CardHeader>
+                <CardTitle className="text-lg text-primary/90 flex items-center"><CalendarDays className="mr-2 h-5 w-5"/> Today's Schedule</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm">
+                <p><strong>Shift:</strong> {workerData.todaySchedule.shift}</p>
+                <div>
+                    <strong>Assigned Locations:</strong>
+                    <ul className="list-disc list-inside ml-4 text-xs">
+                        {workerData.todaySchedule.assignedApartments.map((loc, idx) => <li key={idx}>{loc}</li>)}
+                    </ul>
+                </div>
+                <p><strong>Pending Tasks for Today:</strong> {workerData.todaySchedule.pendingTasksToday}</p>
+            </CardContent>
+        </Card>
+
         {/* Quick Stats Cards */}
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Tasks</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Total Assigned Apartments</CardTitle>
+              <Building className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{workerData.stats.pendingTasks}</div>
-              <p className="text-xs text-muted-foreground">Tasks awaiting your action</p>
+              <div className="text-2xl font-bold">{workerData.stats.totalApartmentsAssigned}</div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tasks for Today</CardTitle>
-              <CalendarDays className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Overall Pending Tasks</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{workerData.stats.tasksToday}</div>
-              <p className="text-xs text-muted-foreground">Scheduled or high priority</p>
+              <div className="text-2xl font-bold">{workerData.stats.tasksPending}</div>
             </CardContent>
           </Card>
           <Card>
@@ -117,86 +121,62 @@ export default function WorkerDashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{workerData.stats.completedThisWeek}</div>
-              <p className="text-xs text-muted-foreground">Successfully resolved tasks</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Availability Status</CardTitle>
+              {workerData.stats.currentAvailabilityStatus === "On Shift" ? <LogIn className="h-4 w-4 text-green-500" /> : <LogOut className="h-4 w-4 text-red-500" />}
+            </CardHeader>
+            <CardContent>
+              <div className={`text-xl font-bold ${workerData.stats.currentAvailabilityStatus === "On Shift" ? "text-green-600" : "text-red-600"}`}>
+                {workerData.stats.currentAvailabilityStatus}
+              </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* Today's Priority Tasks Section */}
+        {/* Action Buttons */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Button asChild size="lg"><Link href="/dashboard/worker/schedule"><CalendarDays className="mr-2"/> My Schedule</Link></Button>
+            <Button asChild size="lg"><Link href="/dashboard/worker/tasks"><ListChecks className="mr-2"/> My Tasks</Link></Button>
+            <Button asChild size="lg" variant="outline"><Link href="/dashboard/worker/report-issue"><AlertTriangle className="mr-2"/> Report Issue</Link></Button>
+            <Button size="lg" variant="outline" onClick={handleCheckInOut}>
+              {workerData.stats.currentAvailabilityStatus === "On Shift" ? <LogOut className="mr-2"/> : <LogIn className="mr-2"/>}
+              {workerData.stats.currentAvailabilityStatus === "On Shift" ? "Check-Out" : "Check-In"}
+            </Button>
+        </section>
+
+
+        {/* Recent Notifications Section */}
         <section>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center"><ListChecks className="mr-2 h-5 w-5" /> Today's Priority Tasks</CardTitle>
-              <CardDescription>Focus on these tasks. Click to view details (placeholder).</CardDescription>
+              <CardTitle className="flex items-center"><Bell className="mr-2 h-5 w-5" /> Recent Notifications</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {workerData.priorityTasks.length > 0 ? (
-                workerData.priorityTasks.map(task => (
-                  <Card 
-                    key={task.id} 
-                    className="p-3 hover:shadow-md transition-shadow cursor-pointer"
-                    onClick={() => alert(`View details for task ${task.id}`)}
-                  >
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <p className="font-semibold text-sm">{task.description}</p>
-                            <p className="text-xs text-muted-foreground">{task.location}</p>
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                            <Badge variant={getStatusBadgeVariant(task.status)}>{task.status}</Badge>
-                            <Badge variant={getPriorityBadgeVariant(task.priority)} className="text-xs">{task.priority} Priority</Badge>
-                        </div>
+              {workerData.recentNotifications.length > 0 ? (
+                workerData.recentNotifications.map(notif => (
+                  <div key={notif.id} className={`p-3 rounded-md border ${!notif.read ? 'bg-primary/5 border-primary/30' : 'bg-muted/50'}`}>
+                    <div className="flex justify-between items-center">
+                      <h4 className={`font-semibold text-sm ${!notif.read ? 'text-primary' : ''}`}>{notif.title}</h4>
+                      {!notif.read && <span className="h-2 w-2 rounded-full bg-primary animate-pulse"></span>}
                     </div>
-                  </Card>
+                    <p className="text-xs text-muted-foreground mt-0.5">{notif.message}</p>
+                    <p className="text-xs text-muted-foreground/80 mt-1">{notif.date}</p>
+                  </div>
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground text-center py-4">No priority tasks for today. Great job!</p>
+                <p className="text-sm text-muted-foreground text-center py-4">No recent notifications.</p>
               )}
             </CardContent>
             <CardFooter>
               <Button variant="outline" className="w-full" asChild>
-                <Link href="/dashboard/worker/tasks">
-                  <ListChecks className="mr-2 h-4 w-4" /> View All My Tasks
-                </Link>
+                <Link href="/dashboard/worker/notifications">View All Notifications</Link>
               </Button>
             </CardFooter>
           </Card>
         </section>
-
-        {/* Quick Links/Actions Section */}
-        <section>
-            <h2 className="font-headline text-xl font-semibold text-primary mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {quickLinks.map(link => (
-                     <Card key={link.title} className="hover:shadow-lg transition-shadow">
-                        <CardHeader className="pb-2">
-                           <link.icon className="h-6 w-6 text-primary mb-2" />
-                           <CardTitle className="text-md font-semibold">{link.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                           <p className="text-xs text-muted-foreground mb-3">{link.description}</p>
-                           {link.href ? (
-                                <Button variant="outline" size="sm" className="w-full" asChild>
-                                    <Link href={link.href}>Go to {link.title.split(" ")[0]}</Link>
-                                </Button>
-                           ) : (
-                                <Button variant="outline" size="sm" className="w-full" onClick={link.onClick}>
-                                    {link.title.split(" ")[0]} Action
-                                </Button>
-                           )}
-                        </CardContent>
-                     </Card>
-                ))}
-            </div>
-        </section>
-        
-        <div className="p-6 border border-dashed rounded-md bg-muted/50 text-center">
-          <Tool className="mx-auto h-8 w-8 text-muted-foreground mb-2"/>
-          <p className="text-muted-foreground">
-            Future features may include map integration for task locations and direct communication tools with tenants/landlord.
-          </p>
-        </div>
-
       </main>
     </div>
   );

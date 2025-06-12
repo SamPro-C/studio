@@ -5,7 +5,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, LifeBuoy, Ticket, Filter, Search, MessageSquare, UserCog } from 'lucide-react';
+import { ArrowLeft, LifeBuoy, Ticket, Filter, Search, MessageSquare, UserCog, Eye } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -43,8 +43,8 @@ export default function AdminSupportHelpdeskPage() {
 
   const getStatusVariant = (status: SupportTicket['status']) => {
     if (status === 'Open') return 'secondary';
-    if (status === 'In Progress') return 'default';
-    if (status === 'Resolved' || status === 'Closed') return 'outline';
+    if (status === 'In Progress') return 'default'; // Consider primary color
+    if (status === 'Resolved' || status === 'Closed') return 'default'; // consider green if available
     return 'outline';
   };
   
@@ -65,7 +65,7 @@ export default function AdminSupportHelpdeskPage() {
             </Link>
           </Button>
           <h1 className="font-headline text-2xl sm:text-3xl font-bold text-primary flex items-center">
-            <LifeBuoy className="mr-3 h-7 w-7" /> Support & Helpdesk
+            <LifeBuoy className="mr-3 h-7 w-7" /> Support &amp; Helpdesk
           </h1>
         </div>
 

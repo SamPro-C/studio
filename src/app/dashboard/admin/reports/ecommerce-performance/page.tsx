@@ -9,6 +9,25 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, ShoppingCart, Filter, FileDown, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+
+const salesTrendData = [
+  { month: "Jan", sales: 5000 },
+  { month: "Feb", sales: 7000 },
+  { month: "Mar", sales: 6500 },
+  { month: "Apr", sales: 8200 },
+  { month: "May", sales: 9500 },
+  { month: "Jun", sales: 11000 },
+];
+
+const chartConfig = {
+  sales: {
+    label: "Sales (KES)",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig;
+
 
 export default function EcommercePerformanceReportPage() {
   const { toast } = useToast();
@@ -70,8 +89,41 @@ export default function EcommercePerformanceReportPage() {
             <CardTitle className="flex items-center"><BarChart3 className="mr-2 h-5 w-5 text-primary/80"/> Sales Trends</CardTitle>
             <CardDescription>Chart displaying sales volume over time.</CardDescription>
           </CardHeader>
-          <CardContent className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-            <p className="text-muted-foreground">Sales Trend Chart Placeholder</p>
+          <CardContent>
+            {salesTrendData.length > 0 ? (
+               <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={salesTrendData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis 
+                        dataKey="month" 
+                        tickLine={false} 
+                        axisLine={false} 
+                        tickMargin={8} 
+                        className="text-xs"
+                      />
+                      <YAxis 
+                        tickFormatter={(value) => `KES ${value/1000}k`} 
+                        tickLine={false} 
+                        axisLine={false} 
+                        tickMargin={8}
+                        width={80}
+                        className="text-xs"
+                      />
+                      <ChartTooltip 
+                        cursor={false}
+                        content={<ChartTooltipContent indicator="dot" />} 
+                      />
+                      <ChartLegend content={<ChartLegendContent />} />
+                      <Bar dataKey="sales" fill="var(--color-sales)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+            ) : (
+                <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
+                    <p className="text-muted-foreground">Sales Trend Chart Placeholder</p>
+                </div>
+            )}
           </CardContent>
         </Card>
         

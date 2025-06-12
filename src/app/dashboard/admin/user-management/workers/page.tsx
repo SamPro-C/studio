@@ -23,13 +23,14 @@ interface Worker {
   phone: string;
   role: string;
   assignedLandlords: string[]; // Names or IDs
-  status: 'Active' | 'Inactive';
+  status: 'Active' | 'Inactive' | 'PendingApproval';
 }
 
 const dummyWorkers: Worker[] = [
   { id: "worker001", name: "Mike Ross", email: "mike.ross@example.com", phone: "0712345030", role: "Plumber", assignedLandlords: ["John Landlord"], status: "Active" },
   { id: "worker002", name: "Sarah Connor", email: "sarah.connor@example.com", phone: "0712345031", role: "Electrician", assignedLandlords: ["Jane Proprietor", "John Landlord"], status: "Active" },
   { id: "worker003", name: "John Cleese", email: "john.cleese@example.com", phone: "0712345032", role: "Cleaner", assignedLandlords: ["Peter Estates"], status: "Inactive" },
+  { id: "worker004", name: "Pending Worker D", email: "worker.d@example.com", phone: "0712345033", role: "Handyman", assignedLandlords: [], status: "PendingApproval" },
 ];
 
 export default function ManageWorkersPage() {
@@ -40,7 +41,10 @@ export default function ManageWorkersPage() {
   };
 
   const getStatusVariant = (status: Worker['status']) => {
-    return status === 'Active' ? 'default' : 'secondary';
+    if (status === 'Active') return 'default';
+    if (status === 'Inactive') return 'destructive';
+    if (status === 'PendingApproval') return 'secondary';
+    return 'outline';
   };
 
   return (
@@ -83,6 +87,7 @@ export default function ManageWorkersPage() {
                     <SelectItem value="plumber">Plumber</SelectItem>
                     <SelectItem value="electrician">Electrician</SelectItem>
                     <SelectItem value="cleaner">Cleaner</SelectItem>
+                     <SelectItem value="handyman">Handyman</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -127,15 +132,17 @@ export default function ManageWorkersPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleAction("View Profile", worker.name)}>
-                                <Eye className="mr-2 h-4 w-4" /> View Profile
+                              <DropdownMenuItem asChild>
+                                <Link href={`/dashboard/admin/user-management/workers/${worker.id}`}>
+                                  <Eye className="mr-2 h-4 w-4" /> View Profile
+                                </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleAction("Edit Details", worker.name)}>
                                 <Edit className="mr-2 h-4 w-4" /> Edit Details
                               </DropdownMenuItem>
-                               <DropdownMenuItem onClick={() => handleAction(worker.status === 'Active' ? "Deactivate Account" : "Activate Account", worker.name)}>
+                               <DropdownMenuItem onClick={() => handleAction(worker.status === 'Active' ? "Deactivate Account" : (worker.status === 'PendingApproval' ? "Approve Account" : "Activate Account"), worker.name)}>
                                 {worker.status === 'Active' ? <UserX className="mr-2 h-4 w-4" /> : <UserCheck className="mr-2 h-4 w-4" />}
-                                {worker.status === 'Active' ? "Deactivate" : "Activate"}
+                                {worker.status === 'Active' ? "Deactivate" : (worker.status === 'PendingApproval' ? "Approve" : "Activate")}
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleAction("Reset Password", worker.name)}>
                                 <KeyRound className="mr-2 h-4 w-4" /> Reset Password

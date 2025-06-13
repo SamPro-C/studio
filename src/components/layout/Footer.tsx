@@ -3,19 +3,21 @@ import Link from 'next/link';
 import { Aperture } from 'lucide-react';
 
 const footerNavLinks = {
-  navigate: [
+  company: [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About Us' },
     { href: '/services', label: 'Services' },
+    { href: '/contact', label: 'Contact Us' },
   ],
-  portfolio: [
+  explore: [
     { href: '/media-portfolio', label: 'Media Portfolio' },
     { href: '/software-portfolio',label: 'Software Portfolio' },
     { href: '/case-studies', label: 'Case Studies' },
-  ],
-  connect: [
-    { href: '/contact', label: 'Contact Us' },
     { href: '/ai-tools', label: 'AI Tools Hub' },
+  ],
+  legal: [
+    { href: '/privacy-policy', label: 'Privacy Policy' },
+    { href: '/terms-of-service', label: 'Terms of Service' },
   ],
 };
 
@@ -34,15 +36,15 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-sm text-muted-foreground text-center md:text-left">
-              Crafting Digital Experiences.
+              Crafting Digital Experiences for Kenya & Globally.
             </p>
           </div>
 
-          {/* Navigation Links */}
+          {/* Company Links */}
           <div>
-            <h3 className="font-semibold text-foreground mb-3">Navigate</h3>
+            <h3 className="font-semibold text-foreground mb-3">Company</h3>
             <ul className="space-y-2">
-              {footerNavLinks.navigate.map((link) => (
+              {footerNavLinks.company.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     {link.label}
@@ -52,11 +54,11 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Portfolio Links */}
+          {/* Explore Links */}
           <div>
             <h3 className="font-semibold text-foreground mb-3">Explore</h3>
             <ul className="space-y-2">
-              {footerNavLinks.portfolio.map((link) => (
+              {footerNavLinks.explore.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     {link.label}
@@ -66,18 +68,18 @@ export default function Footer() {
             </ul>
           </div>
           
-          {/* Connect Links */}
+          {/* Legal & Connect Links */}
           <div>
-            <h3 className="font-semibold text-foreground mb-3">Connect</h3>
+            <h3 className="font-semibold text-foreground mb-3">Connect & Legal</h3>
             <ul className="space-y-2">
-              {footerNavLinks.connect.map((link) => (
+              {footerNavLinks.legal.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                     {link.label}
                   </Link>
                 </li>
               ))}
-                 <li>
+               <li>
                 <a href="mailto:mediasampro@gmail.com" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   mediasampro@gmail.com
                 </a>
@@ -94,7 +96,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-border/40 pt-6 text-center text-sm text-muted-foreground">
           <p>&copy; {currentYear} Sampro Media. All rights reserved.</p>
-          <p className="mt-1">Professional Media and Software Solutions</p>
+          <p className="mt-1">Professional Media and Software Solutions in Kenya and Worldwide.</p>
         </div>
       </div>
     </footer>

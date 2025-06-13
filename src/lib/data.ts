@@ -1,6 +1,6 @@
 
 import type { LucideIcon } from 'lucide-react';
-import { Palette, LayoutGrid, CodeXml, Camera, LineChart, Users, Target, Lightbulb, Search, Cpu, Bot, FileText, Briefcase, MessageSquare, Aperture, Tv, Info, Mail, BookOpen, Film } from 'lucide-react';
+import { Palette, LayoutGrid, CodeXml, Camera, LineChart, Users, Target, Lightbulb, Search, Cpu, Bot, FileText, Briefcase, MessageSquare, Aperture, Tv, Info, Mail, BookOpen, Film, PieChart } from 'lucide-react';
 
 export interface MediaProject {
   id: string;
@@ -340,6 +340,64 @@ export const services: Service[] = [
     ],
     longDescription: "Unlock the power of Artificial Intelligence with Sampro Media. We provide cutting-edge AI solutions and integration services for businesses in Kenya and internationally, helping you automate processes, gain deeper insights, and create innovative products. Our expertise covers custom AI model development, machine learning applications, Natural Language Processing (NLP) tools, AI-powered automation, intelligent chatbots, and strategic AI consultation. Whether you're looking to enhance existing systems or build entirely new AI-driven platforms for your software or media services, we have the skills to turn your AI vision into reality.",
   },
+  {
+    id: 'ms-office-solutions',
+    title: 'Microsoft Office Suite Solutions',
+    icon: Briefcase,
+    description: "Expert training, support, and automation solutions for Microsoft Office applications (Word, Excel, PowerPoint, Outlook) to boost productivity in Kenya and globally.",
+    longDescription: "Unlock the full potential of the Microsoft Office Suite with Sampro Media. We provide comprehensive training, expert support, and custom automation solutions for applications like Word, Excel, PowerPoint, and Outlook. Whether you're in Kenya or operating internationally, our services are designed to enhance your team's productivity, streamline document workflows, master data analysis in Excel, and create impactful presentations. We help you leverage these essential tools to their fullest.",
+    details: [
+      {
+        heading: "Advanced Excel Training & Automation",
+        explanation: "Master complex Excel functions, data analysis, Power Query, and VBA/Office Scripts automation to transform your data management and reporting capabilities for your Kenyan or global operations."
+      },
+      {
+        heading: "Professional Word Document Solutions",
+        explanation: "From custom template design and advanced formatting to mail merge and document automation, we help you create professional, efficient Word documents that meet your business needs."
+      },
+      {
+        heading: "Impactful PowerPoint Presentation Design",
+        explanation: "Elevate your presentations with expert design, compelling visuals, custom templates, and advanced animation techniques to effectively communicate your message to any audience."
+      },
+      {
+        heading: "Efficient Outlook & Collaboration Setup",
+        explanation: "Optimize your email management, calendar organization, and team collaboration using Microsoft Outlook and associated Microsoft 365 services for seamless communication."
+      },
+      {
+        heading: "Microsoft 365 Integration & Support",
+        explanation: "We provide guidance and support for integrating various Microsoft 365 services, ensuring your team can collaborate effectively and leverage the full suite of productivity tools."
+      }
+    ]
+  },
+  {
+    id: 'power-bi-services',
+    title: 'Power BI & Data Visualization',
+    icon: PieChart,
+    description: "Transform your raw data into actionable insights with our Power BI development, dashboard creation, and data visualization services for businesses in Kenya and worldwide.",
+    longDescription: "Leverage the power of data with Sampro Media's Power BI and Data Visualization services. We help businesses in Kenya and across the globe turn complex datasets into clear, interactive, and actionable insights. Our experts design custom dashboards, develop robust data models, and provide training to empower your team to make data-driven decisions. From integrating various data sources to creating compelling visual reports, we enable you to understand your business performance better.",
+    details: [
+      {
+        heading: "Custom Power BI Dashboard Development",
+        explanation: "We design and develop interactive Power BI dashboards tailored to your specific KPIs and business requirements, providing real-time insights for your Kenyan or international operations."
+      },
+      {
+        heading: "Data Modeling & Integration",
+        explanation: "Our team builds robust data models in Power BI, integrating data from various sources (databases, Excel, cloud services) to create a unified view for comprehensive analysis."
+      },
+      {
+        heading: "Power BI Training & Empowerment",
+        explanation: "Empower your team with tailored Power BI training sessions, from beginner to advanced levels, enabling them to create reports, analyze data, and derive insights independently."
+      },
+      {
+        heading: "Advanced DAX & Performance Optimization",
+        explanation: "Unlock deeper insights with custom Data Analysis Expressions (DAX) measures and calculations. We also optimize your Power BI reports for speed and efficiency."
+      },
+      {
+        heading: "Embedded Analytics Solutions",
+        explanation: "Integrate Power BI reports and dashboards directly into your custom applications, portals, or websites, providing seamless analytical experiences for your users or clients globally."
+      }
+    ]
+  }
 ];
 
 export const caseStudies: CaseStudy[] = [
@@ -412,3 +470,5 @@ export const testimonials: Testimonial[] = [
     dataAiHint: 'business person international',
   },
 ];
+
+    

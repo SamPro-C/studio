@@ -13,11 +13,13 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, DollarSign, PieChart, Filter, CalendarRange, FileDown } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import { useState, useEffect, useMemo } from 'react'; // Added useState, useEffect, useMemo
 
 interface RentCollectionEntry {
   id: string;
   tenantName: string;
   apartmentUnit: string; // e.g. "Greenwood Heights / Unit A-101"
+  property: string; // For filtering
   month: string;
   amountDue: number;
   amountPaid: number;
@@ -27,17 +29,15 @@ interface RentCollectionEntry {
 }
 
 const dummyRentCollectionData: RentCollectionEntry[] = [
-  { id: "rc1", tenantName: "Alice Wonderland", apartmentUnit: "Greenwood Heights / A-101", month: "July 2024", amountDue: 1200, amountPaid: 1200, balance: 0, status: "Paid", paymentDate: "2024-07-01" },
-  { id: "rc2", tenantName: "Bob The Builder", apartmentUnit: "Greenwood Heights / B-201", month: "July 2024", amountDue: 1500, amountPaid: 0, balance: 1500, status: "Unpaid" },
-  { id: "rc3", tenantName: "Charlie Brown", apartmentUnit: "Oceanview Towers / C-505", month: "July 2024", amountDue: 2500, amountPaid: 2500, balance: 0, status: "Paid", paymentDate: "2024-07-03" },
-  { id: "rc4", tenantName: "Alice Wonderland", apartmentUnit: "Greenwood Heights / A-101", month: "June 2024", amountDue: 1200, amountPaid: 1000, balance: 200, status: "Partial", paymentDate: "2024-06-05" },
-  { id: "rc5", tenantName: "Edward Nygma", apartmentUnit: "Mountain Ridge Villas / Villa B", month: "July 2024", amountDue: 2900, amountPaid: 2900, balance: 0, status: "Paid", paymentDate: "2024-07-02" },
+  { id: "rc1", tenantName: "Alice Wonderland", apartmentUnit: "Greenwood Heights / A-101", property: "Greenwood Heights", month: "July 2024", amountDue: 1200, amountPaid: 1200, balance: 0, status: "Paid", paymentDate: "2024-07-01" },
+  { id: "rc2", tenantName: "Bob The Builder", apartmentUnit: "Greenwood Heights / B-201", property: "Greenwood Heights", month: "July 2024", amountDue: 1500, amountPaid: 0, balance: 1500, status: "Unpaid" },
+  { id: "rc3", tenantName: "Charlie Brown", apartmentUnit: "Oceanview Towers / C-505", property: "Oceanview Towers", month: "July 2024", amountDue: 2500, amountPaid: 2500, balance: 0, status: "Paid", paymentDate: "2024-07-03" },
+  { id: "rc4", tenantName: "Alice Wonderland", apartmentUnit: "Greenwood Heights / A-101", property: "Greenwood Heights", month: "June 2024", amountDue: 1200, amountPaid: 1000, balance: 200, status: "Partial", paymentDate: "2024-06-05" },
+  { id: "rc5", tenantName: "Edward Nygma", apartmentUnit: "Mountain Ridge Villas / Villa B", property: "Mountain Ridge Villas", month: "July 2024", amountDue: 2900, amountPaid: 2900, balance: 0, status: "Paid", paymentDate: "2024-07-02" },
+  { id: "rc6", tenantName: "Frank Castle", apartmentUnit: "Oceanview Towers / D-102", property: "Oceanview Towers", month: "July 2024", amountDue: 1800, amountPaid: 0, balance: 1800, status: "Unpaid" },
 ];
 
-const totalDue = dummyRentCollectionData.reduce((sum, item) => sum + item.amountDue, 0);
-const totalCollected = dummyRentCollectionData.reduce((sum, item) => sum + item.amountPaid, 0);
-const totalOutstanding = totalDue - totalCollected;
-
+// Static chart data for now
 const monthlyChartData = [
   { month: "Jan", collected: 6000, outstanding: 1000 },
   { month: "Feb", collected: 5500, outstanding: 1500 },
@@ -59,10 +59,45 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function RentCollectionSummaryPage() {
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedProperty, setSelectedProperty] = useState('all'); // 'all' or property name
+
+  const filteredRentCollectionData = useMemo(() => {
+    let data = dummyRentCollectionData;
+    if (selectedProperty !== 'all') {
+      data = data.filter(item => item.property === selectedProperty);
+    }
+    // Add date filtering here when implemented
+    // if (startDate) {
+    //   data = data.filter(item => new Date(item.paymentDate || item.month) >= new Date(startDate));
+    // }
+    // if (endDate) {
+    //   data = data.filter(item => new Date(item.paymentDate || item.month) <= new Date(endDate));
+    // }
+    return data;
+  }, [selectedProperty, startDate, endDate]);
+
+  const totalDue = useMemo(() => filteredRentCollectionData.reduce((sum, item) => sum + item.amountDue, 0), [filteredRentCollectionData]);
+  const totalCollected = useMemo(() => filteredRentCollectionData.reduce((sum, item) => sum + item.amountPaid, 0), [filteredRentCollectionData]);
+  const totalOutstanding = totalDue - totalCollected;
   
+  const handleApplyFilters = () => {
+    // This function can be used if we need to trigger filtering manually,
+    // but useMemo already makes it reactive.
+    // For now, it can just log the current filter state.
+    console.log("Applying filters:", { startDate, endDate, selectedProperty });
+  };
+
   const handleExportData = () => {
     alert(`Export rent collection data to CSV/Excel. To be implemented.`);
   };
+
+  // Extract unique property names for the filter dropdown
+  const propertyOptions = useMemo(() => {
+    const uniqueProperties = new Set(dummyRentCollectionData.map(item => item.property));
+    return [{ id: 'all', name: 'All Properties' }, ...Array.from(uniqueProperties).map(prop => ({ id: prop, name: prop }))];
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -92,27 +127,26 @@ export default function RentCollectionSummaryPage() {
           <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
             <div>
               <Label htmlFor="startDate">Start Date</Label>
-              <Input id="startDate" type="date" />
+              <Input id="startDate" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
             </div>
             <div>
               <Label htmlFor="endDate">End Date</Label>
-              <Input id="endDate" type="date" />
+              <Input id="endDate" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
             </div>
             <div>
               <Label htmlFor="property">Property</Label>
-              <Select>
+              <Select value={selectedProperty} onValueChange={setSelectedProperty}>
                 <SelectTrigger id="property">
                   <SelectValue placeholder="All Properties" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Properties</SelectItem>
-                  <SelectItem value="apt1">Greenwood Heights</SelectItem>
-                  <SelectItem value="apt2">Oceanview Towers</SelectItem>
-                  <SelectItem value="apt3">Mountain Ridge Villas</SelectItem>
+                  {propertyOptions.map(opt => (
+                    <SelectItem key={opt.id} value={opt.id}>{opt.name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
-            <Button className="w-full sm:w-auto self-end"><Filter className="mr-2 h-4 w-4"/>Apply Filters</Button>
+            <Button className="w-full sm:w-auto self-end" onClick={handleApplyFilters}><Filter className="mr-2 h-4 w-4"/>Apply Filters</Button>
           </CardContent>
         </Card>
 
@@ -125,7 +159,7 @@ export default function RentCollectionSummaryPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">KES {totalDue.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">For the selected period</p>
+              <p className="text-xs text-muted-foreground">For the selected period/filters</p>
             </CardContent>
           </Card>
           <Card>
@@ -145,7 +179,7 @@ export default function RentCollectionSummaryPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">KES {totalOutstanding.toLocaleString()}</div>
-               <p className="text-xs text-muted-foreground">Across all filtered properties</p>
+               <p className="text-xs text-muted-foreground">Across all filtered entries</p>
             </CardContent>
           </Card>
         </div>
@@ -154,7 +188,7 @@ export default function RentCollectionSummaryPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center"><PieChart className="mr-2 h-5 w-5 text-primary/80"/> Monthly Collection Trends</CardTitle>
-            <CardDescription>Visual representation of collected vs. outstanding rent over recent months.</CardDescription>
+            <CardDescription>Visual representation of collected vs. outstanding rent over recent months. (Note: Chart data is static for now and does not update with filters).</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="h-[300px] w-full">
@@ -194,7 +228,7 @@ export default function RentCollectionSummaryPage() {
             </Button>
           </CardHeader>
           <CardContent>
-            {dummyRentCollectionData.length > 0 ? (
+            {filteredRentCollectionData.length > 0 ? (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -210,7 +244,7 @@ export default function RentCollectionSummaryPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dummyRentCollectionData.map((entry) => (
+                    {filteredRentCollectionData.map((entry) => (
                       <TableRow key={entry.id}>
                         <TableCell>{entry.tenantName}</TableCell>
                         <TableCell>{entry.apartmentUnit}</TableCell>
@@ -246,3 +280,4 @@ export default function RentCollectionSummaryPage() {
     </div>
   );
 }
+

@@ -5,12 +5,13 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, BarChart3, Filter, FileDown } from 'lucide-react';
+import { ArrowLeft, BarChart3, Filter, FileDown, ShoppingBag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const salesTrendData = [
   { month: "Jan", sales: 15000 },
@@ -27,6 +28,14 @@ const chartConfig = {
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
+
+const topSellingProductsData = [
+    { id: "prod1", name: "Fresh Milk (1L)", unitsSold: 250, revenue: 30000 },
+    { id: "prod3", name: "20L Water Refill", unitsSold: 180, revenue: 36000 },
+    { id: "itemB1", name: "Snack Pack Large", unitsSold: 120, revenue: 84000 },
+    { id: "item3", name: "Cleaning Service (Basic)", unitsSold: 90, revenue: 65700 },
+    { id: "prod2", name: "Laundry Soap (2kg)", unitsSold: 75, revenue: 26250 },
+];
 
 export default function ShopSalesReportsPage() {
   const { toast } = useToast();
@@ -106,9 +115,37 @@ export default function ShopSalesReportsPage() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle>Top Selling Products/Services</CardTitle></CardHeader>
-          <CardContent className="h-60 bg-muted rounded-md flex items-center justify-center border border-dashed">
-            <p className="text-muted-foreground">Top Products Table Placeholder</p>
+          <CardHeader>
+            <CardTitle className="flex items-center"><ShoppingBag className="mr-2 h-5 w-5 text-primary/80"/> Top Selling Products/Services</CardTitle>
+            <CardDescription>List of most popular items by revenue or units sold.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {topSellingProductsData.length > 0 ? (
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Product/Service Name</TableHead>
+                                <TableHead className="text-right">Units Sold</TableHead>
+                                <TableHead className="text-right">Total Revenue (KES)</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {topSellingProductsData.map((product) => (
+                                <TableRow key={product.id}>
+                                    <TableCell className="font-medium">{product.name}</TableCell>
+                                    <TableCell className="text-right">{product.unitsSold}</TableCell>
+                                    <TableCell className="text-right">{product.revenue.toLocaleString()}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            ) : (
+                <div className="h-60 bg-muted rounded-md flex items-center justify-center border border-dashed">
+                    <p className="text-muted-foreground">No data available for top selling products.</p>
+                </div>
+            )}
           </CardContent>
           <CardFooter className="border-t pt-4">
             <Button variant="outline" onClick={handleExport}><FileDown className="mr-2 h-4 w-4" /> Export Full Report</Button>

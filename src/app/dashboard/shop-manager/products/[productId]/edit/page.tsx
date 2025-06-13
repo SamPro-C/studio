@@ -102,7 +102,23 @@ export default function EditShopProductPage() {
   };
   
   const handleCheckboxChange = (name: keyof ProductFormData, checked: boolean) => {
-    setFormData(prev => prev ? { ...prev, [name]: checked } : null);
+    setFormData(prev => {
+      if (!prev) return null;
+      const newState = { ...prev, [name]: checked };
+      if (name === "isService") {
+        if (checked) { // If it's a service
+          newState.inventoryQuantity = "";
+          newState.weight = "";
+          newState.length = "";
+          newState.width = "";
+          newState.height = "";
+        } else { // If it's a product
+          newState.serviceDuration = "";
+          newState.availabilitySlots = "";
+        }
+      }
+      return newState;
+    });
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,7 +194,7 @@ export default function EditShopProductPage() {
                 </div>
                 <div>
                   <Label htmlFor="category">Category*</Label>
-                  <Select value={formData.category} onValueChange={(value) => handleSelectChange("category", value)} required>
+                  <Select name="category" value={formData.category} onValueChange={(value) => handleSelectChange("category", value)} required>
                     <SelectTrigger id="category"><SelectValue placeholder="Select category" /></SelectTrigger>
                     <SelectContent>{productCategories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}</SelectContent>
                   </Select>

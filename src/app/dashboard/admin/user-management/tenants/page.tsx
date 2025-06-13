@@ -29,10 +29,9 @@ interface Tenant {
 }
 
 const dummyTenants: Tenant[] = [
-  { id: "tenantA", name: "Tenant Alpha", nationalId: "12345670", email: "alpha@tenant.com", phone: "0712345020", apartment: "Greenwood Heights", unit: "A-101", room: "Main", landlordName: "John Landlord", status: "Active" },
-  { id: "tenantB", name: "Tenant Beta", nationalId: "12345671", email: "beta@tenant.com", phone: "0712345021", apartment: "Oceanview Towers", unit: "C-505", room: "Penthouse", landlordName: "Jane Proprietor", status: "Active" },
-  { id: "tenantC", name: "Tenant Gamma", nationalId: "12345672", email: "gamma@tenant.com", phone: "0712345022", apartment: "Greenwood Heights", unit: "B-201", room: "Studio", landlordName: "John Landlord", status: "Inactive" },
-  { id: "tenantD", name: "Tenant Delta", nationalId: "12345673", email: "delta@tenant.com", phone: "0712345023", apartment: "Mountain Ridge", unit: "Villa X", room: "Any", landlordName: "Peter Estates", status: "PendingApproval" },
+  { id: "tenantA", name: "Tenant Alpha (Admin View)", nationalId: "12345670", email: "alpha.admin@tenant.com", phone: "0712345020", apartment: "Greenwood Heights", unit: "A-101", room: "Main", landlordName: "John Landlord", status: "Active" },
+  { id: "tenantB", name: "Tenant Beta (Admin View)", nationalId: "12345671", email: "beta.admin@tenant.com", phone: "0712345021", apartment: "Oceanview Towers", unit: "C-505", room: "Penthouse", landlordName: "Jane Proprietor", status: "Inactive" },
+  { id: "tenantC", name: "Tenant Gamma (Pending)", nationalId: "12345672", email: "gamma.pending@tenant.com", phone: "0712345022", apartment: "City Center Plaza", unit: "Apt 10", room: "Room 1", landlordName: "Peter Estates", status: "PendingApproval" },
 ];
 
 export default function ManageTenantsPage() {

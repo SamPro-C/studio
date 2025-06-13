@@ -1,6 +1,6 @@
 
 import type { LucideIcon } from 'lucide-react';
-import { Palette, LayoutGrid, CodeXml, Camera, LineChart, Users, Target, Lightbulb, Search } from 'lucide-react';
+import { Palette, LayoutGrid, CodeXml, Camera, LineChart, Users, Target, Lightbulb, Search, Cpu, Bot, FileText, Briefcase, MessageSquare, Aperture, Tv, Info, Mail, BookOpen, Film } from 'lucide-react';
 
 export interface MediaProject {
   id: string;
@@ -135,16 +135,13 @@ export const services: Service[] = [
     id: 'graphic_design',
     title: 'Graphic Design',
     icon: Palette,
-    description: "Creative and impactful graphic design services to elevate your brand's visual identity, serving clients in Kenya and worldwide.",
+    description: "Creative and impactful graphic design services to elevate your brand's visual identity, for clients in Kenya and worldwide.",
     details: [
-      'Logo Design',
-      'Brand Identity Design',
-      'Business Cards & Stationery',
-      'Flyers and Brochures',
-      'Social Media Graphics',
-      'Website Graphics & UI/UX',
-      'Packaging Design',
-      'Infographics & Presentations',
+      'Logo Design & Brand Identity',
+      'Marketing & Advertising Materials',
+      'Social Media Graphics & Web Banners',
+      'Packaging Design & Print Layouts',
+      'Infographics & Presentation Design',
     ],
   },
   {
@@ -153,13 +150,11 @@ export const services: Service[] = [
     icon: LayoutGrid,
     description: 'Building responsive, user-friendly websites and e-commerce solutions that perform for businesses in Kenya and globally.',
     details: [
-      'Custom Website Design (UI/UX)',
-      'E-commerce Development',
-      'Web Application Development',
+      'Custom UI/UX Web Design',
+      'E-commerce & Online Stores',
       'Content Management Systems (CMS)',
-      'SEO Optimization for Web',
-      'Web Hosting & Maintenance',
-      'Responsive Design for All Devices',
+      'Responsive & Mobile-First Development',
+      'Website Maintenance & Support',
     ],
   },
   {
@@ -168,28 +163,63 @@ export const services: Service[] = [
     icon: CodeXml,
     description: 'Custom software, mobile apps, and backend solutions to power your business, developed by our expert team in Kenya for local and international needs.',
     details: [
-      'Custom Software Development (Desktop & Web)',
-      'Mobile App Development (iOS & Android)',
-      'API Development and Integration',
-      'Database Design and Management',
-      'Cloud Solutions (AWS, Google Cloud)',
-      'Automation & System Integration',
-      'Ongoing Maintenance and Support',
+      'Bespoke Software Solutions',
+      'Native & Cross-Platform Mobile Apps',
+      'API Development & Integrations',
+      'Cloud Architecture & Deployment',
+      'Ongoing Technical Support',
     ],
   },
   {
     id: 'video_photography',
-    title: 'Media Production (Video & Photography)',
+    title: 'Media Production',
     icon: Camera,
     description: 'Professional video and photography services in Kenya to capture your vision and tell your story effectively to a global audience.',
     details: [
       'Corporate Videos & Commercials',
-      'Event Coverage (Weddings, Corporate)',
+      'Event Coverage (Video & Photo)',
       'Product Photography & Videography',
       'Documentaries & Short Films',
-      'Drone Photography & Videography',
-      'Video Editing & Post-Production',
-      'Animated Explainer Videos',
+      'Animation & Motion Graphics',
+    ],
+  },
+  {
+    id: 'digital_marketing',
+    title: 'Digital Marketing & SEO',
+    icon: Search,
+    description: 'Strategic digital marketing and SEO services to boost your online visibility and reach in Kenya and global markets.',
+    details: [
+      'Search Engine Optimization (SEO)',
+      'Pay-Per-Click (PPC) Advertising',
+      'Social Media Marketing (SMM)',
+      'Content Marketing Strategy',
+      'Email Marketing Campaigns',
+    ],
+  },
+  {
+    id: 'ui_ux_consultancy',
+    title: 'UI/UX Design Consultancy',
+    icon: Users,
+    description: 'Expert UI/UX consultancy focused on creating intuitive and engaging digital experiences for users in Kenya and internationally.',
+    details: [
+      'User Research & Persona Development',
+      'Wireframing & Prototyping',
+      'Usability Testing & Analysis',
+      'Interaction Design & Visual Polish',
+      'Accessibility (A11Y) Compliance',
+    ],
+  },
+  {
+    id: 'ai_solutions',
+    title: 'AI Solutions & Integration',
+    icon: Cpu,
+    description: 'Leveraging artificial intelligence to build innovative solutions and integrate AI capabilities into your existing systems for clients in Kenya and worldwide.',
+    details: [
+      'Custom AI Model Development',
+      'Machine Learning Applications',
+      'Natural Language Processing (NLP) Tools',
+      'AI-Powered Automation & Chatbots',
+      'AI Strategy & Consultation',
     ],
   },
 ];

@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { ArrowLeft, BarChart3, DollarSign, FileDown, Filter, TrendingUp, TrendingDown } from 'lucide-react';
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
+import { useToast } from '@/hooks/use-toast';
 
 const dummyFinancialData = {
   totalRentCollected: 1500000,
@@ -43,9 +44,10 @@ const expenseChartConfig = {
 
 
 export default function GlobalFinancialOverviewPage() {
+  const { toast } = useToast();
 
   const handleDownloadReport = (reportType: string) => {
-    alert(`Downloading ${reportType} report. (Placeholder)`);
+    toast({ title: "Downloading Report", description: `Downloading ${reportType} report. (Placeholder)`});
   };
 
   return (
@@ -190,10 +192,8 @@ export default function GlobalFinancialOverviewPage() {
             </p>
           </CardFooter>
         </Card>
-
       </main>
     </div>
   );
 }
-
     

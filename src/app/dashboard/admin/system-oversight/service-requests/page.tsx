@@ -35,17 +35,30 @@ interface SystemServiceRequest {
 }
 
 const dummySystemRequests: SystemServiceRequest[] = [
-  { id: "sys_sr1", requestId: "SR20240725-001", dateSubmitted: "2024-07-25", tenantName: "Alice W.", tenantId: "tenant001", apartmentName: "Greenwood H.", apartmentId: "apt1", landlordName: "John L.", landlordId: "landlord1", workerAssigned: null, workerId: null, status: "Pending", priority: "High", description: "Leaky faucet." },
-  { id: "sys_sr2", requestId: "SR20240724-003", dateSubmitted: "2024-07-24", tenantName: "Bob B.", tenantId: "tenant002", apartmentName: "Greenwood H.", apartmentId: "apt1", landlordName: "John L.", landlordId: "landlord1", workerAssigned: "Mike R.", workerId: "worker001", status: "In Progress", priority: "Medium", description: "Shower drain clogged." },
-  { id: "sys_sr3", requestId: "SR20240723-001", dateSubmitted: "2024-07-23", tenantName: "Charlie B.", tenantId: "tenant003", apartmentName: "Oceanview T.", apartmentId: "apt2", landlordName: "Jane P.", landlordId: "landlord2", workerAssigned: "Tech Inc.", workerId: "workerExt001", status: "Completed", priority: "Medium", description: "AC not cooling." },
+  { id: "sys_sr1", requestId: "SR20240725-001", dateSubmitted: "2024-07-25", tenantName: "Alice W.", tenantId: "tenant001", apartmentName: "Greenwood Heights", apartmentId: "apt1", landlordName: "John Landlord", landlordId: "landlord1", workerAssigned: null, workerId: null, status: "Pending", priority: "High", description: "Leaky faucet." },
+  { id: "sys_sr2", requestId: "SR20240724-003", dateSubmitted: "2024-07-24", tenantName: "Bob B.", tenantId: "tenant002", apartmentName: "Greenwood Heights", apartmentId: "apt1", landlordName: "John Landlord", landlordId: "landlord1", workerAssigned: "Mike R.", workerId: "worker001", status: "In Progress", priority: "Medium", description: "Shower drain clogged." },
+  { id: "sys_sr3", requestId: "SR20240723-001", dateSubmitted: "2024-07-23", tenantName: "Charlie B.", tenantId: "tenant003", apartmentName: "Oceanview Towers", apartmentId: "apt2", landlordName: "Jane Proprietor", landlordId: "landlord2", workerAssigned: "Tech Inc.", workerId: "workerExt001", status: "Completed", priority: "Medium", description: "AC not cooling." },
+  { id: "sys_sr4", requestId: "SR20240801-001", dateSubmitted: "2024-08-01", tenantName: "David E.", tenantId: "tenant004", apartmentName: "City Center Plaza", apartmentId: "apt4", landlordName: "Alice Realty", landlordId: "landlord4", workerAssigned: "John D.", workerId: "worker003", status: "On Hold", priority: "Low", description: "Repaint living room wall." },
+  { id: "sys_sr5", requestId: "SR20240802-002", dateSubmitted: "2024-08-02", tenantName: "Eve F.", tenantId: "tenant005", apartmentName: "Riverside Complex", apartmentId: "apt5", landlordName: "Peter Estates", landlordId: "landlord3", workerAssigned: null, workerId: null, status: "Canceled", priority: "Medium", description: "Pest control request (canceled by tenant)." },
 ];
+
+const dummyLandlordsFilter = [
+    {id: "all", name: "All Landlords"},
+    {id: "landlord1", name: "John Landlord"},
+    {id: "landlord2", name: "Jane Proprietor"},
+    {id: "landlord3", name: "Peter Estates"},
+    {id: "landlord4", name: "Alice Realty"},
+];
+
+const dummyStatusFilter = ["All Statuses", "Pending", "In Progress", "Completed", "Canceled", "On Hold"];
+
 
 export default function SystemServiceRequestsPage() {
   const { toast } = useToast();
 
   const handleViewDetails = (requestId: string) => {
     toast({ title: "View Details", description: `Viewing details for request ${requestId}. (Placeholder)` });
-    // router.push(`/dashboard/landlord/service-requests/${requestId}`); // Needs careful routing if admin views landlord's context
+    // router.push(`/dashboard/admin/service-requests/${requestId}`); // A dedicated admin view for SR
   };
   
   const handleReassignWorker = (requestId: string) => {
@@ -56,15 +69,16 @@ export default function SystemServiceRequestsPage() {
     toast({ title: "Override Status", description: `Opening modal to override status for ${requestId}. (Placeholder)` });
   };
   
-  const getStatusVariant = (status: RequestStatus) => {
+  const getStatusVariant = (status: RequestStatus): "default" | "secondary" | "destructive" | "outline" => {
     if (status === 'Pending') return 'secondary';
     if (status === 'In Progress') return 'default';
     if (status === 'Completed') return 'default'; // Consider 'success' if available
     if (status === 'Canceled') return 'destructive';
+    if (status === 'On Hold') return 'outline';
     return 'outline';
   };
   
-  const getPriorityVariant = (priority: RequestPriority) => {
+  const getPriorityVariant = (priority: RequestPriority): "default" | "secondary" | "destructive" | "outline" => {
     if (priority === 'Urgent' || priority === 'High') return 'destructive';
     if (priority === 'Medium') return 'secondary';
     return 'outline';
@@ -98,11 +112,21 @@ export default function SystemServiceRequestsPage() {
                 </div>
                 <div>
                     <Label htmlFor="filterStatus">Filter by Status</Label>
-                    <Select><SelectTrigger id="filterStatus" className="mt-1"><SelectValue placeholder="All Statuses"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="pending">Pending</SelectItem><SelectItem value="in_progress">In Progress</SelectItem><SelectItem value="completed">Completed</SelectItem></SelectContent></Select>
+                    <Select><SelectTrigger id="filterStatus" className="mt-1"><SelectValue placeholder="All Statuses"/></SelectTrigger>
+                    <SelectContent>
+                        {dummyStatusFilter.map(status => (
+                            <SelectItem key={status} value={status.toLowerCase().replace(' ', '_')}>{status}</SelectItem>
+                        ))}
+                    </SelectContent></Select>
                 </div>
                 <div>
                     <Label htmlFor="filterLandlord">Filter by Landlord</Label>
-                    <Select><SelectTrigger id="filterLandlord" className="mt-1"><SelectValue placeholder="All Landlords"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="l1">John L.</SelectItem><SelectItem value="l2">Jane P.</SelectItem></SelectContent></Select>
+                    <Select><SelectTrigger id="filterLandlord" className="mt-1"><SelectValue placeholder="All Landlords"/></SelectTrigger>
+                    <SelectContent>
+                        {dummyLandlordsFilter.map(landlord => (
+                            <SelectItem key={landlord.id} value={landlord.id}>{landlord.name}</SelectItem>
+                        ))}
+                    </SelectContent></Select>
                 </div>
                 <Button className="w-full sm:w-auto self-end"><Filter className="mr-2 h-4 w-4"/>Apply Filters</Button>
             </div>
@@ -127,8 +151,8 @@ export default function SystemServiceRequestsPage() {
                     {dummySystemRequests.map((req) => (
                       <TableRow key={req.id}>
                         <TableCell className="font-medium">{req.requestId}</TableCell>
-                        <TableCell>{new Date(req.dateSubmitted).toLocaleDateString()}</TableCell>
-                        <TableCell>{req.tenantName}<div className="text-xs text-muted-foreground">{req.apartmentName}</div></TableCell>
+                        <TableCell className="text-xs whitespace-nowrap">{new Date(req.dateSubmitted).toLocaleDateString()}</TableCell>
+                        <TableCell>{req.tenantName}<div className="text-xs text-muted-foreground">{req.apartmentName} ({req.unitName})</div></TableCell>
                         <TableCell>{req.landlordName}</TableCell>
                         <TableCell>{req.workerAssigned || 'N/A'}</TableCell>
                         <TableCell className="max-w-xs truncate" title={req.description}>{req.description}</TableCell>
@@ -139,7 +163,7 @@ export default function SystemServiceRequestsPage() {
                             <DropdownMenuTrigger asChild><Button variant="ghost" className="h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Admin Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => handleViewDetails(req.requestId)}><Eye className="mr-2 h-4 w-4" /> View Details</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleViewDetails(req.requestId)}><Eye className="mr-2 h-4 w-4" /> View Full Details</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleReassignWorker(req.requestId)}><UserCog className="mr-2 h-4 w-4" /> Reassign Worker</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleOverrideStatus(req.requestId)}><Settings className="mr-2 h-4 w-4" /> Override Status</DropdownMenuItem>
                             </DropdownMenuContent>
@@ -162,5 +186,4 @@ export default function SystemServiceRequestsPage() {
     </div>
   );
 }
-
     

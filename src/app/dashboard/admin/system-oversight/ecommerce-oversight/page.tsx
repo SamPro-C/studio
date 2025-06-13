@@ -5,9 +5,10 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, ShoppingCart, DollarSign, Package, Users, ExternalLink, Settings } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, DollarSign, Package, Users, ExternalLink, Settings, BarChart3 } from 'lucide-react';
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { useToast } from '@/hooks/use-toast';
 
 const dummyEcommerceData = {
   totalSales: 75000,
@@ -34,10 +35,10 @@ const salesChartConfig = {
 
 
 export default function EcommerceOversightPage() {
+  const { toast } = useToast();
 
   const handleNavigate = (path: string) => {
-    alert(`Navigating to ${path}. (Placeholder - In a real app, this would link to the shop management system)`);
-    // Potentially use router.push(externalShopManagementUrl + path) or an internal restricted view
+    toast({ title: "Navigate (Placeholder)", description: `Attempting to navigate to e-commerce section: ${path}.`});
   };
 
   return (
@@ -91,7 +92,7 @@ export default function EcommerceOversightPage() {
         
         <Card>
             <CardHeader>
-                <CardTitle>Sales Trends</CardTitle>
+                <CardTitle className="flex items-center"><BarChart3 className="mr-2 h-5 w-5 text-primary/80"/>Sales Trends</CardTitle>
                 <CardDescription>Monthly sales performance across the e-commerce platform.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -100,8 +101,8 @@ export default function EcommerceOversightPage() {
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={dummyEcommerceData.salesTrend} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                        <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
-                        <YAxis tickFormatter={(value) => `KES ${value/1000}k`} tickLine={false} axisLine={false} tickMargin={8} width={60}/>
+                        <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} className="text-xs" />
+                        <YAxis tickFormatter={(value) => `KES ${value/1000}k`} tickLine={false} axisLine={false} tickMargin={8} width={70} className="text-xs"/>
                         <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                         <ChartLegend content={<ChartLegendContent />} />
                         <Bar dataKey="sales" fill="var(--color-sales)" radius={[4, 4, 0, 0]} />
@@ -140,10 +141,8 @@ export default function EcommerceOversightPage() {
             </p>
           </CardFooter>
         </Card>
-
       </main>
     </div>
   );
 }
-
     

@@ -31,13 +31,13 @@ const dummyComponentStatuses: SystemComponentStatus[] = [
 ];
 
 const errorLogData = [
-    { date: "Aug 1", errors: 5 },
-    { date: "Aug 2", errors: 2 },
-    { date: "Aug 3", errors: 8 },
-    { date: "Aug 4", errors: 1 },
-    { date: "Aug 5", errors: 3 },
-    { date: "Aug 6", errors: 0 },
-    { date: "Aug 7", errors: 4 },
+    { date: "Aug 1", errors: 5, fill: "hsl(var(--destructive))" },
+    { date: "Aug 2", errors: 2, fill: "hsl(var(--destructive))" },
+    { date: "Aug 3", errors: 8, fill: "hsl(var(--destructive))" },
+    { date: "Aug 4", errors: 1, fill: "hsl(var(--destructive))" },
+    { date: "Aug 5", errors: 3, fill: "hsl(var(--destructive))" },
+    { date: "Aug 6", errors: 0, fill: "hsl(var(--destructive))" },
+    { date: "Aug 7", errors: 4, fill: "hsl(var(--destructive))" },
 ];
 
 const errorLogChartConfig = {

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ArrowLeft, ShoppingCart, Filter, FileDown, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
@@ -27,6 +28,14 @@ const chartConfig = {
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
+
+const topSellingProductsData = [
+    { id: "tsp1", name: "Fresh Milk (1L)", unitsSold: 250, revenue: 30000 },
+    { id: "tsp2", name: "Snack Pack Large", unitsSold: 180, revenue: 126000 },
+    { id: "tsp3", name: "Cleaning Service (Basic)", unitsSold: 90, revenue: 65700 },
+    { id: "tsp4", name: "20L Water Refill", unitsSold: 300, revenue: 60000 },
+    { id: "tsp5", name: "Laundry Soap (2kg)", unitsSold: 150, revenue: 52500 },
+];
 
 
 export default function EcommercePerformanceReportPage() {
@@ -132,8 +141,33 @@ export default function EcommercePerformanceReportPage() {
                 <CardTitle>Top Selling Products/Services</CardTitle>
                 <CardDescription>List of most popular items from the e-commerce platform.</CardDescription>
             </CardHeader>
-            <CardContent className="h-60 bg-muted rounded-md flex items-center justify-center border border-dashed">
-                <p className="text-muted-foreground">Top Products Table Placeholder</p>
+            <CardContent>
+                {topSellingProductsData.length > 0 ? (
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Product/Service Name</TableHead>
+                                    <TableHead className="text-right">Units Sold</TableHead>
+                                    <TableHead className="text-right">Total Revenue (KES)</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {topSellingProductsData.map((product) => (
+                                    <TableRow key={product.id}>
+                                        <TableCell className="font-medium">{product.name}</TableCell>
+                                        <TableCell className="text-right">{product.unitsSold}</TableCell>
+                                        <TableCell className="text-right">{product.revenue.toLocaleString()}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                ) : (
+                    <div className="h-60 bg-muted rounded-md flex items-center justify-center border border-dashed">
+                        <p className="text-muted-foreground">No data available for top selling products.</p>
+                    </div>
+                )}
             </CardContent>
             <CardFooter className="border-t pt-4">
                 <Button variant="outline" onClick={handleExport}><FileDown className="mr-2 h-4 w-4" /> Export Report</Button>
@@ -144,3 +178,4 @@ export default function EcommercePerformanceReportPage() {
     </div>
   );
 }
+

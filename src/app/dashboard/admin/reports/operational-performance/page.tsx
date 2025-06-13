@@ -35,7 +35,11 @@ const srStatusChartConfig = {
 } satisfies ChartConfig;
 
 const workerPerfChartConfig = {
-  tasksCompleted: { label: "Tasks Completed", color: "hsl(var(--chart-1))" },
+  tasksCompleted: { label: "Tasks Completed" },
+  "Mike R.": { label: "Mike R.", color: "hsl(var(--chart-1))" },
+  "Sarah C.": { label: "Sarah C.", color: "hsl(var(--chart-2))" },
+  "John D.": { label: "John D.", color: "hsl(var(--chart-3))" },
+  "Jane B.": { label: "Jane B.", color: "hsl(var(--chart-4))" },
 } satisfies ChartConfig;
 
 

@@ -7,8 +7,26 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Settings2, Filter, FileDown, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Settings2, Filter, FileDown, ShieldCheck, AlertTriangle, Server, CheckCircle, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+
+interface SystemComponentStatus {
+  id: string;
+  name: string;
+  status: 'Operational' | 'Degraded Performance' | 'Partial Outage' | 'Offline';
+  lastChecked: string;
+}
+
+const dummyComponentStatuses: SystemComponentStatus[] = [
+  { id: "comp1", name: "Main Authentication Service", status: "Operational", lastChecked: "2 mins ago" },
+  { id: "comp2", name: "Payment Gateway API (M-Pesa)", status: "Operational", lastChecked: "1 min ago" },
+  { id: "comp3", name: "Card Payment Gateway API", status: "Degraded Performance", lastChecked: "5 mins ago" },
+  { id: "comp4", name: "SMS Notification Service", status: "Operational", lastChecked: "3 mins ago" },
+  { id: "comp5", name: "Email Service (SMTP)", status: "Offline", lastChecked: "10 mins ago" },
+  { id: "comp6", name: "Primary Database Cluster", status: "Operational", lastChecked: "1 min ago" },
+  { id: "comp7", name: "E-commerce Subsystem", status: "Operational", lastChecked: "4 mins ago" },
+];
 
 export default function SystemHealthReportPage() {
   const { toast } = useToast();
@@ -16,6 +34,20 @@ export default function SystemHealthReportPage() {
   const handleExport = () => {
     toast({ title: "Exporting Report", description: "System health report export initiated (Placeholder)." });
   };
+  
+  const getStatusIcon = (status: SystemComponentStatus['status']) => {
+    if (status === 'Operational') return <CheckCircle className="h-4 w-4 text-green-500" />;
+    if (status === 'Degraded Performance') return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+    if (status === 'Offline' || status === 'Partial Outage') return <XCircle className="h-4 w-4 text-destructive" />;
+    return <Server className="h-4 w-4 text-muted-foreground"/>;
+  };
+  
+  const getStatusBadgeVariant = (status: SystemComponentStatus['status']): "default" | "secondary" | "destructive" | "outline" => {
+     if (status === 'Operational') return 'default'; // success
+    if (status === 'Degraded Performance') return 'secondary'; // warning
+    if (status === 'Offline' || status === 'Partial Outage') return 'destructive';
+    return 'outline';
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -71,10 +103,18 @@ export default function SystemHealthReportPage() {
             <CardDescription>Real-time or recent status of key system components.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="flex justify-between items-center p-2 bg-muted/50 rounded-md"><span>Payment Gateway API:</span> <span className="text-green-600 font-semibold">Operational</span></div>
-            <div className="flex justify-between items-center p-2 bg-muted/50 rounded-md"><span>SMS Service:</span> <span className="text-green-600 font-semibold">Operational</span></div>
-            <div className="flex justify-between items-center p-2 bg-muted/50 rounded-md"><span>Email Service (SMTP):</span> <span className="text-green-600 font-semibold">Operational</span></div>
-            <div className="flex justify-between items-center p-2 bg-muted/50 rounded-md"><span>Main Database:</span> <span className="text-green-600 font-semibold">Operational</span></div>
+            {dummyComponentStatuses.map(comp => (
+                <div key={comp.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-md text-sm">
+                    <div className="flex items-center">
+                        {getStatusIcon(comp.status)}
+                        <span className="ml-2 font-medium">{comp.name}:</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Badge variant={getStatusBadgeVariant(comp.status)}>{comp.status}</Badge>
+                        <span className="text-xs text-muted-foreground">({comp.lastChecked})</span>
+                    </div>
+                </div>
+            ))}
           </CardContent>
         </Card>
         
@@ -84,10 +124,15 @@ export default function SystemHealthReportPage() {
                 <CardDescription>Overview of recent system errors and warnings.</CardDescription>
             </CardHeader>
             <CardContent className="h-60 bg-muted rounded-md flex items-center justify-center border border-dashed">
-                <p className="text-muted-foreground">Error Log Summary Table/Chart Placeholder</p>
+                <p className="text-muted-foreground text-center">
+                    Error log summary will be displayed here. <br/> (e.g., Top 5 recent critical errors, error rate chart)
+                </p>
             </CardContent>
             <CardFooter className="border-t pt-4">
                 <Button variant="outline" onClick={handleExport}><FileDown className="mr-2 h-4 w-4" /> Export Full Report</Button>
+                 <Button variant="link" asChild className="ml-auto">
+                    <Link href="/dashboard/admin/audit-logs">View Detailed Audit Logs</Link>
+                </Button>
             </CardFooter>
         </Card>
 
@@ -95,3 +140,4 @@ export default function SystemHealthReportPage() {
     </div>
   );
 }
+

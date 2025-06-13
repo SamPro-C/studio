@@ -18,8 +18,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { generateSocialMediaSnippets, type GenerateSocialMediaSnippetsInput, type GenerateSocialMediaSnippetsOutput, GenerateSocialMediaSnippetsInputSchema } from '@/ai/flows/generate-social-media-snippet';
+import { generateSocialMediaSnippets, type GenerateSocialMediaSnippetsInput, type GenerateSocialMediaSnippetsOutput } from '@/ai/flows/generate-social-media-snippet';
 import { Loader2, Sparkles } from 'lucide-react';
+import * as z from 'zod';
+
+// Define the schema locally for form validation
+const GenerateSocialMediaSnippetsInputSchema = z.object({
+  topicOrProductName: z
+    .string()
+    .min(3, { message: 'Topic or product name must be at least 3 characters.' })
+    .max(100, { message: 'Topic or product name must be less than 100 characters.' })
+    .describe('The topic or product name to generate snippets for.'),
+  platform: z
+    .enum(['Twitter', 'LinkedIn', 'Instagram', 'Facebook'], {
+      errorMap: () => ({ message: 'Please select a valid platform.' }),
+    })
+    .describe('The target social media platform.'),
+});
+
 
 type GeneratorFormValues = GenerateSocialMediaSnippetsInput;
 

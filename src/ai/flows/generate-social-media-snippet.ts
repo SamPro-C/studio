@@ -11,7 +11,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const GenerateSocialMediaSnippetsInputSchema = z.object({
+const GenerateSocialMediaSnippetsInputSchema = z.object({
   topicOrProductName: z
     .string()
     .min(3, { message: 'Topic or product name must be at least 3 characters.' })
@@ -25,7 +25,7 @@ export const GenerateSocialMediaSnippetsInputSchema = z.object({
 });
 export type GenerateSocialMediaSnippetsInput = z.infer<typeof GenerateSocialMediaSnippetsInputSchema>;
 
-export const GenerateSocialMediaSnippetsOutputSchema = z.object({
+const GenerateSocialMediaSnippetsOutputSchema = z.object({
   snippets: z
     .array(z.string().describe('A short, catchy social media snippet.'))
     .describe('A list of generated social media snippets (typically 3-5).'),

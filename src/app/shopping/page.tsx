@@ -6,7 +6,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, ShoppingCart, Tag, List, UserCircle } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowLeft, Search, ShoppingCart, Tag, List, UserCircle, Filter as FilterIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 
@@ -33,6 +35,14 @@ export default function ShoppingPlatformPage() {
       description: `${productName} has been added to your shopping cart.`,
     });
   };
+
+  const handleFilterChange = (type: string, value: string) => {
+    toast({ description: `Filter applied: ${type} - ${value}. (Placeholder)`});
+  }
+
+  const handleClearFilters = () => {
+    toast({ description: "Filters cleared. (Placeholder)"});
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/20">
@@ -83,6 +93,44 @@ export default function ShoppingPlatformPage() {
               />
             </div>
           </div>
+        </section>
+        
+        {/* Filters & Sorting Section */}
+        <section>
+            <Card className="p-4 sm:p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                        <Label htmlFor="filterCategory" className="text-sm font-medium">Filter by Category</Label>
+                        <Select onValueChange={(value) => handleFilterChange("category", value)}>
+                            <SelectTrigger id="filterCategory" className="mt-1 h-9">
+                                <SelectValue placeholder="All Categories" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Categories</SelectItem>
+                                {dummyCategories.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div>
+                        <Label htmlFor="sortBy" className="text-sm font-medium">Sort by</Label>
+                        <Select onValueChange={(value) => handleFilterChange("sort", value)}>
+                            <SelectTrigger id="sortBy" className="mt-1 h-9">
+                                <SelectValue placeholder="Relevance" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="relevance">Relevance</SelectItem>
+                                <SelectItem value="price_asc">Price: Low to High</SelectItem>
+                                <SelectItem value="price_desc">Price: High to Low</SelectItem>
+                                <SelectItem value="newest">Newest Arrivals</SelectItem>
+                                <SelectItem value="popularity">Popularity</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <Button variant="outline" onClick={handleClearFilters} className="w-full sm:w-auto h-9">
+                        <FilterIcon className="mr-2 h-4 w-4" /> Clear Filters
+                    </Button>
+                </div>
+            </Card>
         </section>
 
         {/* Categories Section */}

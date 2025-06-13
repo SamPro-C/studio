@@ -65,7 +65,7 @@ export default function ShoppingCartPage() {
               {dummyCartItems.map(item => (
                 <Card key={item.id} className="flex items-center p-4 gap-4 shadow-sm">
                   <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" data-ai-hint={item.aiHint}/>
+                    <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover" data-ai-hint={item.aiHint}/>
                   </div>
                   <div className="flex-grow">
                     <h3 className="font-medium">{item.name}</h3>

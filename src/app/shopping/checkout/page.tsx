@@ -3,6 +3,7 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -22,13 +23,14 @@ const tenantDeliveryInfo = {
   phone: "+254712345678",
 };
 const cartTotal = 240 + 100; // Example: Subtotal + Delivery
+const DUMMY_ORDER_ID = "SHOP" + Math.floor(10000 + Math.random() * 90000);
 
 export default function CheckoutPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [deliveryInstructions, setDeliveryInstructions] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-  const [orderPlaced, setOrderPlaced] = useState(false);
 
   const handlePlaceOrder = (e: FormEvent) => {
     e.preventDefault();
@@ -42,36 +44,10 @@ export default function CheckoutPage() {
     // Simulate API call
     setTimeout(() => {
       setIsPlacingOrder(false);
-      setOrderPlaced(true);
-      toast({ title: "Order Placed!", description: "Your order has been successfully placed. Order ID: #SHOP12345 (Placeholder)" });
-      // router.push('/shopping/orders/SHOP12345'); // Redirect to order confirmation/details
+      toast({ title: "Order Placed!", description: `Your order ${DUMMY_ORDER_ID} has been successfully placed.` });
+      router.push(`/shopping/checkout/success?orderId=${DUMMY_ORDER_ID}`);
     }, 2000);
   };
-
-  if (orderPlaced) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-muted/20 p-4">
-         <Card className="w-full max-w-md text-center">
-            <CardHeader>
-                <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
-                <CardTitle className="font-headline text-2xl">Order Confirmed!</CardTitle>
-                <CardDescription>Your order #SHOP12345 has been successfully placed. You will receive updates via notifications.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <p className="text-sm text-muted-foreground">Thank you for shopping with us!</p>
-            </CardContent>
-            <CardFooter className="flex flex-col gap-3">
-                <Button asChild className="w-full">
-                    <Link href="/shopping">Continue Shopping</Link>
-                </Button>
-                <Button variant="outline" asChild className="w-full">
-                    <Link href="/dashboard/tenant">Back to Dashboard</Link>
-                </Button>
-            </CardFooter>
-         </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/20">

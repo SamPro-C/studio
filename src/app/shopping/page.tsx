@@ -8,9 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Search, ShoppingCart, Tag, List, UserCircle, Filter as FilterIcon } from 'lucide-react';
+import { ArrowLeft, Search, ShoppingCart, Tag, List, UserCircle, Filter as FilterIcon, Star, History } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react'; // Added useState
 
 // Dummy data for placeholders
 const dummyCategories = [
@@ -24,12 +25,26 @@ const dummyFeaturedProducts = [
   { id: "prod1", name: "Fresh Milk (1L)", price: 120, image: "https://placehold.co/200x150.png?text=Milk", category: "Groceries", aiHint: "milk carton" },
   { id: "prod2", name: "Dish Soap (500ml)", price: 150, image: "https://placehold.co/200x150.png?text=Soap", category: "Cleaning Supplies", aiHint: "dish soap" },
   { id: "prod3", name: "20L Water Refill", price: 200, image: "https://placehold.co/200x150.png?text=Water+Refill", category: "Water Delivery", aiHint: "water jug" },
+  { id: "prod4", name: "Artisan Bread Loaf", price: 250, image: "https://placehold.co/200x150.png?text=Bread", category: "Groceries", aiHint: "bread loaf" },
 ];
+
+const recentlyViewedProducts = [
+  { id: "prod5", name: "Organic Eggs (Dozen)", price: 300, image: "https://placehold.co/200x150.png?text=Eggs", category: "Groceries", aiHint: "eggs carton" },
+  { id: "prod6", name: "All-Purpose Cleaner", price: 180, image: "https://placehold.co/200x150.png?text=Cleaner", category: "Cleaning Supplies", aiHint: "cleaning spray" },
+];
+
+const specialOfferProducts = [
+  { id: "offer1", name: "Snack Bundle (Save 10%)", price: 450, originalPrice: 500, image: "https://placehold.co/200x150.png?text=Snack+Offer", category: "Groceries", aiHint: "snack bundle" },
+  { id: "offer2", name: "Laundry Service - 5kg", price: 600, originalPrice: 700, image: "https://placehold.co/200x150.png?text=Laundry+Offer", category: "Laundry Services", aiHint: "folded laundry" },
+];
+
 
 export default function ShoppingPlatformPage() {
   const { toast } = useToast();
+  const [cartItemCount, setCartItemCount] = useState(0); // State for cart item count
 
   const handleAddToCart = (productName: string) => {
+    setCartItemCount(prevCount => prevCount + 1); // Increment cart count
     toast({
       title: "Added to Cart!",
       description: `${productName} has been added to your shopping cart.`,
@@ -67,7 +82,7 @@ export default function ShoppingPlatformPage() {
             </Button>
             <Button variant="outline" asChild>
               <Link href="/shopping/cart">
-                <ShoppingCart className="mr-2 h-4 w-4" /> View Cart (0)
+                <ShoppingCart className="mr-2 h-4 w-4" /> View Cart ({cartItemCount}) {/* Display cart count */}
               </Link>
             </Button>
           </div>
@@ -192,13 +207,90 @@ export default function ShoppingPlatformPage() {
           </div>
         </section>
         
-        {/* Placeholder for "Recently Viewed" or "Special Offers" */}
+        {/* Recently Viewed Items Section */}
         <section>
-            <div className="p-8 border border-dashed rounded-md bg-muted/50 text-center">
-                <p className="text-muted-foreground">
-                    More sections like "Recently Viewed" or "Special Offers" can be added here.
-                </p>
-            </div>
+          <h3 className="font-headline text-2xl font-semibold text-primary mb-4 flex items-center">
+            <History className="mr-2 h-6 w-6" /> Recently Viewed Items
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {recentlyViewedProducts.map(product => (
+              <Card key={product.id} className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow">
+                <Link href={`/shopping/products/${product.id}`} className="block">
+                    <div className="relative h-40 sm:h-48">
+                        <Image 
+                            src={product.image} 
+                            alt={product.name} 
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className="object-cover"
+                            data-ai-hint={product.aiHint}
+                        />
+                    </div>
+                    <CardHeader className="p-4">
+                    <CardTitle className="text-md font-medium leading-tight">{product.name}</CardTitle>
+                    <CardDescription className="text-xs">{product.category}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0 flex-grow">
+                    <p className="text-lg font-semibold text-primary">KES {product.price.toLocaleString()}</p>
+                    </CardContent>
+                </Link>
+                <CardFooter className="p-4 pt-0 border-t mt-auto">
+                  <Button className="w-full" onClick={() => handleAddToCart(product.name)}>Add to Cart</Button>
+                </CardFooter>
+              </Card>
+            ))}
+             {recentlyViewedProducts.length === 0 && (
+                <p className="text-sm text-muted-foreground md:col-span-full text-center py-4">You haven't viewed any items recently.</p>
+            )}
+          </div>
+        </section>
+
+        {/* Special Offers Section */}
+        <section>
+          <h3 className="font-headline text-2xl font-semibold text-primary mb-4 flex items-center">
+            <Star className="mr-2 h-6 w-6 text-amber-500" /> Today's Special Offers
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {specialOfferProducts.map(product => (
+              <Card key={product.id} className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow border-amber-500/50 border-2">
+                <Link href={`/shopping/products/${product.id}`} className="block">
+                    <div className="relative h-40 sm:h-48">
+                        <Image 
+                            src={product.image} 
+                            alt={product.name} 
+                            fill
+                            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className="object-cover"
+                            data-ai-hint={product.aiHint}
+                        />
+                         {product.originalPrice && (
+                            <div className="absolute top-2 right-2 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-full">
+                                SAVE {(((product.originalPrice - product.price) / product.originalPrice) * 100).toFixed(0)}%
+                            </div>
+                        )}
+                    </div>
+                    <CardHeader className="p-4">
+                    <CardTitle className="text-md font-medium leading-tight">{product.name}</CardTitle>
+                    <CardDescription className="text-xs">{product.category}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0 flex-grow">
+                        <div className="flex items-baseline gap-2">
+                            <p className="text-lg font-semibold text-destructive">KES {product.price.toLocaleString()}</p>
+                            {product.originalPrice && (
+                                <p className="text-sm text-muted-foreground line-through">KES {product.originalPrice.toLocaleString()}</p>
+                            )}
+                        </div>
+                    </CardContent>
+                </Link>
+                <CardFooter className="p-4 pt-0 border-t mt-auto">
+                  <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white" onClick={() => handleAddToCart(product.name)}>Add to Cart</Button>
+                </CardFooter>
+              </Card>
+            ))}
+            {specialOfferProducts.length === 0 && (
+                <p className="text-sm text-muted-foreground md:col-span-full text-center py-4">No special offers available today.</p>
+            )}
+          </div>
         </section>
 
       </main>
@@ -212,3 +304,4 @@ export default function ShoppingPlatformPage() {
     </div>
   );
 }
+

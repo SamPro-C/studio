@@ -13,79 +13,36 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect } from 'react';
 
 type OrderStatusTenant = 'Order Placed' | 'Processing' | 'Out for Delivery' | 'Delivered' | 'Canceled';
 
-interface OrderItemTenant {
+interface CartItem {
   id: string;
   name: string;
-  quantity: number;
   price: number;
+  quantity: number;
   image: string;
   aiHint: string;
 }
-
-interface TenantShopOrderDetails {
-  id: string;
+interface StoredOrder {
   orderId: string;
   orderDate: string;
   status: OrderStatusTenant;
-  estimatedDelivery?: string; // e.g., "Aug 7, 2024" or "2-3 business days"
-  items: OrderItemTenant[];
+  items: CartItem[];
   subtotal: number;
   deliveryFee: number;
   totalAmount: number;
   paymentMethod: string;
   deliveryAddress: {
     name: string;
-    apartmentUnit: string; // "Greenwood Heights / A-101"
-    instructions?: string;
+    apartment: string;
+    unit: string;
+    room: string;
+    phone: string;
   };
+  deliveryInstructions?: string;
 }
-
-// Dummy data for a single tenant shop order
-const dummyTenantOrderDetails: { [key: string]: TenantShopOrderDetails } = {
-  "SHOP12345": {
-    id: "tso1",
-    orderId: "SHOP12345",
-    orderDate: "2024-08-05",
-    status: "Processing",
-    estimatedDelivery: "August 8, 2024",
-    items: [
-      { id: "item1", name: "Fresh Milk (1L)", quantity: 2, price: 120, image: "https://placehold.co/80x80.png?text=Milk", aiHint: "milk carton" },
-      { id: "item2", name: "20L Water Refill", quantity: 1, price: 200, image: "https://placehold.co/80x80.png?text=Water", aiHint: "water jug" },
-      { id: "item3", name: "Cleaning Service (Basic)", quantity: 1, price: 730, image: "https://placehold.co/80x80.png?text=Service", aiHint: "cleaning service" },
-    ],
-    subtotal: 1170, // 240 + 200 + 730
-    deliveryFee: 80,
-    totalAmount: 1250,
-    paymentMethod: "M-Pesa",
-    deliveryAddress: {
-      name: "Alice W.",
-      apartmentUnit: "Greenwood Heights / A101",
-      instructions: "Leave at door if no answer.",
-    },
-  },
-  "SHOP12300": {
-    id: "tso2",
-    orderId: "SHOP12300",
-    orderDate: "2024-07-28",
-    status: "Delivered",
-    estimatedDelivery: "July 29, 2024",
-    items: [
-      { id: "item4", name: "Bread (Wholewheat)", quantity: 1, price: 80, image: "https://placehold.co/80x80.png?text=Bread", aiHint: "bread loaf" },
-      { id: "item5", name: "Snack Pack Large", quantity: 1, price: 700, image: "https://placehold.co/80x80.png?text=Snacks", aiHint: "snack box" },
-    ],
-    subtotal: 780,
-    deliveryFee: 0,
-    totalAmount: 780,
-    paymentMethod: "Card",
-    deliveryAddress: {
-      name: "Bob T.",
-      apartmentUnit: "Oceanview Towers / C203",
-    },
-  }
-};
 
 const statusProgress: Record<OrderStatusTenant, number> = {
   'Order Placed': 25,
@@ -106,8 +63,18 @@ const statusIcon: Record<OrderStatusTenant, React.ElementType> = {
 export default function TenantShopOrderDetailPage() {
   const params = useParams();
   const orderId = params.orderId as string;
-  const order = dummyTenantOrderDetails[orderId];
+  const [order, setOrder] = useState<StoredOrder | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (orderId) {
+      const storedOrdersString = localStorage.getItem('rentizziTenantOrders');
+      if (storedOrdersString) {
+        const storedOrdersObject: Record<string, StoredOrder> = JSON.parse(storedOrdersString);
+        setOrder(storedOrdersObject[orderId] || null);
+      }
+    }
+  }, [orderId]);
 
 
   const getStatusBadgeVariant = (status: OrderStatusTenant) => {
@@ -131,7 +98,7 @@ export default function TenantShopOrderDetailPage() {
       <div className="flex min-h-screen flex-col items-center justify-center p-4">
         <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
         <h1 className="text-2xl font-bold mb-2">Shop Order Not Found</h1>
-        <p className="text-muted-foreground mb-4">The order with ID <span className="font-mono bg-muted px-1">{orderId}</span> could not be found.</p>
+        <p className="text-muted-foreground mb-4">The order with ID <span className="font-mono bg-muted px-1">{orderId}</span> could not be found in your history or localStorage.</p>
         <Button asChild><Link href="/dashboard/tenant/shopping-orders">Back to My Shop Orders</Link></Button>
       </div>
     );
@@ -173,7 +140,8 @@ export default function TenantShopOrderDetailPage() {
                 <div className="mb-6">
                     <Label className="text-sm font-medium">Order Progress</Label>
                     <Progress value={statusProgress[order.status]} className="w-full mt-1 h-3" />
-                    {order.estimatedDelivery && <p className="text-xs text-muted-foreground mt-1">Estimated Delivery: {order.estimatedDelivery}</p>}
+                    {order.status === "Out for Delivery" && <p className="text-xs text-muted-foreground mt-1">Estimated Delivery: Today</p>}
+                     {order.status === "Processing" && <p className="text-xs text-muted-foreground mt-1">Estimated Delivery: 1-2 days</p>}
                 </div>
             )}
             <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -181,8 +149,9 @@ export default function TenantShopOrderDetailPage() {
                     <CardHeader className="pb-2"><CardTitle className="text-base flex items-center"><Home className="mr-2 h-4"/>Delivery Details</CardTitle></CardHeader>
                     <CardContent className="text-sm space-y-1">
                         <p><strong>To:</strong> {order.deliveryAddress.name}</p>
-                        <p><strong>Address:</strong> {order.deliveryAddress.apartmentUnit}</p>
-                        {order.deliveryAddress.instructions && <p><strong>Instructions:</strong> {order.deliveryAddress.instructions}</p>}
+                        <p><strong>Address:</strong> {order.deliveryAddress.apartment} / {order.deliveryAddress.unit} ({order.deliveryAddress.room})</p>
+                        <p><strong>Contact:</strong> {order.deliveryAddress.phone}</p>
+                        {order.deliveryInstructions && <p><strong>Instructions:</strong> {order.deliveryInstructions}</p>}
                     </CardContent>
                 </Card>
                 <Card className="bg-muted/30">
@@ -190,7 +159,7 @@ export default function TenantShopOrderDetailPage() {
                     <CardContent className="text-sm space-y-1">
                         <p><strong>Method:</strong> {order.paymentMethod}</p>
                         <p><strong>Total Amount:</strong> KES {order.totalAmount.toLocaleString()}</p>
-                        <p><strong>Status:</strong> Paid</p>
+                        <p><strong>Status:</strong> Paid (Simulated)</p>
                     </CardContent>
                 </Card>
             </div>
@@ -200,7 +169,7 @@ export default function TenantShopOrderDetailPage() {
                 {order.items.map(item => (
                     <Card key={item.id} className="flex items-center p-3 gap-3 shadow-sm">
                         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded">
-                           <Image src={item.image} alt={item.name} fill className="object-cover" data-ai-hint={item.aiHint}/>
+                           <Image src={item.image || `https://placehold.co/80x80.png?text=${item.name.substring(0,10)}`} alt={item.name} fill sizes="80px" className="object-cover" data-ai-hint={item.aiHint || "product image"}/>
                         </div>
                         <div className="flex-grow">
                             <p className="font-medium text-sm">{item.name}</p>
@@ -235,4 +204,3 @@ export default function TenantShopOrderDetailPage() {
     </div>
   );
 }
-

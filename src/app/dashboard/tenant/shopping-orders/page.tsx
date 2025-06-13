@@ -10,32 +10,45 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ShoppingBag, Filter, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect } from 'react';
 
 type OrderStatus = 'Order Placed' | 'Processing' | 'Out for Delivery' | 'Delivered' | 'Canceled';
 
-interface TenantShopOrder {
-  id: string; // Internal ID for mapping
-  orderId: string; // User-facing order ID
-  date: string;
-  totalAmount: number;
-  status: OrderStatus;
-  itemCount: number;
+interface CartItem { // Define CartItem if not already globally available
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  aiHint: string;
 }
-
-const dummyTenantShopOrders: TenantShopOrder[] = [
-  { id: "tso1", orderId: "SHOP12345", date: "2024-08-05", totalAmount: 1250, status: "Processing", itemCount: 3 },
-  { id: "tso2", orderId: "SHOP12300", date: "2024-07-28", totalAmount: 780, status: "Delivered", itemCount: 1 },
-  { id: "tso3", orderId: "SHOP12250", date: "2024-07-15", totalAmount: 2100, status: "Delivered", itemCount: 5 },
-];
+interface TenantShopOrder {
+  orderId: string;
+  orderDate: string;
+  status: OrderStatus;
+  items: CartItem[];
+  totalAmount: number;
+  // Add other relevant fields if stored
+}
 
 export default function TenantShoppingOrdersPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [orders, setOrders] = useState<TenantShopOrder[]>([]);
+
+  useEffect(() => {
+    const storedOrdersString = localStorage.getItem('rentizziTenantOrders');
+    if (storedOrdersString) {
+      const storedOrdersObject: Record<string, TenantShopOrder> = JSON.parse(storedOrdersString);
+      const ordersArray = Object.values(storedOrdersObject).sort((a, b) => new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime());
+      setOrders(ordersArray);
+    }
+  }, []);
 
   const getStatusBadgeVariant = (status: OrderStatus) => {
     if (status === 'Order Placed' || status === 'Processing') return 'secondary';
     if (status === 'Out for Delivery') return 'default';
-    if (status === 'Delivered') return 'default'; // Success-like
+    if (status === 'Delivered') return 'default'; 
     if (status === 'Canceled') return 'destructive';
     return 'outline';
   };
@@ -64,7 +77,7 @@ export default function TenantShoppingOrdersPage() {
                 <Button variant="outline" size="sm"><Filter className="mr-2 h-4 w-4"/>Filter Orders</Button>
             </div>
 
-            {dummyTenantShopOrders.length > 0 ? (
+            {orders.length > 0 ? (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -78,11 +91,11 @@ export default function TenantShoppingOrdersPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dummyTenantShopOrders.map((order) => (
-                      <TableRow key={order.id}>
+                    {orders.map((order) => (
+                      <TableRow key={order.orderId}>
                         <TableCell className="font-medium">{order.orderId}</TableCell>
-                        <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
-                        <TableCell className="text-right">{order.itemCount}</TableCell>
+                        <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-right">{order.items.reduce((sum, item) => sum + item.quantity, 0)}</TableCell>
                         <TableCell className="text-right">{order.totalAmount.toLocaleString()}</TableCell>
                         <TableCell><Badge variant={getStatusBadgeVariant(order.status)}>{order.status}</Badge></TableCell>
                         <TableCell className="text-right">
@@ -112,4 +125,3 @@ export default function TenantShoppingOrdersPage() {
     </div>
   );
 }
-

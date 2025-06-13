@@ -32,6 +32,19 @@ interface CartItem {
   aiHint: string;
 }
 
+interface StoredOrder {
+  orderId: string;
+  orderDate: string;
+  status: 'Order Placed' | 'Processing' | 'Out for Delivery' | 'Delivered' | 'Canceled';
+  items: CartItem[];
+  subtotal: number;
+  deliveryFee: number;
+  totalAmount: number;
+  paymentMethod: string;
+  deliveryAddress: typeof tenantDeliveryInfo;
+  deliveryInstructions?: string;
+}
+
 const DUMMY_ORDER_ID_PREFIX = "SHOP";
 
 export default function CheckoutPage() {
@@ -54,7 +67,6 @@ export default function CheckoutPage() {
   }, [cartItems]);
 
   const deliveryFee = useMemo(() => {
-    // Simplified delivery fee. Real app might use distance, weight, etc.
     return cartItems.length > 0 ? 100 : 0;
   }, [cartItems]);
 
@@ -74,13 +86,34 @@ export default function CheckoutPage() {
     }
     setIsPlacingOrder(true);
     const orderId = DUMMY_ORDER_ID_PREFIX + Math.floor(10000 + Math.random() * 90000);
-    console.log("Placing order with:", { ...tenantDeliveryInfo, deliveryInstructions, paymentMethod, items: cartItems, total: totalAmount, orderId });
+    
+    const newOrder: StoredOrder = {
+      orderId,
+      orderDate: new Date().toISOString(),
+      status: 'Order Placed',
+      items: cartItems,
+      subtotal,
+      deliveryFee,
+      totalAmount,
+      paymentMethod,
+      deliveryAddress: tenantDeliveryInfo, // Using static info for now
+      deliveryInstructions,
+    };
+
+    // Save order to localStorage
+    const storedOrdersString = localStorage.getItem('rentizziTenantOrders');
+    let existingOrders: Record<string, StoredOrder> = storedOrdersString ? JSON.parse(storedOrdersString) : {};
+    existingOrders[orderId] = newOrder;
+    localStorage.setItem('rentizziTenantOrders', JSON.stringify(existingOrders));
+
+    console.log("Placing order with:", newOrder);
 
     // Simulate API call
     setTimeout(() => {
       setIsPlacingOrder(false);
       toast({ title: "Order Placed!", description: `Your order ${orderId} has been successfully placed.` });
       localStorage.removeItem('rentizziShopCart'); // Clear cart after successful order
+      setCartItems([]); // Clear cart in local state too
       router.push(`/shopping/checkout/success?orderId=${orderId}`);
     }, 2000);
   };

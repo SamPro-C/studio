@@ -1,12 +1,12 @@
 
-// src/app/shopping/page.tsx
+// /src/app/shopping/page.tsx
 "use client";
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, ShoppingCart, Tag, List } from 'lucide-react';
+import { ArrowLeft, Search, ShoppingCart, Tag, List, UserCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 
@@ -49,11 +49,18 @@ export default function ShoppingPlatformPage() {
               Tenant Shop
             </h1>
           </div>
-          <Button variant="outline" asChild>
-            <Link href="/shopping/cart">
-              <ShoppingCart className="mr-2 h-4 w-4" /> View Cart (0)
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/shopping/profile">
+                <UserCircle className="mr-2 h-4 w-4" /> My Shop Profile
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/shopping/cart">
+                <ShoppingCart className="mr-2 h-4 w-4" /> View Cart (0)
+              </Link>
+            </Button>
+          </div>
         </div>
       </header>
 

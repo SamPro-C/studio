@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { DollarSign, Home, User, Settings, Bell, Wrench, Briefcase, ShoppingBag, AlertTriangle, ListChecks } from 'lucide-react';
+import { DollarSign, Home, User, Settings, Bell, Wrench, Briefcase, ShoppingBag, AlertTriangle, ListChecks, UserCircle as UserProfileIcon } from 'lucide-react';
 
 // Dummy tenant data - replace with actual data fetching
 const tenantData = {
@@ -176,13 +176,13 @@ export default function TenantDashboardPage() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {/* Shopping Section Link */}
-            <Card className="bg-accent/30 hover:bg-accent/50 transition-colors">
+            <Card className="bg-accent/30 hover:bg-accent/50 transition-colors md:col-span-1">
             <CardHeader className="flex-row items-center justify-between">
                 <div className="space-y-1">
                 <CardTitle className="flex items-center text-accent-foreground"><ShoppingBag className="mr-2 h-5 w-5"/> Exclusive Shopping</CardTitle>
-                <CardDescription className="text-accent-foreground/80">Discover goods and services relevant to your living needs.</CardDescription>
+                <CardDescription className="text-accent-foreground/80">Goods and services for your living needs.</CardDescription>
                 </div>
                 <Button variant="default" className="bg-accent text-accent-foreground hover:bg-accent/80" asChild>
                 <Link href="/shopping">
@@ -193,15 +193,30 @@ export default function TenantDashboardPage() {
             </Card>
 
             {/* My Shop Orders Link */}
-            <Card className="bg-primary/10 hover:bg-primary/20 transition-colors">
+            <Card className="bg-primary/10 hover:bg-primary/20 transition-colors md:col-span-1">
                 <CardHeader className="flex-row items-center justify-between">
                     <div className="space-y-1">
                     <CardTitle className="flex items-center text-primary"><ListChecks className="mr-2 h-5 w-5"/> My Shop Orders</CardTitle>
-                    <CardDescription className="text-primary/80">Track your purchases from the tenant shop.</CardDescription>
+                    <CardDescription className="text-primary/80">Track your shop purchases.</CardDescription>
                     </div>
                     <Button variant="outline" asChild>
                     <Link href="/dashboard/tenant/shopping-orders">
-                        View My Shop Orders
+                        View Orders
+                    </Link>
+                    </Button>
+                </CardHeader>
+            </Card>
+
+             {/* My Shop Profile Link */}
+            <Card className="bg-secondary/30 hover:bg-secondary/50 transition-colors md:col-span-1">
+                <CardHeader className="flex-row items-center justify-between">
+                    <div className="space-y-1">
+                    <CardTitle className="flex items-center text-secondary-foreground"><UserProfileIcon className="mr-2 h-5 w-5"/> My Shop Profile</CardTitle>
+                    <CardDescription className="text-secondary-foreground/80">Manage shop preferences.</CardDescription>
+                    </div>
+                    <Button variant="outline" asChild>
+                    <Link href="/shopping/profile">
+                        Shop Profile
                     </Link>
                     </Button>
                 </CardHeader>

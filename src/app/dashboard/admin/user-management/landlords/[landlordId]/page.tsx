@@ -23,7 +23,8 @@ import {
     UserCheck, 
     KeyRound, 
     ShieldAlert,
-    ListChecks
+    ListChecks,
+    AlertTriangle // Added for not found case
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -228,3 +229,4 @@ export default function AdminLandlordProfilePage() {
     </div>
   );
 }
+

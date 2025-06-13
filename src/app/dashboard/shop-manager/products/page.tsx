@@ -3,6 +3,7 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft, PackagePlus, Filter, Search, MoreHorizontal, Eye, Edit, Trash2, Power, PowerOff, PlusCircle } from 'lucide-react';
@@ -34,8 +35,11 @@ const dummyProducts: Product[] = [
 
 export default function ShopProductManagementPage() {
   const { toast } = useToast();
+  const router = useRouter();
 
-  const handleEditProduct = (productId: string) => toast({ title: "Edit Product", description: `Editing product ${productId}. (Placeholder)` });
+  const handleEditProduct = (productId: string) => {
+    router.push(`/dashboard/shop-manager/products/${productId}/edit`);
+  };
   const handleDeleteProduct = (productId: string) => toast({ title: "Delete Product", description: `Product ${productId} deleted. (Placeholder)`, variant: 'destructive' });
   const handleToggleStatus = (productId: string, currentStatus: ProductStatus) => toast({ title: "Toggle Status", description: `Product ${productId} status toggled to ${currentStatus === 'Active' ? 'Inactive' : 'Active'}. (Placeholder)` });
 

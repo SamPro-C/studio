@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ArrowLeft, ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 interface CartItem {
   id: string;
@@ -19,26 +20,34 @@ interface CartItem {
   aiHint: string;
 }
 
-const dummyCartItems: CartItem[] = [
+const initialCartItems: CartItem[] = [
   { id: "item1", productId: "prod1", name: "Fresh Milk (1L)", price: 120, quantity: 2, image: "https://placehold.co/100x100.png?text=Milk", aiHint: "milk carton" },
   { id: "item2", productId: "prod3", name: "20L Water Refill", price: 200, quantity: 1, image: "https://placehold.co/100x100.png?text=Water", aiHint: "water jug" },
 ];
 
 export default function ShoppingCartPage() {
   const { toast } = useToast();
+  const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems);
 
   const handleQuantityChange = (itemId: string, change: number) => {
-    toast({ description: `Quantity updated for item ${itemId}. (Placeholder)` });
-    // Update dummyCartItems or state here in a real app
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === itemId
+          ? { ...item, quantity: Math.max(1, item.quantity + change) } // Ensure quantity is at least 1
+          : item
+      )
+    );
+    const updatedItem = cartItems.find(item => item.id === itemId);
+    toast({ description: `Quantity for ${updatedItem?.name} updated. (Client-side only)` });
   };
 
   const handleRemoveItem = (itemId: string, itemName: string) => {
-    toast({ description: `${itemName} removed from cart. (Placeholder)` });
-    // Remove from dummyCartItems or state here
+    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+    toast({ description: `${itemName} removed from cart. (Client-side only)` });
   };
 
-  const subtotal = dummyCartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = 100; // Example
+  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const deliveryFee = cartItems.length > 0 ? 100 : 0; // Example: delivery fee only if cart is not empty
   const total = subtotal + deliveryFee;
 
   return (
@@ -59,10 +68,10 @@ export default function ShoppingCartPage() {
       </header>
 
       <main className="flex-1 container py-8">
-        {dummyCartItems.length > 0 ? (
+        {cartItems.length > 0 ? (
           <div className="grid md:grid-cols-3 gap-8">
             <div className="md:col-span-2 space-y-4">
-              {dummyCartItems.map(item => (
+              {cartItems.map(item => (
                 <Card key={item.id} className="flex items-center p-4 gap-4 shadow-sm">
                   <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
                     <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover" data-ai-hint={item.aiHint}/>
@@ -138,3 +147,4 @@ export default function ShoppingCartPage() {
     </div>
   );
 }
+

@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Settings2, Filter, FileDown, ShieldCheck, AlertTriangle, Server, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Settings2, Filter, FileDown, ShieldCheck, AlertTriangle, Server, CheckCircle, XCircle, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 
 interface SystemComponentStatus {
   id: string;
@@ -28,6 +30,21 @@ const dummyComponentStatuses: SystemComponentStatus[] = [
   { id: "comp7", name: "E-commerce Subsystem", status: "Operational", lastChecked: "4 mins ago" },
 ];
 
+const errorLogData = [
+    { date: "Aug 1", errors: 5 },
+    { date: "Aug 2", errors: 2 },
+    { date: "Aug 3", errors: 8 },
+    { date: "Aug 4", errors: 1 },
+    { date: "Aug 5", errors: 3 },
+    { date: "Aug 6", errors: 0 },
+    { date: "Aug 7", errors: 4 },
+];
+
+const errorLogChartConfig = {
+  errors: { label: "Errors", color: "hsl(var(--destructive))" },
+} satisfies ChartConfig;
+
+
 export default function SystemHealthReportPage() {
   const { toast } = useToast();
 
@@ -43,8 +60,8 @@ export default function SystemHealthReportPage() {
   };
   
   const getStatusBadgeVariant = (status: SystemComponentStatus['status']): "default" | "secondary" | "destructive" | "outline" => {
-     if (status === 'Operational') return 'default'; // success
-    if (status === 'Degraded Performance') return 'secondary'; // warning
+     if (status === 'Operational') return 'default'; 
+    if (status === 'Degraded Performance') return 'secondary'; 
     if (status === 'Offline' || status === 'Partial Outage') return 'destructive';
     return 'outline';
   }
@@ -121,12 +138,27 @@ export default function SystemHealthReportPage() {
         <Card>
             <CardHeader>
                 <CardTitle className="flex items-center"><AlertTriangle className="mr-2 h-5 w-5 text-primary/80"/> Recent Error Log Summary</CardTitle>
-                <CardDescription>Overview of recent system errors and warnings.</CardDescription>
+                <CardDescription>Overview of recent system errors and warnings (last 7 days).</CardDescription>
             </CardHeader>
-            <CardContent className="h-60 bg-muted rounded-md flex items-center justify-center border border-dashed">
-                <p className="text-muted-foreground text-center">
-                    Error log summary will be displayed here. <br/> (e.g., Top 5 recent critical errors, error rate chart)
-                </p>
+            <CardContent>
+                {errorLogData.length > 0 ? (
+                    <ChartContainer config={errorLogChartConfig} className="h-[300px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={errorLogData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false}/>
+                                <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} className="text-xs" />
+                                <YAxis allowDecimals={false} tickLine={false} axisLine={false} tickMargin={8} width={30} className="text-xs"/>
+                                <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                                <ChartLegend content={<ChartLegendContent />} />
+                                <Bar dataKey="errors" fill="var(--color-errors)" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </ChartContainer>
+                ) : (
+                     <div className="h-[300px] bg-muted rounded-md flex items-center justify-center border border-dashed">
+                        <p className="text-muted-foreground text-center p-4">No error data to display for the selected period.</p>
+                    </div>
+                )}
             </CardContent>
             <CardFooter className="border-t pt-4">
                 <Button variant="outline" onClick={handleExport}><FileDown className="mr-2 h-4 w-4" /> Export Full Report</Button>

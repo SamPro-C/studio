@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -45,7 +46,12 @@ export function LoginForm() {
         description: result.message,
       });
       if (result.role) {
-        router.push(`/dashboard/${result.role}`);
+        // Adjusted redirection for shopmanager
+        if (result.role === 'shopmanager') {
+          router.push(`/dashboard/shop-manager`);
+        } else {
+          router.push(`/dashboard/${result.role}`);
+        }
       } else {
         // Optional: Redirect to a generic page or handle users without a specific role
         // router.push('/dashboard'); 
@@ -123,7 +129,7 @@ export function LoginForm() {
           </form>
         </Form>
         <p className="mt-4 text-center text-sm text-muted-foreground">
-          Test with: landlord@example.com, tenant@example.com, worker@example.com, admin@example.com (any password).
+          Test with: landlord@example.com, tenant@example.com, worker@example.com, admin@example.com, shopmanager@example.com (any password).
         </p>
       </CardContent>
       <CardFooter className="flex-col items-start">

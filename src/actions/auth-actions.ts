@@ -1,3 +1,4 @@
+
 // src/actions/auth-actions.ts
 "use server";
 
@@ -13,7 +14,7 @@ export async function registerLandlord(data: RegisterLandlordFormData) {
   return { success: true, message: "Registration submitted! Awaiting admin approval." };
 }
 
-export type UserRole = 'landlord' | 'tenant' | 'worker' | 'admin';
+export type UserRole = 'landlord' | 'tenant' | 'worker' | 'admin' | 'shopmanager';
 
 export async function loginUser(data: LoginFormData): Promise<{ success: boolean; message: string; role?: UserRole }> {
   console.log("Login attempt with:", data);
@@ -34,6 +35,8 @@ export async function loginUser(data: LoginFormData): Promise<{ success: boolean
     role = 'worker';
   } else if (data.emailOrPhone.toLowerCase() === "admin@example.com") {
     role = 'admin';
+  } else if (data.emailOrPhone.toLowerCase() === "shopmanager@example.com") {
+    role = 'shopmanager';
   } else if (data.emailOrPhone && !data.emailOrPhone.includes("error")) {
     // For any other successful login simulation that isn't an error or specific role
     // You might want to assign a default role or handle this case differently

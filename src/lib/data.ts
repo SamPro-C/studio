@@ -29,6 +29,7 @@ export interface Service {
   icon: LucideIcon;
   description: string;
   details: string[];
+  longDescription: string;
 }
 
 export interface CaseStudy {
@@ -132,7 +133,7 @@ export const softwareProjects: SoftwareProject[] = [
 
 export const services: Service[] = [
   {
-    id: 'graphic_design',
+    id: 'graphic-design',
     title: 'Graphic Design',
     icon: Palette,
     description: "Creative and impactful graphic design services to elevate your brand's visual identity, for clients in Kenya and worldwide.",
@@ -143,9 +144,10 @@ export const services: Service[] = [
       'Packaging Design & Print Layouts',
       'Infographics & Presentation Design',
     ],
+    longDescription: "Our graphic design services focus on creating visually compelling assets that communicate your brand's message effectively. We work with businesses in Kenya and internationally to develop everything from logos that make a lasting first impression to comprehensive branding packages that ensure consistency across all platforms. Whether you need engaging social media graphics, professional marketing materials, or eye-catching packaging, our team combines creativity with strategic thinking to deliver designs that resonate with your target audience and achieve your business objectives. We believe good design is good business, and we're passionate about helping you look your best.",
   },
   {
-    id: 'web_design',
+    id: 'web-design-development',
     title: 'Web Design & Development',
     icon: LayoutGrid,
     description: 'Building responsive, user-friendly websites and e-commerce solutions that perform for businesses in Kenya and globally.',
@@ -156,9 +158,10 @@ export const services: Service[] = [
       'Responsive & Mobile-First Development',
       'Website Maintenance & Support',
     ],
+    longDescription: "Sampro Media specializes in crafting high-performance websites that are not only visually stunning but also incredibly functional and user-friendly. Serving clients in Kenya and across the globe, we build everything from informative brochure sites to complex e-commerce platforms. Our process emphasizes responsive, mobile-first design to ensure a seamless experience on all devices. We integrate robust Content Management Systems (CMS) for easy content updates and provide ongoing maintenance and support to keep your digital presence strong and secure. Let us build the online foundation your business needs to thrive in the digital age.",
   },
   {
-    id: 'programming',
+    id: 'software-app-development',
     title: 'Software & App Development',
     icon: CodeXml,
     description: 'Custom software, mobile apps, and backend solutions to power your business, developed by our expert team in Kenya for local and international needs.',
@@ -169,9 +172,10 @@ export const services: Service[] = [
       'Cloud Architecture & Deployment',
       'Ongoing Technical Support',
     ],
+    longDescription: "Transform your business operations with custom software and mobile applications developed by Sampro Media. Our Kenya-based team serves both local and international clients, delivering tailored solutions that solve unique challenges and drive efficiency. We develop native and cross-platform mobile apps for iOS and Android, robust backend systems, and secure APIs for seamless integration. From initial concept and cloud architecture to deployment and ongoing technical support, we are your trusted partner in building the technology that powers your success.",
   },
   {
-    id: 'video_photography',
+    id: 'media-production',
     title: 'Media Production',
     icon: Camera,
     description: 'Professional video and photography services in Kenya to capture your vision and tell your story effectively to a global audience.',
@@ -182,9 +186,10 @@ export const services: Service[] = [
       'Documentaries & Short Films',
       'Animation & Motion Graphics',
     ],
+    longDescription: "Capture your audience's attention with high-quality video and photography from Sampro Media. Based in Kenya, we provide comprehensive media production services to clients worldwide. Our offerings include compelling corporate videos, engaging commercials, professional event coverage, stunning product photography, and impactful documentaries. We also specialize in animation and motion graphics to bring your ideas to life in dynamic new ways. Our team handles every aspect of production, from concept development and scripting to filming, editing, and post-production, ensuring your story is told with clarity and creativity.",
   },
   {
-    id: 'digital_marketing',
+    id: 'digital-marketing-seo',
     title: 'Digital Marketing & SEO',
     icon: Search,
     description: 'Strategic digital marketing and SEO services to boost your online visibility and reach in Kenya and global markets.',
@@ -195,9 +200,10 @@ export const services: Service[] = [
       'Content Marketing Strategy',
       'Email Marketing Campaigns',
     ],
+    longDescription: "Elevate your brand's online presence with Sampro Media's comprehensive digital marketing and SEO services. We help businesses in Kenya and around the world connect with their target audience and achieve measurable results. Our strategies include meticulous Search Engine Optimization (SEO) to improve organic rankings, targeted Pay-Per-Click (PPC) campaigns for immediate visibility, engaging Social Media Marketing (SMM), strategic Content Marketing to build authority, and effective Email Marketing campaigns to nurture leads. Let us craft a digital marketing plan that drives growth and maximizes your return on investment.",
   },
   {
-    id: 'ui_ux_consultancy',
+    id: 'ui-ux-design-consultancy',
     title: 'UI/UX Design Consultancy',
     icon: Users,
     description: 'Expert UI/UX consultancy focused on creating intuitive and engaging digital experiences for users in Kenya and internationally.',
@@ -208,9 +214,10 @@ export const services: Service[] = [
       'Interaction Design & Visual Polish',
       'Accessibility (A11Y) Compliance',
     ],
+    longDescription: "Deliver exceptional user experiences with Sampro Media's expert UI/UX design consultancy. We partner with businesses in Kenya and globally to design digital products that are not only aesthetically pleasing but also intuitive, accessible, and enjoyable to use. Our process includes in-depth user research, persona development, detailed wireframing and interactive prototyping, rigorous usability testing, and meticulous attention to interaction design and visual polish. We ensure your digital solutions meet the highest standards of usability and accessibility, leading to increased user satisfaction and engagement.",
   },
   {
-    id: 'ai_solutions',
+    id: 'ai-solutions-integration',
     title: 'AI Solutions & Integration',
     icon: Cpu,
     description: 'Leveraging artificial intelligence to build innovative solutions and integrate AI capabilities into your existing systems for clients in Kenya and worldwide.',
@@ -221,6 +228,7 @@ export const services: Service[] = [
       'AI-Powered Automation & Chatbots',
       'AI Strategy & Consultation',
     ],
+    longDescription: "Unlock the power of Artificial Intelligence with Sampro Media. We provide cutting-edge AI solutions and integration services for businesses in Kenya and internationally, helping you automate processes, gain deeper insights, and create innovative products. Our expertise covers custom AI model development, machine learning applications, Natural Language Processing (NLP) tools, AI-powered automation, intelligent chatbots, and strategic AI consultation. Whether you're looking to enhance existing systems or build entirely new AI-driven platforms, we have the skills to turn your AI vision into reality.",
   },
 ];
 
@@ -294,3 +302,5 @@ export const testimonials: Testimonial[] = [
     dataAiHint: 'business person international',
   },
 ];
+
+    

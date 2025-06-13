@@ -14,10 +14,10 @@ export default function Home() {
       <section className="text-center py-16 md:py-24 bg-card rounded-lg shadow-lg">
         <div className="container mx-auto px-4">
           <h1 className="font-headline text-4xl md:text-6xl font-bold mb-6 text-primary">
-            Premier Media & Software Services in Kenya
+            Expert Software & Media Services in Kenya & Globally
           </h1>
           <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto mb-8">
-            Sampro Media delivers innovative media production and cutting-edge software solutions, empowering businesses in Kenya and around the world to achieve digital excellence.
+            Sampro Media: Driving digital transformation with innovative media production and cutting-edge software solutions for businesses in Kenya and worldwide.
           </p>
           <div className="space-x-4">
             <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
@@ -35,7 +35,7 @@ export default function Home() {
       {/* Featured Services/Portfolios Overview */}
       <section className="container mx-auto px-4">
         <h2 className="font-headline text-3xl md:text-4xl font-bold text-center mb-12">
-          Our Core Media & Software Expertise
+          Our Core Media & Software Expertise in Kenya & Worldwide
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="hover:shadow-xl transition-shadow duration-300">

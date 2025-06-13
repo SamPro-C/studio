@@ -1,3 +1,4 @@
+
 import { services, type Service } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import PageHeader from '@/components/shared/PageHeader';
@@ -30,8 +31,8 @@ export default function ServicesPage() {
   return (
     <div>
       <PageHeader
-        title="Our Services"
-        subtitle="We offer a comprehensive suite of media and technology services designed to elevate your brand and empower your business."
+        title="Comprehensive Media & Software Services"
+        subtitle="Sampro Media offers a full suite of expert software development and creative media services, tailored for businesses in Kenya and international markets."
         icon={Briefcase}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

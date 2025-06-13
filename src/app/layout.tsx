@@ -8,8 +8,8 @@ import FloatingWhatsAppButton from '@/components/shared/FloatingWhatsAppButton';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 
 export const metadata: Metadata = {
-  title: 'Sampro Media Portfolio',
-  description: 'Portfolio of Sampro Media services and projects. Discover innovative media productions, custom software solutions, and insightful case studies showcasing digital excellence.',
+  title: 'Sampro Media: Expert Software & Media Services in Kenya & Globally',
+  description: "Elevate your business with Sampro Media, Kenya's leading provider of custom software development, innovative media production, and comprehensive digital solutions for local and international clients.",
 };
 
 export default function RootLayout({

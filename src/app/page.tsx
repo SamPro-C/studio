@@ -14,10 +14,10 @@ export default function Home() {
       <section className="text-center py-16 md:py-24 bg-card rounded-lg shadow-lg">
         <div className="container mx-auto px-4">
           <h1 className="font-headline text-4xl md:text-6xl font-bold mb-6 text-primary">
-            Crafting Digital Experiences
+            Premier Media & Software Services in Kenya
           </h1>
           <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto mb-8">
-            Sampro Media delivers innovative media services and cutting-edge software solutions to elevate your brand and streamline your operations.
+            Sampro Media delivers innovative media production and cutting-edge software solutions, empowering businesses in Kenya and around the world to achieve digital excellence.
           </p>
           <div className="space-x-4">
             <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
@@ -35,7 +35,7 @@ export default function Home() {
       {/* Featured Services/Portfolios Overview */}
       <section className="container mx-auto px-4">
         <h2 className="font-headline text-3xl md:text-4xl font-bold text-center mb-12">
-          What We Do
+          Our Core Media & Software Expertise
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="hover:shadow-xl transition-shadow duration-300">
@@ -47,7 +47,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <CardDescription className="text-center mb-4">
-                Engaging video production, animation, and visual content that captivates your audience.
+                Engaging video production, animation, and visual content that captivates your audience in Kenya and globally.
               </CardDescription>
               <Button asChild variant="link" className="w-full text-primary">
                 <Link href="/media-portfolio">
@@ -66,7 +66,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <CardDescription className="text-center mb-4">
-                Custom web and mobile applications, and robust software to power your business.
+                Custom web and mobile applications, and robust software to power your business, developed in Kenya for worldwide impact.
               </CardDescription>
               <Button asChild variant="link" className="w-full text-primary">
                 <Link href="/software-portfolio">
@@ -85,7 +85,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <CardDescription className="text-center mb-4">
-                From initial concept to final delivery, we provide end-to-end solutions.
+                From initial concept to final delivery, we provide end-to-end solutions for clients in Kenya and internationally.
               </CardDescription>
               <Button asChild variant="link" className="w-full text-primary">
                 <Link href="/services">

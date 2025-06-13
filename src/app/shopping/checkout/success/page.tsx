@@ -20,7 +20,7 @@ export default function OrderSuccessPage() {
               <CardTitle className="font-headline text-2xl">Order Confirmed!</CardTitle>
               <CardDescription>
                 Your order {orderId ? <span className="font-semibold">#{orderId}</span> : ''} has been successfully placed. 
-                You will receive updates via notifications in your tenant dashboard.
+                You can track its progress in your dashboard.
               </CardDescription>
           </CardHeader>
           <CardContent>
@@ -40,3 +40,4 @@ export default function OrderSuccessPage() {
     </div>
   );
 }
+

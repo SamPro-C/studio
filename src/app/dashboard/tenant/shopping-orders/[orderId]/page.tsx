@@ -6,11 +6,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowLeft, ShoppingBag, User, Home, Truck, CreditCard, AlertTriangle, PackageCheck, PackageX, CheckCircle, HelpCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { ArrowLeft, ShoppingBag, User, Home, Truck, CreditCard, AlertTriangle, PackageCheck, PackageX, CheckCircle, HelpCircle, MessageSquare, Star } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
 
 type OrderStatusTenant = 'Order Placed' | 'Processing' | 'Out for Delivery' | 'Delivered' | 'Canceled';
 
@@ -105,6 +107,8 @@ export default function TenantShopOrderDetailPage() {
   const params = useParams();
   const orderId = params.orderId as string;
   const order = dummyTenantOrderDetails[orderId];
+  const { toast } = useToast();
+
 
   const getStatusBadgeVariant = (status: OrderStatusTenant) => {
     if (status === 'Order Placed' || status === 'Processing') return 'secondary';
@@ -113,6 +117,14 @@ export default function TenantShopOrderDetailPage() {
     if (status === 'Canceled') return 'destructive';
     return 'outline';
   };
+  
+  const handleRateOrder = () => {
+    toast({ title: "Rate Order", description: "Order rating functionality is coming soon!"});
+  }
+  const handleReportIssue = () => {
+    toast({ title: "Report Issue", description: "Issue reporting for this order is coming soon!"});
+  }
+
 
   if (!order) {
     return (
@@ -204,14 +216,23 @@ export default function TenantShopOrderDetailPage() {
                 <p className="text-lg font-bold text-primary">Order Total: KES {order.totalAmount.toLocaleString()}</p>
             </div>
           </CardContent>
-           <CardFooter className="mt-4">
+           <CardFooter className="mt-4 flex flex-col sm:flex-row gap-2 justify-between items-center">
                 <Button variant="outline" asChild>
                     <Link href="/shopping"><ShoppingBag className="mr-2 h-4 w-4"/>Continue Shopping</Link>
                 </Button>
-                 <Button variant="ghost" className="ml-auto">Contact Support</Button>
+                {order.status === 'Delivered' && (
+                    <div className="flex gap-2">
+                        <Button variant="outline" onClick={handleRateOrder}><Star className="mr-2 h-4 w-4"/>Rate Order</Button>
+                        <Button variant="destructive" onClick={handleReportIssue}><AlertTriangle className="mr-2 h-4 w-4"/>Report Issue</Button>
+                    </div>
+                )}
+                 {order.status !== 'Delivered' && order.status !== 'Canceled' && (
+                    <Button variant="ghost">Contact Support</Button>
+                )}
             </CardFooter>
         </Card>
       </main>
     </div>
   );
 }
+

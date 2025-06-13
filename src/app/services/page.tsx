@@ -7,11 +7,11 @@ import { CheckCircle, Briefcase } from 'lucide-react';
 function ServiceCard({ service }: { service: Service }) {
   const Icon = service.icon;
   return (
-    <Card className="shadow-lg transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl transform overflow-hidden flex flex-col h-full">
-      <CardHeader className="items-center text-center bg-secondary/30 p-6 rounded-t-lg">
-        <Icon className="h-16 w-16 text-primary mb-4" />
-        <CardTitle className="font-headline text-2xl">{service.title}</CardTitle>
-        <CardDescription className="text-md mt-1">{service.description}</CardDescription>
+    <Card className="shadow-lg transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl transform overflow-hidden flex flex-col h-full hover:border-primary border-transparent border">
+      <CardHeader className="items-center text-center p-6 border-b">
+        <Icon className="h-20 w-20 text-primary mb-4" />
+        <CardTitle className="font-headline text-2xl font-bold text-primary">{service.title}</CardTitle>
+        <CardDescription className="text-md mt-1 text-foreground/80">{service.description}</CardDescription>
       </CardHeader>
       <CardContent className="pt-6 flex-grow">
         <ul className="space-y-2">

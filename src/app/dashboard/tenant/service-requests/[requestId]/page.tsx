@@ -1,25 +1,25 @@
 
-// src/app/dashboard/tenant/service-requests/[requestId]/page.tsx
+// /src/app/dashboard/tenant/service-requests/[requestId]/page.tsx
 "use client";
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'; // Removed CardFooter as it's not used
 import { Badge } from '@/components/ui/badge';
-import { 
-    ArrowLeft, 
-    Wrench, 
-    CalendarDays, 
-    UserCircle, 
-    Briefcase, 
+import {
+    ArrowLeft,
+    Wrench,
+    CalendarDays,
+    UserCircle,
     Paperclip,
     MessageSquare,
     Clock,
-    AlertCircle
+    AlertCircle,
+    Home // Added Home icon
 } from 'lucide-react';
-import { useEffect, useState } from 'react'; // Ensure useState and useEffect are imported
+import { useEffect, useState } from 'react';
 
 interface MediaUpload {
   id: string;
@@ -132,7 +132,7 @@ export default function ServiceRequestDetailsTenantPage() {
       default: return 'outline';
     }
   };
-  
+
   const getPriorityBadgeVariant = (priority: ServiceRequestDetailsData['priority']): "default" | "secondary" | "destructive" | "outline" => {
     switch (priority) {
         case 'Urgent': return 'destructive';
@@ -142,8 +142,6 @@ export default function ServiceRequestDetailsTenantPage() {
   };
 
   if (!request) {
-    // This return is for when the request is not found or still loading
-    // Explicitly parenthesized for clarity
     return (
       <div className="flex min-h-screen flex-col">
         <main className="flex-1 bg-background p-4 sm:p-6 md:p-8 space-y-8">
@@ -169,8 +167,6 @@ export default function ServiceRequestDetailsTenantPage() {
     );
   }
 
-  // Main component return if request is found
-  // Explicitly parenthesized for clarity
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1 bg-background p-4 sm:p-6 md:p-8 space-y-8">
@@ -265,11 +261,11 @@ export default function ServiceRequestDetailsTenantPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {request.mediaUploads.map((media) => (
                     <div key={media.id} className="relative aspect-video group">
-                    <Image 
-                        src={media.url} 
-                        alt={media.caption || 'Service request media'} 
-                        layout="fill" 
-                        objectFit="cover" 
+                    <Image
+                        src={media.url}
+                        alt={media.caption || 'Service request media'}
+                        layout="fill"
+                        objectFit="cover"
                         className="rounded-md shadow"
                         data-ai-hint={media.aiHint || "repair image"}
                     />
@@ -298,7 +294,7 @@ export default function ServiceRequestDetailsTenantPage() {
                   <li key={logEntry.id} className="flex items-start space-x-3 text-sm relative pl-6">
                      <div className={`absolute left-0 top-1 h-2.5 w-2.5 rounded-full ${logEntry.user === "You" ? 'bg-primary' : 'bg-muted-foreground/50'}`}></div>
                      <div className={`absolute left-[3px] top-[14px] h-full w-[2px] ${logEntry.user === "You" ? 'bg-primary/30' : 'bg-muted-foreground/20'} group-last:h-0`}></div>
-                    
+
                     <div>
                         <p className="font-medium">
                             <span className={`${logEntry.user === "You" ? 'text-primary' : 'text-foreground'}`}>{logEntry.user}</span>: {logEntry.action}
@@ -319,3 +315,4 @@ export default function ServiceRequestDetailsTenantPage() {
   );
 }
 
+    

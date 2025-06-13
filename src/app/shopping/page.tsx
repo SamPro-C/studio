@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft, Search, ShoppingCart, Tag, List, UserCircle, Filter as FilterIcon, Star, History, Zap, Newspaper } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Dummy data for placeholders
 const dummyCategories = [
@@ -21,19 +21,29 @@ const dummyCategories = [
   { id: "cat4", name: "Laundry Services", icon: List, image: "https://placehold.co/300x200.png?text=Laundry", aiHint: "laundry basket" },
 ];
 
-const dummyFeaturedProducts = [
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+  aiHint: string;
+  originalPrice?: number;
+}
+
+const dummyFeaturedProducts: Product[] = [
   { id: "prod1", name: "Fresh Milk (1L)", price: 120, image: "https://placehold.co/200x150.png?text=Milk", category: "Groceries", aiHint: "milk carton" },
   { id: "prod2", name: "Dish Soap (500ml)", price: 150, image: "https://placehold.co/200x150.png?text=Soap", category: "Cleaning Supplies", aiHint: "dish soap" },
   { id: "prod3", name: "20L Water Refill", price: 200, image: "https://placehold.co/200x150.png?text=Water+Refill", category: "Water Delivery", aiHint: "water jug" },
   { id: "prod4", name: "Artisan Bread Loaf", price: 250, image: "https://placehold.co/200x150.png?text=Bread", category: "Groceries", aiHint: "bread loaf" },
 ];
 
-const recentlyViewedProducts = [
+const recentlyViewedProducts: Product[] = [
   { id: "prod5", name: "Organic Eggs (Dozen)", price: 300, image: "https://placehold.co/200x150.png?text=Eggs", category: "Groceries", aiHint: "eggs carton" },
   { id: "prod6", name: "All-Purpose Cleaner", price: 180, image: "https://placehold.co/200x150.png?text=Cleaner", category: "Cleaning Supplies", aiHint: "cleaning spray" },
 ];
 
-const specialOfferProducts = [
+const specialOfferProducts: Product[] = [
   { id: "offer1", name: "Snack Bundle (Save 10%)", price: 450, originalPrice: 500, image: "https://placehold.co/200x150.png?text=Snack+Offer", category: "Groceries", aiHint: "snack bundle" },
   { id: "offer2", name: "Laundry Service - 5kg", price: 600, originalPrice: 700, image: "https://placehold.co/200x150.png?text=Laundry+Offer", category: "Laundry Services", aiHint: "folded laundry" },
 ];
@@ -44,23 +54,58 @@ const dummyTopOffers = [
     { id: "offer_banner3", title: "Bulk Water Discount", description: "Order 5+ refills & save!", image: "https://placehold.co/400x200.png?text=Water+Deal", link: "#", aiHint: "water delivery deal" },
 ];
 
-const dummyNewArrivals = [
+const dummyNewArrivals: Product[] = [
     { id: "newprod1", name: "Artisanal Coffee Beans", price: 750, image: "https://placehold.co/200x150.png?text=Coffee+Beans", category: "Groceries", aiHint: "coffee beans package" },
     { id: "newprod2", name: "Eco-Friendly Sponges (Pack of 3)", price: 220, image: "https://placehold.co/200x150.png?text=Sponges", category: "Cleaning Supplies", aiHint: "eco sponges" },
     { id: "newprod3", name: "Express Laundry (24hr)", price: 1000, image: "https://placehold.co/200x150.png?text=Express+Laundry", category: "Laundry Services", aiHint: "fast laundry" },
     { id: "newprod4", name: "Organic Veggie Box", price: 900, image: "https://placehold.co/200x150.png?text=Veggie+Box", category: "Groceries", aiHint: "vegetable box" },
 ];
 
+interface CartItem {
+  id: string; // productId
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  aiHint: string;
+}
 
 export default function ShoppingPlatformPage() {
   const { toast } = useToast();
   const [cartItemCount, setCartItemCount] = useState(0);
 
-  const handleAddToCart = (productName: string) => {
-    setCartItemCount(prevCount => prevCount + 1);
+  useEffect(() => {
+    const storedCart = localStorage.getItem('rentizziShopCart');
+    if (storedCart) {
+      const cartItems: CartItem[] = JSON.parse(storedCart);
+      setCartItemCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
+    }
+  }, []);
+
+  const handleAddToCart = (product: Product) => {
+    const storedCart = localStorage.getItem('rentizziShopCart');
+    let cartItems: CartItem[] = storedCart ? JSON.parse(storedCart) : [];
+    
+    const existingItemIndex = cartItems.findIndex(item => item.id === product.id);
+    if (existingItemIndex > -1) {
+      cartItems[existingItemIndex].quantity += 1;
+    } else {
+      cartItems.push({ 
+        id: product.id, 
+        name: product.name, 
+        price: product.price, 
+        quantity: 1, 
+        image: product.image,
+        aiHint: product.aiHint
+      });
+    }
+    
+    localStorage.setItem('rentizziShopCart', JSON.stringify(cartItems));
+    setCartItemCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
+    
     toast({
       title: "Added to Cart!",
-      description: `${productName} has been added to your shopping cart.`,
+      description: `${product.name} has been added to your shopping cart.`,
     });
   };
 
@@ -127,8 +172,6 @@ export default function ShoppingPlatformPage() {
             <Zap className="mr-2 h-6 w-6 text-amber-500" /> Today's Top Offers
           </h3>
           <div className="flex space-x-4 overflow-x-auto pb-4 -mb-4">
-            {/* Add a comment here indicating a carousel component would be used */}
-            {/* <!-- Carousel Component (e.g., Swiper.js, Embla) would be integrated here in a full implementation --> */}
             {dummyTopOffers.map(offer => (
               <Card key={offer.id} className="min-w-[300px] sm:min-w-[350px] flex-shrink-0 overflow-hidden hover:shadow-lg transition-shadow">
                 <Link href={offer.link} className="block">
@@ -195,7 +238,6 @@ export default function ShoppingPlatformPage() {
             <Newspaper className="mr-2 h-6 w-6" /> New Arrivals
           </h3>
           <div className="flex space-x-4 overflow-x-auto pb-4 -mb-4">
-             {/* <!-- Carousel Component would be integrated here --> */}
             {dummyNewArrivals.map(product => (
               <Card key={product.id} className="min-w-[180px] sm:min-w-[200px] flex flex-col flex-shrink-0 overflow-hidden hover:shadow-lg transition-shadow">
                 <Link href={`/shopping/products/${product.id}`} className="block">
@@ -218,7 +260,7 @@ export default function ShoppingPlatformPage() {
                     </CardContent>
                 </Link>
                 <CardFooter className="p-3 pt-0 border-t mt-auto">
-                  <Button size="sm" className="w-full text-xs" onClick={() => handleAddToCart(product.name)}>Add to Cart</Button>
+                  <Button size="sm" className="w-full text-xs" onClick={() => handleAddToCart(product)}>Add to Cart</Button>
                 </CardFooter>
               </Card>
             ))}
@@ -275,7 +317,7 @@ export default function ShoppingPlatformPage() {
                     </CardContent>
                 </Link>
                 <CardFooter className="p-4 pt-0 border-t mt-auto">
-                  <Button className="w-full" onClick={() => handleAddToCart(product.name)}>Add to Cart</Button>
+                  <Button className="w-full" onClick={() => handleAddToCart(product)}>Add to Cart</Button>
                 </CardFooter>
               </Card>
             ))}
@@ -309,7 +351,7 @@ export default function ShoppingPlatformPage() {
                     </CardContent>
                 </Link>
                 <CardFooter className="p-4 pt-0 border-t mt-auto">
-                  <Button className="w-full" onClick={() => handleAddToCart(product.name)}>Add to Cart</Button>
+                  <Button className="w-full" onClick={() => handleAddToCart(product)}>Add to Cart</Button>
                 </CardFooter>
               </Card>
             ))}
@@ -356,7 +398,7 @@ export default function ShoppingPlatformPage() {
                     </CardContent>
                 </Link>
                 <CardFooter className="p-4 pt-0 border-t mt-auto">
-                  <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white" onClick={() => handleAddToCart(product.name)}>Add to Cart</Button>
+                  <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white" onClick={() => handleAddToCart(product)}>Add to Cart</Button>
                 </CardFooter>
               </Card>
             ))}
@@ -376,6 +418,4 @@ export default function ShoppingPlatformPage() {
     </div>
   );
 }
-
-
     

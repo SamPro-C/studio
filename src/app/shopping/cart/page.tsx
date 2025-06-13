@@ -8,11 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ArrowLeft, ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface CartItem {
-  id: string;
-  productId: string;
+  id: string; // productId
   name: string;
   price: number;
   quantity: number;
@@ -20,34 +19,48 @@ interface CartItem {
   aiHint: string;
 }
 
-const initialCartItems: CartItem[] = [
-  { id: "item1", productId: "prod1", name: "Fresh Milk (1L)", price: 120, quantity: 2, image: "https://placehold.co/100x100.png?text=Milk", aiHint: "milk carton" },
-  { id: "item2", productId: "prod3", name: "20L Water Refill", price: 200, quantity: 1, image: "https://placehold.co/100x100.png?text=Water", aiHint: "water jug" },
-];
-
 export default function ShoppingCartPage() {
   const { toast } = useToast();
-  const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItemCountHeader, setCartItemCountHeader] = useState(0);
+
+
+  useEffect(() => {
+    // Load cart from localStorage on component mount
+    const storedCart = localStorage.getItem('rentizziShopCart');
+    if (storedCart) {
+      const parsedCart: CartItem[] = JSON.parse(storedCart);
+      setCartItems(parsedCart);
+      setCartItemCountHeader(parsedCart.reduce((sum, item) => sum + item.quantity, 0));
+    }
+  }, []);
+
+  const updateLocalStorageAndHeader = (updatedCart: CartItem[]) => {
+    localStorage.setItem('rentizziShopCart', JSON.stringify(updatedCart));
+    setCartItemCountHeader(updatedCart.reduce((sum, item) => sum + item.quantity, 0));
+  };
 
   const handleQuantityChange = (itemId: string, change: number) => {
-    setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.id === itemId
-          ? { ...item, quantity: Math.max(1, item.quantity + change) } // Ensure quantity is at least 1
-          : item
-      )
+    const updatedCart = cartItems.map(item =>
+      item.id === itemId
+        ? { ...item, quantity: Math.max(1, item.quantity + change) }
+        : item
     );
+    setCartItems(updatedCart);
+    updateLocalStorageAndHeader(updatedCart);
     const updatedItem = cartItems.find(item => item.id === itemId);
-    toast({ description: `Quantity for ${updatedItem?.name} updated. (Client-side only)` });
+    toast({ description: `Quantity for ${updatedItem?.name} updated.` });
   };
 
   const handleRemoveItem = (itemId: string, itemName: string) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
-    toast({ description: `${itemName} removed from cart. (Client-side only)` });
+    const updatedCart = cartItems.filter(item => item.id !== itemId);
+    setCartItems(updatedCart);
+    updateLocalStorageAndHeader(updatedCart);
+    toast({ description: `${itemName} removed from cart.` });
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = cartItems.length > 0 ? 100 : 0; // Example: delivery fee only if cart is not empty
+  const deliveryFee = cartItems.length > 0 ? 100 : 0; 
   const total = subtotal + deliveryFee;
 
   return (
@@ -61,7 +74,7 @@ export default function ShoppingCartPage() {
               </Link>
             </Button>
             <h1 className="font-headline text-xl sm:text-2xl font-bold text-primary flex items-center">
-              <ShoppingCart className="mr-2 h-6 w-6" /> Your Shopping Cart
+              <ShoppingCart className="mr-2 h-6 w-6" /> Your Shopping Cart ({cartItemCountHeader})
             </h1>
           </div>
         </div>
@@ -147,4 +160,3 @@ export default function ShoppingCartPage() {
     </div>
   );
 }
-

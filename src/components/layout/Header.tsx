@@ -1,7 +1,7 @@
 
 'use client';
 import Link from 'next/link';
-import { Menu, X, Aperture, Code, Briefcase, BookOpen, Lightbulb, Mail, Tv, Info, MessageSquare } from 'lucide-react';
+import { Menu, X, Aperture, Code, Briefcase, BookOpen, Info, Mail, Tv, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
@@ -16,8 +16,7 @@ const navItems = [
   { href: '/services', label: 'Services', icon: Briefcase },
   { href: '/case-studies', label: 'Case Studies', icon: BookOpen },
   { href: '/about', label: 'About Us', icon: Info },
-  { href: '/ai-description-generator', label: 'AI Desc', icon: Lightbulb },
-  { href: '/ai-social-media-snippet-generator', label: 'AI Snippets', icon: MessageSquare },
+  { href: '/ai-tools', label: 'AI Tools', icon: Bot },
   { href: '/contact', label: 'Contact', icon: Mail },
 ];
 

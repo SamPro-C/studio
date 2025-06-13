@@ -15,8 +15,7 @@ const footerNavLinks = {
   ],
   connect: [
     { href: '/contact', label: 'Contact Us' },
-    { href: '/ai-description-generator', label: 'AI Description Tool' },
-    { href: '/ai-social-media-snippet-generator', label: 'AI Snippet Tool' },
+    { href: '/ai-tools', label: 'AI Tools Hub' },
   ],
 };
 

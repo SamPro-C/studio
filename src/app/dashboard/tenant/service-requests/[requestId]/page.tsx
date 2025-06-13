@@ -19,6 +19,7 @@ import {
     Clock,
     AlertCircle
 } from 'lucide-react';
+import { useEffect, useState } from 'react'; // Ensure useState and useEffect are imported
 
 interface MediaUpload {
   id: string;
@@ -67,8 +68,8 @@ const dummyRequestDetails: { [key: string]: ServiceRequestDetailsData } = {
     status: 'Pending',
     assignedWorker: { name: null, role: null, contact: null },
     mediaUploads: [
-      { id: "media1", type: 'image', url: 'https://placehold.co/600x400.png', caption: 'Leaking faucet base', aiHint: 'leaky faucet' },
-      { id: "media2", type: 'image', url: 'https://placehold.co/600x400.png', caption: 'Water under sink', aiHint: 'water damage' },
+      { id: "media1", type: 'image', url: 'https://placehold.co/600x400.png?text=Milk+Large', caption: 'Leaking faucet base', aiHint: 'leaky faucet' },
+      { id: "media2", type: 'image', url: 'https://placehold.co/300x200.png?text=Milk+Side', caption: 'Water under sink', aiHint: 'water damage' },
     ],
     actionLog: [
       { id: "log1", timestamp: "2024-07-26T10:00:00Z", user: "You", action: "Request Submitted", details: "Kitchen sink leaking badly." },
@@ -115,7 +116,12 @@ const dummyRequestDetails: { [key: string]: ServiceRequestDetailsData } = {
 export default function ServiceRequestDetailsTenantPage() {
   const params = useParams();
   const requestId = params.requestId as string;
-  const request = dummyRequestDetails[requestId];
+  const [request, setRequest] = useState<ServiceRequestDetailsData | null>(null);
+
+  useEffect(() => {
+    const foundRequest = dummyRequestDetails[requestId];
+    setRequest(foundRequest || null);
+  }, [requestId]);
 
   const getStatusBadgeVariant = (status: ServiceRequestDetailsData['status']): "default" | "secondary" | "destructive" | "outline" => {
     switch (status) {
@@ -136,6 +142,8 @@ export default function ServiceRequestDetailsTenantPage() {
   };
 
   if (!request) {
+    // This return is for when the request is not found or still loading
+    // Explicitly parenthesized for clarity
     return (
       <div className="flex min-h-screen flex-col">
         <main className="flex-1 bg-background p-4 sm:p-6 md:p-8 space-y-8">
@@ -161,6 +169,8 @@ export default function ServiceRequestDetailsTenantPage() {
     );
   }
 
+  // Main component return if request is found
+  // Explicitly parenthesized for clarity
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1 bg-background p-4 sm:p-6 md:p-8 space-y-8">
@@ -287,7 +297,7 @@ export default function ServiceRequestDetailsTenantPage() {
                 {request.actionLog.map((logEntry) => (
                   <li key={logEntry.id} className="flex items-start space-x-3 text-sm relative pl-6">
                      <div className={`absolute left-0 top-1 h-2.5 w-2.5 rounded-full ${logEntry.user === "You" ? 'bg-primary' : 'bg-muted-foreground/50'}`}></div>
-                     <div className="absolute left-[3px] top-[14px] h-full w-[2px] ${logEntry.user === "You" ? 'bg-primary/30' : 'bg-muted-foreground/20'} group-last:h-0"></div>
+                     <div className={`absolute left-[3px] top-[14px] h-full w-[2px] ${logEntry.user === "You" ? 'bg-primary/30' : 'bg-muted-foreground/20'} group-last:h-0`}></div>
                     
                     <div>
                         <p className="font-medium">
@@ -304,8 +314,8 @@ export default function ServiceRequestDetailsTenantPage() {
             )}
           </CardContent>
         </Card>
-
       </main>
     </div>
   );
 }
+

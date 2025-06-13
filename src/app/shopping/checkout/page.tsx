@@ -3,7 +3,7 @@
 "use client";
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,9 +12,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, ShoppingCart, CreditCard, Smartphone, CheckCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect, useMemo } from 'react';
 
-// Dummy data - In a real app, this would come from user profile and cart
+// Dummy data - In a real app, this would come from user profile
 const tenantDeliveryInfo = {
   name: "Alice Wonderland",
   apartment: "Greenwood Heights",
@@ -22,30 +22,66 @@ const tenantDeliveryInfo = {
   room: "Main Bedroom",
   phone: "+254712345678",
 };
-const cartTotal = 240 + 100; // Example: Subtotal + Delivery
-const DUMMY_ORDER_ID = "SHOP" + Math.floor(10000 + Math.random() * 90000);
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  aiHint: string;
+}
+
+const DUMMY_ORDER_ID_PREFIX = "SHOP";
 
 export default function CheckoutPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [deliveryInstructions, setDeliveryInstructions] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
+  useEffect(() => {
+    const storedCart = localStorage.getItem('rentizziShopCart');
+    if (storedCart) {
+      setCartItems(JSON.parse(storedCart));
+    }
+  }, []);
+
+  const subtotal = useMemo(() => {
+    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  }, [cartItems]);
+
+  const deliveryFee = useMemo(() => {
+    // Simplified delivery fee. Real app might use distance, weight, etc.
+    return cartItems.length > 0 ? 100 : 0;
+  }, [cartItems]);
+
+  const totalAmount = useMemo(() => {
+    return subtotal + deliveryFee;
+  }, [subtotal, deliveryFee]);
+
   const handlePlaceOrder = (e: FormEvent) => {
     e.preventDefault();
+    if (cartItems.length === 0) {
+      toast({ title: "Empty Cart", description: "Your cart is empty. Please add items before checking out.", variant: "destructive" });
+      return;
+    }
     if (!paymentMethod) {
       toast({ title: "Payment Method Required", description: "Please select a payment method.", variant: "destructive" });
       return;
     }
     setIsPlacingOrder(true);
-    console.log("Placing order with:", { ...tenantDeliveryInfo, deliveryInstructions, paymentMethod, total: cartTotal });
+    const orderId = DUMMY_ORDER_ID_PREFIX + Math.floor(10000 + Math.random() * 90000);
+    console.log("Placing order with:", { ...tenantDeliveryInfo, deliveryInstructions, paymentMethod, items: cartItems, total: totalAmount, orderId });
 
     // Simulate API call
     setTimeout(() => {
       setIsPlacingOrder(false);
-      toast({ title: "Order Placed!", description: `Your order ${DUMMY_ORDER_ID} has been successfully placed.` });
-      router.push(`/shopping/checkout/success?orderId=${DUMMY_ORDER_ID}`);
+      toast({ title: "Order Placed!", description: `Your order ${orderId} has been successfully placed.` });
+      localStorage.removeItem('rentizziShopCart'); // Clear cart after successful order
+      router.push(`/shopping/checkout/success?orderId=${orderId}`);
     }, 2000);
   };
 
@@ -101,7 +137,6 @@ export default function CheckoutPage() {
                       <SelectItem value="card"><CreditCard className="mr-2 h-4 w-4 inline"/> Credit/Debit Card</SelectItem>
                     </SelectContent>
                   </Select>
-                  {/* Placeholder for M-Pesa details / Card form fields if selected */}
                   {paymentMethod === 'mpesa' && (
                     <div className="mt-4 p-3 border rounded-md bg-muted/50 text-sm">
                         <p>You will receive an STK push on your registered M-Pesa number after placing the order. Paybill <strong>SHOPXYZ</strong>, Account <strong>YourUnit</strong>.</p>
@@ -121,23 +156,22 @@ export default function CheckoutPage() {
               <Card className="sticky top-24">
                 <CardHeader><CardTitle>3. Order Summary</CardTitle></CardHeader>
                 <CardContent className="space-y-3">
-                  {/* Placeholder for itemized list - for now just total */}
                   <div className="flex justify-between text-sm">
                     <span>Items Subtotal:</span>
-                    <span>KES {(cartTotal - 100).toLocaleString()}</span>
+                    <span>KES {subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Delivery Fee:</span>
-                    <span>KES 100</span>
+                    <span>KES {deliveryFee.toLocaleString()}</span>
                   </div>
                   <hr />
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total Amount:</span>
-                    <span>KES {cartTotal.toLocaleString()}</span>
+                    <span>KES {totalAmount.toLocaleString()}</span>
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button type="submit" className="w-full" size="lg" disabled={isPlacingOrder || !paymentMethod}>
+                  <Button type="submit" className="w-full" size="lg" disabled={isPlacingOrder || !paymentMethod || cartItems.length === 0}>
                     {isPlacingOrder ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                     Place Order & Pay
                   </Button>

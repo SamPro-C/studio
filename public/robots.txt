@@ -1,0 +1,7 @@
+# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+#
+# Allow all bots to crawl all content.
+User-agent: *
+Allow: /
+
+Sitemap: [ABSOLUTE_URL_OF_YOUR_SITEMAP_HERE_IF_YOU_HAVE_ONE]

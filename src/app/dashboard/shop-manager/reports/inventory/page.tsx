@@ -5,13 +5,13 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, FileText, Filter, FileDown, PackageSearch, ShoppingBag, BarChart3 } from 'lucide-react';
+import { ArrowLeft, FileText, Filter, FileDown, PackageSearch, ShoppingBag, BarChart3, PieChart as PieChartIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip as ShadTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 
 interface InventoryItem {
@@ -30,6 +30,8 @@ const dummyInventory: InventoryItem[] = [
   { id: "prod2", name: "Laundry Soap (2kg)", sku: "LS002", category: "Cleaning Supplies", price: 350, stock: 5, lowStockThreshold: 5, status: "Low Stock" },
   { id: "prod3", name: "20L Water Refill", sku: "WD001", category: "Water Delivery", price: 200, stock: 100, lowStockThreshold: 20, status: "In Stock" },
   { id: "prod4", name: "Imported Coffee Beans", sku: "CB005", category: "Groceries", price: 800, stock: 0, lowStockThreshold: 3, status: "Out of Stock" },
+  { id: "prod5", name: "Hand Sanitizer (500ml)", sku: "HS010", category: "Cleaning Supplies", price: 250, stock: 15, lowStockThreshold: 10, status: "In Stock" },
+  { id: "prod6", name: "Cooking Oil (2L)", sku: "CO002", category: "Groceries", price: 450, stock: 8, lowStockThreshold: 10, status: "Low Stock" },
 ];
 
 const lowStockItems = dummyInventory.filter(item => item.status === "Low Stock" || item.status === "Out of Stock");
@@ -38,10 +40,26 @@ const stockByCategoryData = [
     { category: "Groceries", stock: dummyInventory.filter(i => i.category === "Groceries").reduce((sum, item) => sum + item.stock, 0) },
     { category: "Cleaning", stock: dummyInventory.filter(i => i.category === "Cleaning Supplies").reduce((sum, item) => sum + item.stock, 0) },
     { category: "Water", stock: dummyInventory.filter(i => i.category === "Water Delivery").reduce((sum, item) => sum + item.stock, 0) },
-];
+].filter(c => c.stock > 0);
 
-const chartConfig = {
-  stock: { label: "Total Stock", color: "hsl(var(--chart-1))" },
+const stockCategoryChartConfig = {
+  stock: { label: "Total Stock" },
+  Groceries: { label: "Groceries", color: "hsl(var(--chart-1))" },
+  Cleaning: { label: "Cleaning", color: "hsl(var(--chart-2))" },
+  Water: { label: "Water", color: "hsl(var(--chart-3))" },
+} satisfies ChartConfig;
+
+const stockStatusDistributionData = [
+  { name: "In Stock", value: dummyInventory.filter(i => i.status === "In Stock").length, fill: "hsl(var(--chart-2))" },
+  { name: "Low Stock", value: dummyInventory.filter(i => i.status === "Low Stock").length, fill: "hsl(var(--chart-4))" },
+  { name: "Out of Stock", value: dummyInventory.filter(i => i.status === "Out of Stock").length, fill: "hsl(var(--chart-5))" },
+].filter(s => s.value > 0);
+
+const stockStatusChartConfig = {
+  value: { label: "Item Count" },
+  "In Stock": { label: "In Stock", color: "hsl(var(--chart-2))" },
+  "Low Stock": { label: "Low Stock", color: "hsl(var(--chart-4))" },
+  "Out of Stock": { label: "Out of Stock", color: "hsl(var(--chart-5))" },
 } satisfies ChartConfig;
 
 
@@ -70,7 +88,7 @@ export default function ShopInventoryReportsPage() {
           <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end">
             <div>
               <Label htmlFor="categoryFilter">Category</Label>
-              <Select><SelectTrigger id="categoryFilter"><SelectValue placeholder="All Categories"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="groceries">Groceries</SelectItem></SelectContent></Select>
+              <Select><SelectTrigger id="categoryFilter"><SelectValue placeholder="All Categories"/></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="groceries">Groceries</SelectItem><SelectItem value="cleaning">Cleaning Supplies</SelectItem><SelectItem value="water">Water Delivery</SelectItem></SelectContent></Select>
             </div>
             <div>
               <Label htmlFor="stockStatusFilter">Stock Status</Label>
@@ -80,6 +98,63 @@ export default function ShopInventoryReportsPage() {
           </CardContent>
         </Card>
         
+        <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center"><BarChart3 className="mr-2 h-5 w-5 text-primary/80"/> Stock Levels by Category</CardTitle>
+                    <CardDescription>Total stock quantity for major product categories.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {stockByCategoryData.length > 0 ? (
+                        <ChartContainer config={stockCategoryChartConfig} className="h-[300px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={stockByCategoryData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="category" tickLine={false} axisLine={false} tickMargin={8} className="text-xs"/>
+                            <YAxis allowDecimals={false} tickLine={false} axisLine={false} tickMargin={8} width={30} className="text-xs"/>
+                            <ShadTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                            <ChartLegend content={<ChartLegendContent />} />
+                            <Bar dataKey="stock" fill="var(--color-stock)" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                        </ChartContainer>
+                    ) : (
+                        <div className="h-[300px] bg-muted rounded-md flex items-center justify-center border border-dashed">
+                            <p className="text-muted-foreground">No stock data for category chart.</p>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center"><PieChartIcon className="mr-2 h-5 w-5 text-primary/80"/> Stock Status Distribution</CardTitle>
+                    <CardDescription>Overall distribution of item stock statuses.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {stockStatusDistributionData.length > 0 ? (
+                        <ChartContainer config={stockStatusChartConfig} className="mx-auto aspect-square max-h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <RechartsPieChart>
+                            <ShadTooltip cursor={false} content={<ChartTooltipContent hideLabel nameKey="name" />} />
+                            <Pie data={stockStatusDistributionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                                {stockStatusDistributionData.map((entry) => (
+                                <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                                ))}
+                            </Pie>
+                            <ChartLegend content={<ChartLegendContent nameKey="name" />} />
+                            </RechartsPieChart>
+                        </ResponsiveContainer>
+                        </ChartContainer>
+                    ) : (
+                        <div className="h-[300px] bg-muted rounded-md flex items-center justify-center border border-dashed">
+                            <p className="text-muted-foreground">No stock status data for chart.</p>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </div>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Low Stock / Out of Stock Items</CardTitle>
@@ -103,33 +178,6 @@ export default function ShopInventoryReportsPage() {
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center"><BarChart3 className="mr-2 h-5 w-5 text-primary/80"/> Stock Levels by Category</CardTitle>
-            <CardDescription>Total stock quantity for major product categories.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {stockByCategoryData.length > 0 ? (
-                <ChartContainer config={chartConfig} className="h-[300px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={stockByCategoryData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="category" tickLine={false} axisLine={false} tickMargin={8} className="text-xs"/>
-                      <YAxis allowDecimals={false} tickLine={false} axisLine={false} tickMargin={8} width={30} className="text-xs"/>
-                      <ShadTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-                      <ChartLegend content={<ChartLegendContent />} />
-                      <Bar dataKey="stock" fill="var(--color-stock)" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
-            ) : (
-                 <div className="h-80 bg-muted rounded-md flex items-center justify-center border border-dashed">
-                    <p className="text-muted-foreground">No stock data for chart.</p>
-                </div>
-            )}
-          </CardContent>
-        </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Full Inventory List</CardTitle>

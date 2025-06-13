@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { ArrowLeft, UserCircle, MapPin, CreditCard, Bell, Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { useState } from 'react';
 
 // Dummy data - In a real app, this would come from user's profile
 const shopUserProfileData = {
@@ -26,6 +29,8 @@ const shopUserProfileData = {
 
 export default function ShoppingProfilePage() {
   const { toast } = useToast();
+  const [promotionsEnabled, setPromotionsEnabled] = useState(shopUserProfileData.shopNotificationPreferences.promotions);
+  const [newArrivalsEnabled, setNewArrivalsEnabled] = useState(shopUserProfileData.shopNotificationPreferences.newArrivals);
 
   const handleEditAddress = () => {
     toast({ description: "Address editing functionality to be implemented." });
@@ -34,8 +39,19 @@ export default function ShoppingProfilePage() {
     toast({ description: "Payment method management to be implemented." });
   };
   const handleUpdateNotifications = () => {
-    toast({ description: "Notification preferences update to be implemented." });
+    // In a real app, save these preferences to backend
+    console.log("Updated Notification Preferences:", { promotions: promotionsEnabled, newArrivals: newArrivalsEnabled });
+    toast({ description: "Shop notification preferences updated (client-side).", title: "Preferences Saved" });
   };
+
+  const InfoDisplayItem: React.FC<{label: string, value: string | undefined, icon?: React.ElementType}> = ({ label, value, icon: Icon }) => (
+    <div className="flex items-start py-1">
+        {Icon && <Icon className="mr-2 h-4 w-4 mt-0.5 text-primary/70 flex-shrink-0" />}
+        <span className="font-medium text-muted-foreground w-28 sm:w-36 flex-shrink-0">{label}:</span>
+        <span className="text-foreground break-words">{value || 'N/A'}</span>
+    </div>
+  );
+
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/20">
@@ -63,11 +79,11 @@ export default function ShoppingProfilePage() {
             </div>
             <Button variant="outline" size="sm" onClick={handleEditAddress}><Edit className="mr-2 h-4 w-4"/> Edit</Button>
           </CardHeader>
-          <CardContent className="text-sm space-y-1">
-            <p><strong>Name:</strong> {shopUserProfileData.name}</p>
-            <p><strong>Apartment:</strong> {shopUserProfileData.defaultDeliveryAddress.apartment}</p>
-            <p><strong>Unit/Room:</strong> {shopUserProfileData.defaultDeliveryAddress.unit} ({shopUserProfileData.defaultDeliveryAddress.room})</p>
-            <p><strong>Contact Phone:</strong> {shopUserProfileData.defaultDeliveryAddress.contactPhone}</p>
+          <CardContent className="space-y-1.5 text-sm">
+            <InfoDisplayItem label="Name" value={shopUserProfileData.name} />
+            <InfoDisplayItem label="Apartment" value={shopUserProfileData.defaultDeliveryAddress.apartment} />
+            <InfoDisplayItem label="Unit / Room" value={`${shopUserProfileData.defaultDeliveryAddress.unit} (${shopUserProfileData.defaultDeliveryAddress.room})`} />
+            <InfoDisplayItem label="Contact Phone" value={shopUserProfileData.defaultDeliveryAddress.contactPhone} />
           </CardContent>
         </Card>
 
@@ -90,30 +106,31 @@ export default function ShoppingProfilePage() {
         </Card>
         
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div>
-                <CardTitle className="flex items-center"><Bell className="mr-2 h-5 w-5 text-primary/80" /> Shop Notification Preferences</CardTitle>
-                <CardDescription>Choose what updates you receive from the shop.</CardDescription>
-            </div>
-            <Button variant="outline" size="sm" onClick={handleUpdateNotifications}><Edit className="mr-2 h-4 w-4"/> Update</Button>
+          <CardHeader>
+            <CardTitle className="flex items-center"><Bell className="mr-2 h-5 w-5 text-primary/80" /> Shop Notification Preferences</CardTitle>
+            <CardDescription>Choose what updates you receive from the shop.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <div className="flex items-center justify-between">
-                <span>Receive promotional offers:</span>
-                <span className={shopUserProfileData.shopNotificationPreferences.promotions ? "text-green-600 font-semibold" : "text-red-600 font-semibold"}>
-                    {shopUserProfileData.shopNotificationPreferences.promotions ? "Yes" : "No"}
-                </span>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-3 border rounded-md">
+                <Label htmlFor="promotionsSwitch" className="text-sm font-medium">Receive promotional offers</Label>
+                <Switch 
+                    id="promotionsSwitch"
+                    checked={promotionsEnabled}
+                    onCheckedChange={setPromotionsEnabled}
+                />
             </div>
-            <div className="flex items-center justify-between">
-                <span>Get notified about new arrivals:</span>
-                 <span className={shopUserProfileData.shopNotificationPreferences.newArrivals ? "text-green-600 font-semibold" : "text-red-600 font-semibold"}>
-                    {shopUserProfileData.shopNotificationPreferences.newArrivals ? "Yes" : "No"}
-                </span>
-            </div>
-             <div className="mt-3 p-4 border border-dashed rounded-md bg-muted/50 text-center">
-                <p className="text-muted-foreground text-xs">Detailed notification toggles will appear here.</p>
+            <div className="flex items-center justify-between p-3 border rounded-md">
+                <Label htmlFor="newArrivalsSwitch" className="text-sm font-medium">Get notified about new arrivals</Label>
+                 <Switch 
+                    id="newArrivalsSwitch"
+                    checked={newArrivalsEnabled}
+                    onCheckedChange={setNewArrivalsEnabled}
+                />
             </div>
           </CardContent>
+          <CardFooter>
+            <Button onClick={handleUpdateNotifications}>Save Notification Preferences</Button>
+          </CardFooter>
         </Card>
       </main>
       <footer className="border-t bg-background py-6 mt-auto">

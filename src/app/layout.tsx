@@ -9,7 +9,7 @@ import { ThemeProvider } from '@/components/layout/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Sampro Media Portfolio',
-  description: 'Portfolio of Sampro Media services and projects.',
+  description: 'Portfolio of Sampro Media services and projects. Discover innovative media productions, custom software solutions, and insightful case studies showcasing digital excellence.',
 };
 
 export default function RootLayout({

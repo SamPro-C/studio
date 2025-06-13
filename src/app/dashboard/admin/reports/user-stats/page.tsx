@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Users, Filter, FileDown, BarChart3 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend as RechartsLegend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 
 const userGrowthData = [
@@ -111,8 +111,8 @@ export default function UserStatisticsReportPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={userGrowthData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                  <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8}/>
-                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} tickMargin={8} width={30}/>
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} className="text-xs"/>
+                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} tickMargin={8} width={30} className="text-xs" tickFormatter={(value) => `${value}`}/>
                   <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                   <ChartLegend content={<ChartLegendContent />} />
                   <Bar dataKey="Landlords" fill="var(--color-Landlords)" radius={[4, 4, 0, 0]} />
@@ -146,3 +146,4 @@ export default function UserStatisticsReportPage() {
     </div>
   );
 }
+

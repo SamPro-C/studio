@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   }
   return {
     title: `${service.title} | Services | Sampro Media`,
-    description: service.description, // Or use a snippet of longDescription
+    description: service.description, 
   };
 }
 
@@ -66,11 +66,14 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
             <h2 className="font-headline text-2xl font-semibold text-foreground mb-4">
               Key Offerings
             </h2>
-            <ul className="space-y-3">
-              {service.details.map((detail, index) => (
-                <li key={index} className="flex items-start text-md">
-                  <CheckCircle className="h-6 w-6 text-primary mr-3 shrink-0 mt-0.5" />
-                  <span>{detail}</span>
+            <ul className="space-y-6"> {/* Increased spacing between items */}
+              {service.details.map((item, index) => (
+                <li key={index} className="flex items-start">
+                  <CheckCircle className="h-7 w-7 text-primary mr-4 shrink-0 mt-1" /> {/* Slightly larger icon, more margin */}
+                  <div>
+                    <h3 className="font-semibold text-xl text-foreground mb-1">{item.heading}</h3> {/* Heading style */}
+                    <p className="text-foreground/80 text-md leading-relaxed">{item.explanation}</p> {/* Explanation style */}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -80,5 +83,3 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
-
-    

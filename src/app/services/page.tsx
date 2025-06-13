@@ -17,12 +17,18 @@ function ServiceCard({ service }: { service: Service }) {
       <CardContent className="pt-6 flex-grow">
         <CardDescription className="text-md mt-1 text-foreground/80 mb-4 text-center">{service.description}</CardDescription>
         <ul className="space-y-2">
-          {service.details.map((detail, index) => (
+          {service.details.slice(0, 3).map((item, index) => ( // Show first 3 key offering headings
             <li key={index} className="flex items-start text-sm">
               <CheckCircle className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
-              <span>{detail}</span>
+              <span className="font-medium">{item.heading}</span>
             </li>
           ))}
+          {service.details.length > 3 && (
+             <li className="flex items-start text-sm">
+                <CheckCircle className="h-5 w-5 text-primary mr-2 shrink-0 mt-0.5" />
+                <span>And more...</span>
+            </li>
+          )}
         </ul>
       </CardContent>
       <CardFooter className="mt-auto p-4 justify-center">
@@ -52,5 +58,3 @@ export default function ServicesPage() {
     </div>
   );
 }
-
-    

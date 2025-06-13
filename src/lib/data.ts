@@ -1,6 +1,6 @@
 
 import type { LucideIcon } from 'lucide-react';
-import { Palette, LayoutGrid, CodeXml, Camera, LineChart, Users, Target, Lightbulb, Search, Cpu, Bot, FileText, Briefcase, MessageSquare, Aperture, Tv, Info, Mail, BookOpen, Film, PieChart } from 'lucide-react';
+import { Palette, LayoutGrid, CodeXml, Camera, LineChart, Users, Target, Lightbulb, Search, Cpu, Bot, FileText, Briefcase, MessageSquare, Aperture, Tv, Info, Mail, BookOpen, Film, PieChart, Edit, Brain } from 'lucide-react';
 
 export interface MediaProject {
   id: string;
@@ -397,6 +397,64 @@ export const services: Service[] = [
         explanation: "Integrate Power BI reports and dashboards directly into your custom applications, portals, or websites, providing seamless analytical experiences for your users or clients globally."
       }
     ]
+  },
+  {
+    id: 'content-creation-copywriting',
+    title: 'Content Creation & Copywriting',
+    icon: Edit,
+    description: "Compelling content and persuasive copywriting to engage your audience and drive action, for Kenyan and global markets.",
+    longDescription: "Elevate your brand's voice with Sampro Media's expert content creation and copywriting services. We craft compelling narratives, engaging website copy, persuasive marketing materials, and informative blog posts that resonate with your target audience in Kenya and internationally. Our goal is to help you communicate effectively, build authority, and drive conversions through the power of well-written content.",
+    details: [
+      {
+        heading: "Website Content & SEO Copywriting",
+        explanation: "We create optimized website content that not only clearly communicates your value proposition but also ranks well in search engines, attracting organic traffic for your software and media services."
+      },
+      {
+        heading: "Blog Writing & Article Creation",
+        explanation: "Establish thought leadership and engage your audience with high-quality, well-researched blog posts and articles tailored to your industry and target audience in Kenya and worldwide."
+      },
+      {
+        heading: "Marketing & Sales Copy",
+        explanation: "Persuade and convert with compelling copy for your advertisements, brochures, email campaigns, landing pages, and sales presentations, designed to drive action."
+      },
+      {
+        heading: "Social Media Content",
+        explanation: "Craft engaging and shareable content for your social media platforms, tailored to each channel's unique audience and designed to build your brand's online community."
+      },
+      {
+        heading: "Editing & Proofreading",
+        explanation: "Ensure your existing content is polished, professional, and error-free with our meticulous editing and proofreading services, maintaining a high standard for all your communications."
+      }
+    ]
+  },
+  {
+    id: 'it-digital-transformation-consultancy',
+    title: 'IT & Digital Transformation Consultancy',
+    icon: Brain,
+    description: "Strategic IT and digital transformation guidance to help your Kenyan or global business leverage technology for growth and efficiency.",
+    longDescription: "Navigate the complexities of the digital landscape with Sampro Media's IT and Digital Transformation Consultancy. We partner with businesses in Kenya and internationally to develop strategic roadmaps, optimize IT infrastructure, and implement technologies that drive innovation, efficiency, and growth. Our expert consultants help you align your technology with your business goals for a successful digital future.",
+    details: [
+      {
+        heading: "Digital Strategy Development",
+        explanation: "We help you define a clear and actionable digital strategy aligned with your business objectives, identifying key technologies and initiatives to drive transformation and competitive advantage in Kenya and globally."
+      },
+      {
+        heading: "IT Infrastructure Assessment & Optimization",
+        explanation: "Our experts assess your current IT infrastructure, identifying areas for improvement in terms of efficiency, scalability, security, and cost-effectiveness, providing tailored recommendations."
+      },
+      {
+        heading: "Cloud Strategy & Migration Planning",
+        explanation: "Develop a comprehensive cloud strategy, from selecting the right platforms (AWS, Azure, Google Cloud) to planning and executing seamless migrations for your software and data."
+      },
+      {
+        heading: "Process Automation & Workflow Design",
+        explanation: "Identify opportunities to automate manual processes and redesign workflows using technology, significantly improving operational efficiency and reducing human error for your business."
+      },
+      {
+        heading: "Change Management & Technology Adoption",
+        explanation: "We provide guidance and support to manage the human side of technological change, ensuring smooth adoption of new systems and processes within your organization."
+      }
+    ]
   }
 ];
 
@@ -470,5 +528,4 @@ export const testimonials: Testimonial[] = [
     dataAiHint: 'business person international',
   },
 ];
-
     

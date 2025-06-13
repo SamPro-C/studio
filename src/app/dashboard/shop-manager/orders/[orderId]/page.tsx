@@ -6,13 +6,14 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, Package, User, Home, Printer, Edit, MessageSquare, DollarSign, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Package, User, Home, Printer, MessageSquare, DollarSign, AlertTriangle } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect } from 'react';
 
 type OrderStatus = 'New' | 'Processing' | 'Out for Delivery' | 'Delivered' | 'Canceled';
 type PaymentStatus = 'Paid' | 'Pending' | 'Failed';
@@ -44,7 +45,7 @@ interface OrderDetails {
 }
 
 // Dummy data for a single order
-const dummyOrderDetails: { [key: string]: OrderDetails } = {
+const dummyOrderDatabase: { [key: string]: OrderDetails } = {
   "SM2408001": {
     id: "ord1",
     orderId: "SM2408001",
@@ -60,32 +61,69 @@ const dummyOrderDetails: { [key: string]: OrderDetails } = {
       { id: "item4", name: "Cleaning Service (Basic)", quantity: 1, price: 730, subtotal: 730 },
     ],
     subtotal: 1250,
-    deliveryFee: 0, // Assuming free delivery for this example
+    deliveryFee: 0, 
     totalAmount: 1250,
     status: "New",
     paymentStatus: "Paid",
     paymentMethod: "M-Pesa",
+  },
+  "SM2408002": {
+    id: "ord2",
+    orderId: "SM2408002",
+    customerName: "Bob T.",
+    customerContact: "+254712345000",
+    apartmentUnit: "Oceanview T. / C203",
+    orderDate: "2024-08-05",
+    items: [
+      { id: "itemB1", name: "Snack Pack Large", quantity: 1, price: 700, subtotal: 700 },
+      { id: "itemB2", name: "Soda (6-pack)", quantity: 1, price: 480, subtotal: 480 },
+    ],
+    subtotal: 1180,
+    deliveryFee: 50,
+    totalAmount: 1230,
+    status: "Processing",
+    paymentStatus: "Paid",
+    paymentMethod: "Card",
   }
 };
 
 export default function ShopManagerOrderDetailPage() {
   const params = useParams();
   const routerOrderId = params.orderId as string;
-  const order = dummyOrderDetails[routerOrderId];
+  const initialOrder = dummyOrderDatabase[routerOrderId];
   const { toast } = useToast();
 
+  const [order, setOrder] = useState<OrderDetails | null>(initialOrder ? {...initialOrder} : null);
+  const [internalNote, setInternalNote] = useState(initialOrder?.internalNotes || "");
+
+  useEffect(() => {
+    const fetchedOrder = dummyOrderDatabase[routerOrderId];
+    if (fetchedOrder) {
+      setOrder({...fetchedOrder}); // Create a copy to allow modification
+      setInternalNote(fetchedOrder.internalNotes || "");
+    } else {
+      setOrder(null);
+    }
+  }, [routerOrderId]);
+
+
   const handleUpdateStatus = (newStatus: OrderStatus) => {
-    toast({ title: "Status Update", description: `Order ${order?.orderId} status updated to ${newStatus}. (Placeholder)`});
-    // Add logic to update order status in backend
+    if (order) {
+      setOrder(prevOrder => prevOrder ? { ...prevOrder, status: newStatus } : null);
+      toast({ title: "Status Updated", description: `Order ${order.orderId} status changed to ${newStatus}.`});
+    }
   };
 
   const handlePrintPackingSlip = () => {
     toast({ title: "Print Slip", description: `Printing packing slip for ${order?.orderId}. (Placeholder)`});
   };
   
-  const handleAddNote = (note: string) => {
-    toast({ title: "Note Added", description: `Note added to order ${order?.orderId}. (Placeholder)`});
-    // Add logic to save note
+  const handleSaveNote = () => {
+    if (order) {
+        setOrder(prevOrder => prevOrder ? { ...prevOrder, internalNotes: internalNote } : null);
+        toast({ title: "Note Saved", description: `Internal note for order ${order.orderId} saved. (Client-side only)`});
+        // In real app, API call to save note
+    }
   };
 
   if (!order) {
@@ -102,7 +140,7 @@ export default function ShopManagerOrderDetailPage() {
   const getStatusBadgeVariant = (status: OrderStatus) => {
     if (status === 'New') return 'secondary';
     if (status === 'Processing' || status === 'Out for Delivery') return 'default';
-    if (status === 'Delivered') return 'default'; // Potentially a 'success' variant
+    if (status === 'Delivered') return 'default'; 
     if (status === 'Canceled') return 'destructive';
     return 'outline';
   };
@@ -158,7 +196,7 @@ export default function ShopManagerOrderDetailPage() {
             <CardContent className="space-y-3">
               <div>
                 <Label htmlFor="updateStatus">Update Order Status</Label>
-                <Select onValueChange={(value) => handleUpdateStatus(value as OrderStatus)} defaultValue={order.status}>
+                <Select onValueChange={(value) => handleUpdateStatus(value as OrderStatus)} value={order.status}>
                   <SelectTrigger id="updateStatus"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {(['New', 'Processing', 'Out for Delivery', 'Delivered', 'Canceled'] as OrderStatus[]).map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -167,9 +205,16 @@ export default function ShopManagerOrderDetailPage() {
               </div>
               <Button variant="outline" className="w-full" onClick={handlePrintPackingSlip}><Printer className="mr-2"/> Print Packing Slip</Button>
               <div>
-                <Label htmlFor="internalNotes">Add Internal Note</Label>
-                <Textarea id="internalNotes" placeholder="e.g., Called customer, confirmed address" className="mt-1" rows={2}/>
-                <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => handleAddNote("Sample note")}>Save Note</Button>
+                <Label htmlFor="internalNotes">Add/Edit Internal Note</Label>
+                <Textarea 
+                    id="internalNotes" 
+                    placeholder="e.g., Called customer, confirmed address" 
+                    className="mt-1" 
+                    rows={2}
+                    value={internalNote}
+                    onChange={(e) => setInternalNote(e.target.value)}
+                />
+                <Button variant="outline" size="sm" className="w-full mt-2" onClick={handleSaveNote}>Save Note</Button>
               </div>
             </CardContent>
           </Card>
@@ -205,6 +250,9 @@ export default function ShopManagerOrderDetailPage() {
               <p className="text-lg font-semibold">Total: KES {order.totalAmount.toLocaleString()}</p>
             </div>
           </CardContent>
+           <CardFooter>
+            <p className="text-xs text-muted-foreground">Verify order details and update status accordingly.</p>
+          </CardFooter>
         </Card>
       </main>
     </div>

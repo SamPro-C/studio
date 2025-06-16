@@ -18,12 +18,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
-
-// Firestore imports
-import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore';
-// Firebase app import (usually for client-side initialization, but getFirestore() might need it if not auto-init by env)
-// import { getApp, getApps, initializeApp } from 'firebase/app';
-
+import { saveContactMessage } from './actions';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -31,34 +26,7 @@ const contactFormSchema = z.object({
   message: z.string().min(10, { message: 'Message must be at least 10 characters.' }).max(500, {message: "Message must be less than 500 characters."}),
 });
 
-type ContactFormValues = z.infer<typeof contactFormSchema>;
-
-// Server Action to save the contact message to Firestore
-async function saveContactMessage(data: ContactFormValues) {
-  'use server';
-  try {
-    // In a Firebase App Hosting environment, Firebase SDK should be configured.
-    // getFirestore() should ideally work if the default Firebase app is initialized.
-    const db = getFirestore();
-    await addDoc(collection(db, 'contactSubmissions'), {
-      name: data.name,
-      email: data.email,
-      message: data.message,
-      submittedAt: Timestamp.now(),
-    });
-    return { success: true, message: 'Your message has been sent successfully and stored!' };
-  } catch (error: any) {
-    console.error('Error writing to Firestore:', error);
-    let userMessage = 'There was an error saving your message. Please try again.';
-    // More specific error messages can be helpful for debugging or user feedback
-    if (error.code === 'unavailable') {
-        userMessage = 'The service is temporarily unavailable. Please try again later.';
-    } else if (error.code === 'permission-denied') {
-        userMessage = 'Could not save message. Please check service permissions.';
-    }
-    return { success: false, message: userMessage };
-  }
-}
+export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 
 export default function ContactForm() {
@@ -77,7 +45,7 @@ export default function ContactForm() {
   async function onSubmit(data: ContactFormValues) {
     setIsSubmitting(true);
     try {
-      const result = await saveContactMessage(data); // Call the server action
+      const result = await saveContactMessage(data); // Call the imported server action
       if (result.success) {
         toast({
           title: 'Message Sent!',
@@ -92,8 +60,6 @@ export default function ContactForm() {
         });
       }
     } catch (error) {
-      // This catch block handles errors if the server action itself throws an unhandled exception
-      // or if there's an issue calling it (network, etc.)
       console.error("Client-side error submitting form:", error);
       toast({
         title: 'Error',
@@ -165,3 +131,4 @@ export default function ContactForm() {
     </Form>
   );
 }
+
